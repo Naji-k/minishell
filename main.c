@@ -6,13 +6,13 @@
 /*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 10:38:04 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/24 19:21:52 by nakanoun      ########   odam.nl         */
+/*   Updated: 2023/04/24 19:44:48 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 /*
-
+Hello Naji
 Project needs to be divided into the following sections:
 
 Parsing Input:
