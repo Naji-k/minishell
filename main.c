@@ -6,7 +6,7 @@
 /*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 10:38:04 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/24 19:13:27 by nakanoun      ########   odam.nl         */
+/*   Updated: 2023/04/24 19:21:52 by nakanoun      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Project needs to be divided into the following sections:
 Parsing Input:
 The first step in creating a shell is to parse the input from the user.
 You will need to read the input from the user and then parse it into a series of tokens that represent the command and its arguments.
-Naji
+
 Creating a Command Execution Engine:
 Once the input is parsed, you will need to execute the command.
 For this, you will need to create a command execution engine that can execute different types of commands, such as built-in commands like cd and exit, and external commands like ls, grep, etc.
