@@ -70,7 +70,7 @@ void	parse_input(char *string, t_token **tokens_head)
 			&& is_whitespace(string[i - 1]) == FALSE) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE))
 		{
-			if (string[i + 1] == '\0')
+			if (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE)
 				len++;
 			create_node(tokens_head, string, start, len);
 			start = i + 1;
