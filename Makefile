@@ -1,27 +1,53 @@
-NAME = minishell
+# **************************************************************************** #
+#                                                                              #
+#                                                         ::::::::             #
+#    Makefile                                           :+:    :+:             #
+#                                                      +:+                     #
+#    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
+#                                                    +#+                       #
+#    Created: 2023/04/25 13:56:08 by nakanoun      #+#    #+#                  #
+#    Updated: 2023/04/25 13:56:08 by nakanoun      ########   odam.nl          #
+#                                                                              #
+# **************************************************************************** #
 
-SRCS = main.c parsing_tokens.c linked_list_functions.c utils.c parsing_commands.c execute_cmd.c init_tools.c print.c expander.c
+NAME := minishell
 
-LIBFT = libft/libft.a
+CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address
 
-OBJS = $(SRCS:.c=.o)
+#Lib
+LIB_LIBFT = ./lib/libft/libft.a
 
-CFLAGS ?= -Wall -Wextra -Werror #-g -fsanitize=address
+#Directories
+LIBFT_DIR = ./lib/libft
+OBJ_DIR	= obj
 
-all : $(NAME)
+HEADERS	:= -I ./include -I $(LIBFT_DIR)
+# FILES	:= main.c parsing_tokens.c linked_list_functions.c utils.c parsing_commands.c execute_cmd.c init_tools.c print.c expander.c
+SRCS	:= $(shell find ./src -iname "*.c")
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
-$(NAME): $(OBJS)
-	@cd libft && make
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline
-	@printf "Compiled ./minishell executable succesfully.\n"
+all :	$(NAME)
+
+$(OBJ_DIR)/%.o: %.c
+		@mkdir -p $(@D)
+		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
+
+$(NAME):	 $(LIB_LIBFT) $(OBJS)
+		@$(CC) $(CFLAGS) $(HEADERS) $(OBJS) $(LIB_LIBFT) -o $(NAME) -lreadline
+		@printf "Compiled ./minishell executable succesfully.\n"
+
+
+$(LIB_LIBFT):
+	@make -sC $(LIBFT_DIR)
+	@printf "Compiled libft succesfully.\n"
 
 clean :
-	@cd libft && make clean
-	@rm -rf $(OBJS)
+	@rm -rf $(OBJ_DIR);
+	@make clean -sC $(LIBFT_DIR)
 	@printf "Removed .o files successfully.\n"
 
 fclean : clean
-	@cd libft && make fclean
+	@make fclean -sC $(LIBFT_DIR)
 	@rm -rf $(NAME)
 	@printf "Removed ./minishell executable successfully.\n"
 
