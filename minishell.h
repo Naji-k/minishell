@@ -108,6 +108,10 @@ void	create_node(t_token **tokens_head, char *string, int start, int j);
 				/* Execution of Commands */
 void	execute(t_tools *tools, t_commands **cmd_head);
 
+				/* Expander ($ARG) */
+void	expander(t_token **lst_tokens, t_tools *tools);
+char	*expand_arg(char *string, t_tools *tools);
+
 				/* Printing (DEBUGGING) */
 void	print_token_list(t_token **lst_head);
 void	print_cmds_list(t_commands **lst_head);
