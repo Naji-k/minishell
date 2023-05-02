@@ -14,12 +14,26 @@
 # define EXECUTOR_H
 
 # include "minishell.h"
+# include <fcntl.h>
+# include <stdio.h>
 
 char	*find_cmd_path(t_tools *tools, char **cmd);
 
-int		execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
-int		executor(t_tools *tools, t_commands **cmd_head);
+void	executor(t_tools *tools, t_commands **cmd_head);
 //check_list
 char	*check_current_dir(char *cmd);
 
+//execute
+int		execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
+//multi cmnds
+void	multi_comands(t_tools *tools, t_commands **cmd_head);
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head);
+void	last_cmd(t_tools *tools, t_commands **cmd_head);
+
 #endif
+
+/*  TEST CASES
+ls -la | cat | cat | git | grep add 
+
+ls -la >out | echo hii  >2 | echo hello  >3 | git > 4
+ */

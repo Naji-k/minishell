@@ -50,7 +50,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		tools;
 
-	atexit(check_leaks);
+	// atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 
@@ -61,7 +61,7 @@ int	main(int argc, char **argv, char **envp)
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
-	print_token_list(&tokens_head);
+	// print_token_list(&tokens_head);
 	expander(&tokens_head, &tools);
 	parse_cmds(&tokens_head, &cmds_head);
 	print_cmds_list(&cmds_head);
