@@ -26,92 +26,98 @@
 void	executor(t_tools *tools, t_commands **cmd_head)
 {
 	if ((*cmd_head)->next == NULL)
-	{q
+	{
 		printf("one cmd\n");
-		execute_onc_cmd(tools, cmd_head);
+		if (!(*cmd_head)->builtin)
+			execute_onc_cmd(tools, cmd_head);
 	}
-	printf("multi_cmd\n");
-	multi_comands(tools, cmd_head);
+	if ((*cmd_head)->next != NULL)
+	{
+		printf("multi_cmd\n");
+		multi_comands(tools, cmd_head);
+	}
 	// return (0);
 }
 /* 
-	in this function, check if it is a redirection || builtins
-		|| here_doc => else PIPE and fork
+	this func will split the commands to two parts: 
+	LOOP: on all commands -1 ex:lst command
+	and run the last command separately
  */
+
 void	multi_comands(t_tools *tools, t_commands **cmd_head)
 {
 	int			file;
 	t_commands	*node;
+	int			in;
 
+	in = STDIN_FILENO;
 	node = *cmd_head;
 	while (node->next != NULL)
 	{
-		if (!(node->redirections) && !(node->builtin) && !(node->hd_file_name))
-		{ //it's command
-			multi_pipex_process(tools, &node);
-			printf("cmd=%s\n", node->cmds[0]);
-		}
-		else if (node->redirections)
+		if (node->builtin)
+			node = node->next;
+		if (node->cmds != NULL)
 		{
-			file = open(node->redirections->cmd, O_CREAT | O_WRONLY | O_TRUNC,
-					0644);
-			if (file < 0)
-				ft_putstr_fd("file\n", 2);
-			if (dup2(file, STDOUT_FILENO) == -1)
+			multi_pipex_process(tools, &node, &in);
+			if (dup2(in, STDIN_FILENO) == -1)
 				ft_putstr_fd("dup2_file\n", 2);
 		}
 		node = node->next;
 	}
 	// printf("LAST_cmd=%s\n", node->cmds[0]);
-	if (!(node->redirections) && !(node->builtin) && !(node->hd_file_name))
-		last_cmd(tools, &node);
-	else if (node->redirections)
-	{
-		file = open(node->redirections->cmd, O_CREAT | O_WRONLY | O_TRUNC,
-				0644);
-		if (file < 0)
-			ft_putstr_fd("file\n", 2);
-		if (dup2(file, STDOUT_FILENO) == -1)
-			ft_putstr_fd("dup2_file\n", 2);
-			close(file);
-	}
+	if (node->redirections)
+		redirection(node);
+	last_cmd(tools, &node);
 }
 
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head)
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 {
-	char	*cmd_path;
-	int		fd[2];
-	pid_t	pid;
+	char		*cmd_path;
+	int			fd[2];
+	pid_t		pid;
+	int			file;
+	t_commands	*node;
 
-	// printf("tool=%s\n cmd=%s\n", tools->paths[0], (*cmd_head)->cmds[0]);
+	node = *cmd_head;
 	if (pipe(fd) == -1)
 		ft_putstr_fd("pipe:\n", 2);
 	pid = fork();
 	if (pid < 0)
 		ft_putstr_fd("fork\n", 2);
 	if (pid == 0)
-	{ //child process
-		//redirect
+	{
 		close(fd[0]);
-		if (dup2(fd[1], STDOUT_FILENO) == -1)
-			ft_putstr_fd("dup2 - 1\n", 2);
-		cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
+		if (node->redirections)
+			redirection(node);
+		else
+		{
+			ft_dup2_check(fd[1], STDOUT_FILENO);
+			// if (dup2(fd[1], STDOUT_FILENO) == -1)
+			// 	ft_putstr_fd("dup2 - 1\n", 2);
+		}
+		ft_dup2_check(*in, STDIN_FILENO);
+		// if (dup2(*in, STDIN_FILENO) == -1)
+		// 	ft_putstr_fd("dup2 - 1\n", 2);
+		cmd_path = find_cmd_path(tools, node->cmds);
 		if (!cmd_path)
 			ft_putstr_fd("from find_path\n", 2);
-		if (execve(cmd_path, (*cmd_head)->cmds, NULL) == -1)
+		if (execve(cmd_path, node->cmds, NULL) == -1)
 			ft_putstr_fd("execve:\n", 2);
-	}
-	//parent process
+	} //parent process
 	close(fd[1]);
-	if (dup2(fd[0], STDIN_FILENO) == -1)
-		ft_putstr_fd("dup2 - 1\n", 2);
-	// close(fd[0]);
+	close(*in);
+	close(file);
+	*in = fd[0];
 }
+/* 
+	After finish the loop on all (commands-1) so now just execute the last command
+ */
 void	last_cmd(t_tools *tools, t_commands **cmd_head)
 {
 	char	*cmd_path;
 	int		fd[2];
 	pid_t	pid;
+	int		stat;
 
 	pid = fork();
 	if (pid == 0)
@@ -122,7 +128,8 @@ void	last_cmd(t_tools *tools, t_commands **cmd_head)
 		if (execve(cmd_path, (*cmd_head)->cmds, NULL) == -1)
 			ft_putstr_fd("execve:\n", 2);
 	}
-	waitpid(pid, NULL, 0);
+	while (wait(&stat) > 0)
+		;
 }
 /*
 	Here i am checking if the executor is a local(in project dir) | from env->PATH
@@ -144,14 +151,21 @@ char	*check_current_dir(char *cmd)
  */
 int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 {
-	char	*cmd_path;
+	char		*cmd_path;
+	int			file;
+	t_commands	*node;
 
-	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
+	node = *cmd_head;
+	if (node->redirections)
+	{
+		redirection(node);
+	}
+	cmd_path = find_cmd_path(tools, node->cmds);
 	if (!cmd_path)
 		printf("path not found: \n");
 	if (cmd_path)
 	{
-		if (execve(cmd_path, (*cmd_head)->cmds, NULL) == -1)
+		if (execve(cmd_path, node->cmds, NULL) == -1)
 		{
 			printf("execve:\n\n");
 			return (2);
@@ -168,10 +182,9 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 	char	*cmd_path;
 	int		i;
 
-	// cmd_path = check_current_dir(cmd[0]);
-	// if (!cmd_path)
-	// 	printf("not local\n");
-	// ft_putstr_fd("searching for=\n", 2);
+	cmd_path = check_current_dir(cmd[0]);
+	if (cmd_path)
+		return (cmd_path);
 	i = -1;
 	while (tools->paths[++i])
 	{

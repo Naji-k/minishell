@@ -15,6 +15,7 @@
 
 # include "minishell.h"
 # include <fcntl.h>
+# include <limits.h>
 # include <stdio.h>
 
 char	*find_cmd_path(t_tools *tools, char **cmd);
@@ -27,13 +28,20 @@ char	*check_current_dir(char *cmd);
 int		execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_comands(t_tools *tools, t_commands **cmd_head);
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head);
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in);
 void	last_cmd(t_tools *tools, t_commands **cmd_head);
 
+//redirection
+void	redirection(t_commands *cmd);
+void	ft_dup2_check(int old, int new);
+
+void	ft_pwd(void);
 #endif
 
 /*  TEST CASES
 ls -la | cat | cat | git | grep add 
+ls -la | cat > 1 | echo hii > 2 | echo hello > 3 | git | grep git > 4
 
-ls -la >out | echo hii  >2 | echo hello  >3 | git > 4
+ls -la >out | echo hii  >2 | echo hello  >3 | git > 4			**BUG
+ls -la > out | echo hii  > 2 | echo hello  > 3 | git > 4	**BUG
  */
