@@ -1,11 +1,11 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/10 10:38:04 by ysrondy           #+#    #+#             */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/10 10:38:04 by ysrondy       #+#    #+#                 */
 /*   Updated: 2023/04/24 19:44:48 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
@@ -41,6 +41,7 @@ You will need to implement job control using system calls like fork(), waitpid()
 */
 
 #include "minishell.h"
+#include "executor.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -49,7 +50,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		tools;
 
-	atexit(check_leaks);
+	// atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 
@@ -60,12 +61,12 @@ int	main(int argc, char **argv, char **envp)
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
-	print_token_list(&tokens_head);
+	// print_token_list(&tokens_head);
 	expander(&tokens_head, &tools);
 	parse_cmds(&tokens_head, &cmds_head);
 	print_cmds_list(&cmds_head);
-	execute(&tools, &cmds_head);
-
+	// execute(&tools, &cmds_head);
+	executor(&tools,&cmds_head);
 	free(string);
 	free_token_list(&tokens_head);
 	free_cmd_list(&cmds_head);
