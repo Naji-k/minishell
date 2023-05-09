@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtin.c                                          :+:    :+:            */
+/*   builtin_utils.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nakanoun <nakanoun@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -10,35 +10,48 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "buildin.h"
 #include "executor.h"
-#include "minishell.h"
 
-void	bn_pwd(void)
+/* 
+	this is the Main func for buildins using strcmp
+	 we can call the builtin functions
+ */
+int	(*execute_buildin(char *args))(t_tools *tools, char **simple_cmd)
 {
-	char	cwd[PATH_MAX];
+	int			i;
+	const char	*buildin_func_list[] = {
+		"cd",
+		"env",
+		"echo",
+		"pwd",
+	};
+	static int	(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
+		&mini_cd,
+		&mini_env,
+		&mini_echo,
+		&mini_pwd};
 
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("\nCurrent working dir: %s\n", cwd);
-	else
-		perror("getcwd() error");
-}
-
-int	bn_echo(t_commands **cmd_head)
-{
-	char **cmd;
-	int i;
-
-	i = 1;
-	cmd = (*cmd_head)->cmds;
-	while (cmd[i] != NULL)
+	i = 0;
+	while (i < (sizeof(buildin_func_list) / sizeof(char *)))
 	{
-		if (ft_strncmp(cmd[1], "-n", 2) == 0)
-			i++;
-		ft_putstr_fd(cmd[i], 1);
+		if (ft_strncmp(args, buildin_func_list[i], ft_strlen(args)) == 0)
+			return ((*builtin_func[i]));
 		i++;
 	}
-	if (ft_strncmp(cmd[1], "-n", 2) != 0)
-		ft_putstr_fd("\n", 1);
-
 	return (0);
+}
+
+int	mini_env(t_tools *tools, char **simple_cmd)
+{
+	int	i;
+
+	i = 0;
+	(void)simple_cmd;
+	while (tools->envp[i])
+	{
+		ft_putendl_fd(tools->envp[i], STDERR_FILENO);
+		i++;
+	}
+	return (-1);
 }

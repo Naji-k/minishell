@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "buildin.h"
 #include "executor.h"
 #include "minishell.h"
 
@@ -27,9 +28,16 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 {
 	if ((*cmd_head)->next == NULL)
 	{
-		printf("one cmd\n");
 		if (!(*cmd_head)->builtin)
+		{
+			printf("one cmd\n");
 			execute_onc_cmd(tools, cmd_head);
+		}
+		if ((*cmd_head)->builtin)
+		{
+			printf("<<<<<Buildin>>>>\n");
+			execute_buildin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
+		}
 	}
 	if ((*cmd_head)->next != NULL)
 	{
