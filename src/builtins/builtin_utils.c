@@ -50,7 +50,7 @@ int	mini_env(t_tools *tools, char **simple_cmd)
 	(void)simple_cmd;
 	while (tools->envp[i])
 	{
-		ft_putendl_fd(tools->envp[i], STDERR_FILENO);
+		ft_putendl_fd(tools->envp[i], 1);
 		i++;
 	}
 	return (-1);

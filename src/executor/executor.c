@@ -62,8 +62,6 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	node = *cmd_head;
 	while (node->next != NULL)
 	{
-		if (node->builtin)
-			node = node->next;
 		if (node->cmds != NULL)
 		{
 			multi_pipex_process(tools, &node, &in);
@@ -106,6 +104,8 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 		ft_dup2_check(*in, STDIN_FILENO);
 		// if (dup2(*in, STDIN_FILENO) == -1)
 		// 	ft_putstr_fd("dup2 - 1\n", 2);
+		if (node->builtin)
+			execute_buildin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
 		cmd_path = find_cmd_path(tools, node->cmds);
 		if (!cmd_path)
 			ft_putstr_fd("from find_path\n", 2);
