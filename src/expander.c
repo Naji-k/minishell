@@ -43,6 +43,29 @@ char	*expand_arg(char *string, t_tools *tools)
 }
 
 /*
+	Function which deletes a node from the token list.
+*/
+void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
+{
+	t_token	*node;
+
+	node = *lst_tokens;
+
+	while (node)
+	{
+		if (node->next == node_to_delete)
+		{
+			node->next = node_to_delete->next;
+			if (node_to_delete->next)
+				node_to_delete->next->index -= 1;
+			free(node_to_delete->cmd);
+			free(node_to_delete);
+		}
+		node = node->next;
+	}
+}
+
+/*
 	Loops through token list and checks if first letter of command is '$'.
 	If it is, calls the expand_arg function which will return the relevant
 	arg in the env referred to as the "expanded_arg".
@@ -60,14 +83,21 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 	char	*expanded_arg;
 
 	node = *lst_tokens;
-
+	printf("Before List:\n");
+	print_token_list(lst_tokens);
 	while (node)
 	{
 		if (node->cmd[0] == '$')
 		{
+			if (node->cmd[1] == is_whitespace(node->cmd[1]) || node->cmd[1] == '\0')
+				return ;
 			expanded_arg = expand_arg(node->cmd, tools);
+			printf("Looking to expand: %s\n", node->cmd);
 			if (!expanded_arg)
-				node->cmd[0] = '\0';
+			{
+				printf("Couldn't find arg in env\n");
+				delete_node(lst_tokens, node);
+			}
 			else
 			{
 				free(node->cmd);
@@ -76,4 +106,7 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 		}
 		node = node->next;
 	}
+	// printf("After List:\n");
+	// print_token_list(lst_tokens);
+
 }
