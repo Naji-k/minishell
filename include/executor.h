@@ -36,6 +36,10 @@ void	redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
 
 void	ft_pwd(void);
+
+//builtins
+int		bn_echo(t_commands **cmd_head);
+void	bn_pwd(void);
 #endif
 
 /*  TEST CASES

@@ -64,8 +64,8 @@ typedef struct s_tools
 	char					**envp;
 	// struct s_simple_cmds	*simple_cmds;
 	// t_token					*lexer_list;
-	// char					*pwd;
-	// char					*old_pwd;
+	char					*pwd;
+	char					*old_pwd;
 	// int						pipes;
 	// int						*pid;
 	// bool					heredoc;
