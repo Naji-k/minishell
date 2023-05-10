@@ -25,12 +25,14 @@ int	(*execute_buildin(char *args))(t_tools *tools, char **simple_cmd)
 		"env",
 		"echo",
 		"pwd",
+		"export"
 	};
 	static int	(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
 		&mini_cd,
 		&mini_env,
 		&mini_echo,
-		&mini_pwd};
+		&mini_pwd,
+		&mini_export};
 
 	i = 0;
 	while (i < (sizeof(buildin_func_list) / sizeof(char *)))

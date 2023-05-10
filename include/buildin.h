@@ -21,5 +21,6 @@ int	mini_echo(t_tools *tools, char **simple_cmd);
 int	mini_env(t_tools *tools, char **simple_cmd);
 int	mini_cd(t_tools *tools, char **simple_cmd);
 int	mini_echo_option(char *str);
+int	mini_export(t_tools *tools, char **simple_cmd);
 
 #endif
