@@ -13,7 +13,7 @@
 #include "buildin.h"
 #include "executor.h"
 
-/* 
+/*
 	check if there "-n" option for echo
 	ex: echo -nnnnn hey (should not print with new_line)
  */
@@ -42,7 +42,7 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 	{
 		ft_putstr_fd(simple_cmd[i], 1);
 		if (simple_cmd[i + 1] != NULL)
-			ft_putstr_fd(" ", 1);
+			ft_putstr_fd(" ", 1); // this is wrong. do bash $$$$ and then do echo hello my name is youssef. You will see difference.
 		i++;
 	}
 	if (mini_echo_option(simple_cmd[1]) != 0)
