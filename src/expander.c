@@ -83,30 +83,35 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 	char	*expanded_arg;
 
 	node = *lst_tokens;
-	printf("Before List:\n");
 	print_token_list(lst_tokens);
 	while (node)
 	{
+		printf("Command: %s\n", node->cmd);
 		if (node->cmd[0] == '$')
 		{
-			if (node->cmd[1] == is_whitespace(node->cmd[1]) || node->cmd[1] == '\0')
-				return ;
-			expanded_arg = expand_arg(node->cmd, tools);
-			printf("Looking to expand: %s\n", node->cmd);
-			if (!expanded_arg)
-			{
-				printf("Couldn't find arg in env\n");
-				delete_node(lst_tokens, node);
-			}
-			else
+			if (node->cmd[1] == '$')
 			{
 				free(node->cmd);
-				node->cmd = expanded_arg;
+				node->cmd = ft_strdup(ft_itoa(getpid())); // can't use this function
+			}
+			else if (node->cmd[1] == is_whitespace(node->cmd[1]) || node->cmd[1] == '\0')
+				;
+			else
+			{
+				expanded_arg = expand_arg(node->cmd, tools);
+				printf("Looking to expand: %s\n", node->cmd);
+				if (!expanded_arg)
+				{
+					printf("Couldn't find arg in env\n");
+					delete_node(lst_tokens, node);
+				}
+				else
+				{
+					free(node->cmd);
+					node->cmd = expanded_arg;
+				}
 			}
 		}
 		node = node->next;
 	}
-	// printf("After List:\n");
-	// print_token_list(lst_tokens);
-
 }

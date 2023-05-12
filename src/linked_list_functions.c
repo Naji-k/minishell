@@ -78,9 +78,9 @@ void	create_node(t_token **tokens_head, char *string, int start, int len)
 	node = malloc(sizeof(t_token) * 1);
 	if (!node)
 		exit(EXIT_FAILURE);
-	printf("Start Pos: %d, Len %d\n", start, (len - start));
+	// printf("Start Pos: %d, Len %d\n", start, (len - start));
 	node->cmd = ft_substr(string, start, (len - start));
-	printf("Created: %s\n", node->cmd);
+	// printf("Created: %s\n", node->cmd);
 	node->type = find_token_type(string[start], string[start + 1]);
 	node->index = i;
 	i++;
