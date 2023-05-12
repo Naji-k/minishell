@@ -62,6 +62,7 @@ typedef struct s_tools
 	// char					*args;
 	char					**paths;
 	char					**envp;
+	
 	// struct s_simple_cmds	*simple_cmds;
 	// t_token					*lexer_list;
 	char					*pwd;

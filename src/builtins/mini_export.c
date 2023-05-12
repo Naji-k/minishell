@@ -29,10 +29,11 @@ static int	check_input(char *export_str)
 	return (0);
 }
 
-int	mini_export(t_tools *tools, char **simple_cmd)		int	mini_export(t_tools *tools, char **simple_cmd)
-{		{
-	(void)tools;			int i;
-	(void)simple_cmd;		
+int	mini_export(t_tools *tools, char **simple_cmd)
+{
+	(void)tools;
+	int i;
+	(void)simple_cmd;
 	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
 	{
@@ -50,9 +51,8 @@ int	mini_export(t_tools *tools, char **simple_cmd)		int	mini_export(t_tools *too
 	{
 		//check input
 		if (check_input(simple_cmd[i]) == 1)
-		printf("ERROR\n");
+			printf("ERROR\n");
 		i++;
 	}
-
-	return (0);			return (0);
-} 		}
+	return (0);
+}
