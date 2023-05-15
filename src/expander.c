@@ -83,10 +83,9 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 	char	*expanded_arg;
 
 	node = *lst_tokens;
-	print_token_list(lst_tokens);
 	while (node)
 	{
-		printf("Command: %s\n", node->cmd);
+		// printf("Command: %s\n", node->cmd);
 		if (node->cmd[0] == '$')
 		{
 			if (node->cmd[1] == '$')

@@ -48,7 +48,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 		exit(EXIT_FAILURE);
 	node_cmds->builtin = NULL; // temporary
 	node_cmds->redirections = NULL;
-
+	// printf("s_cmds: %d\n", s_cmds);
 	while (start_node != target_node)
 	{
 		if (start_node->type == LITERAL)
@@ -57,7 +57,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 				redirection = FALSE;
 			else
 			{
-				// printf("Node %s is %d\n", start_node->cmd, start_node->type);
+				// printf("Node %s is at index %d\n", start_node->cmd, i);
 				node_cmds->cmds[i] = start_node->cmd;
 			}
 		}
@@ -73,10 +73,20 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 	}
 	node_cmds->cmds[s_cmds - 1] = NULL;
 	node_cmds->next = NULL;
+	// printf("Added node: %s\n", node_cmds->cmds[0]);
 	add_node_back((void **)cmd_head, node_cmds, CMDS_LIST);
 }
-// [ls] [-l] [|] [echo] [a] [>>] [file]
 
+/*
+	Logic:
+		Loops through token list. If find redirection (>), sets redirection == TRUE.
+		Command list (char **) will only include everything before redirection. If redirection == TRUE,
+		s_cmds does not increase. If finds pipe, creates command which is similar to ft_substring and creates node.
+		Sets redirection back to FALSE after pipe. Once reaches end, creates final command which either
+		takes only commands after last pipe or the entire string if no pipes encountered.
+		Why +2? Takes into account +1 from the fact that we're always checking node_token->next, and +1 from
+		the fact that char** should always end with NULL as last string.
+*/
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 {
 	t_token		*node_token;
@@ -87,28 +97,37 @@ void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 	s_cmds = 0;
 	start_node = *tokens_head;
 	node_token = *tokens_head;
-	redirection = 0;
+	redirection = FALSE;
 
 	if (!node_token)
 		return ;
 	while (node_token->next != NULL)
 	{
 		if (node_token->next->type != LITERAL && node_token->next->type != PIPE)
+		{
 			redirection = !redirection;
-		if (redirection != TRUE)
+			s_cmds += 2;
+		}
+		if (redirection == FALSE)
 			s_cmds++;
 		if (node_token->type == PIPE)
 		{
+			// printf("Creating new command.\n");
+			// printf("Start Node: [%s] | Target Node: [%s], Number of commands: %d\n", start_node->cmd, node_token->cmd, s_cmds);
 			create_cmd(start_node, node_token, cmd_head, s_cmds);
 			start_node = node_token->next;
 			s_cmds = 0;
+			if (redirection == TRUE)
+				redirection = FALSE;
 		}
 		node_token = node_token->next;
 	}
 	if (node_token->type == LITERAL)
 	{
-		s_cmds += 2;
+		if (redirection == FALSE)
+			s_cmds += 2;
+		// printf("Creating Final Command\n");
+		// printf("Start Node: [%s] | Target Node: [%p]\n", start_node->cmd, node_token->next);
 		create_cmd(start_node, node_token->next, cmd_head, s_cmds);
 	}
 }
-                // 
