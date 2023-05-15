@@ -18,6 +18,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <unistd.h>
+#include <stdbool.h>
 # include "libft.h"
 
 # define FALSE 0
@@ -45,6 +46,17 @@ typedef enum s_lst_type
 	CMDS_LIST = 2,
 }	t_lst_type;
 
+/* 
+	stuct for envp_list key,value
+ */
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	bool			has_value;
+	struct s_env	*next;
+}					t_env;
+
 /*
 	A token is part of a linked list which refers to every single
 	character inputted by the user.
@@ -62,7 +74,7 @@ typedef struct s_tools
 	// char					*args;
 	char					**paths;
 	char					**envp;
-	
+	t_env					*env_list;
 	// struct s_simple_cmds	*simple_cmds;
 	// t_token					*lexer_list;
 	char					*pwd;

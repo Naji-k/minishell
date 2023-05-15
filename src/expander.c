@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   expander.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/25 09:00:46 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/25 09:01:07 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   expander.c                                         :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/25 09:00:46 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/04/25 09:01:07 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 	print_token_list(lst_tokens);
 	while (node)
 	{
-		printf("Command: %s\n", node->cmd);
+		// printf("Command: %s\n", node->cmd);
 		if (node->cmd[0] == '$')
 		{
 			if (node->cmd[1] == '$')

@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "buildin.h"
+#include "builtin.h"
 #include "executor.h"
 
 /* 
 	this is the Main func for buildins using strcmp
 	 we can call the builtin functions
  */
-int	(*execute_buildin(char *args))(t_tools *tools, char **simple_cmd)
+int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 {
 	int			i;
 	const char	*buildin_func_list[] = {

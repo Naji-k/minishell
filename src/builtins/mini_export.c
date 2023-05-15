@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "buildin.h"
+#include "builtin.h"
 #include "executor.h"
 
 static int	check_input(char *export_str)
@@ -31,8 +31,8 @@ static int	check_input(char *export_str)
 
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
-	(void)tools;
 	int i;
+	(void)tools;
 	(void)simple_cmd;
 	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
