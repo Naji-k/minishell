@@ -13,6 +13,7 @@
 NAME := minishell
 
 # CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address
+CFLAGS := -g -fsanitize=address
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a

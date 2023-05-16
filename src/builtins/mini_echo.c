@@ -19,7 +19,7 @@
  */
 int	mini_echo_option(char *str)
 {
-	while (*str)
+	while (*str != '\0')
 	{
 		if (str[0] == '-' && str[1] == 'n')
 			str++;
@@ -32,20 +32,34 @@ int	mini_echo_option(char *str)
 
 int	mini_echo(t_tools *tools, char **simple_cmd)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	i = 1;
+	tmp = "";
 	(void)tools;
-	if (mini_echo_option(simple_cmd[1]) == 0)
-		i++;
-	while (simple_cmd[i] != NULL)
+	if (simple_cmd[1] == '\0')
 	{
-		ft_putstr_fd(simple_cmd[i], 1);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		return (0);
+	}
+	while (mini_echo_option(simple_cmd[i]) == 0)
+		i++;
+	while (simple_cmd[i] != NULL && simple_cmd[i] != '\0')
+	{
+		if (simple_cmd[i][0] == '~')
+		{
+			tmp = getenv("HOME");
+			ft_putstr_fd(tmp, STDOUT_FILENO);
+			simple_cmd[i] = ft_substr(simple_cmd[i], 1,
+					ft_strlen(simple_cmd[i]));
+		}
+		ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
 		if (simple_cmd[i + 1] != NULL)
-			ft_putstr_fd(" ", 1); // this is wrong. do bash $$$$ and then do echo hello my name is youssef. You will see difference.
+			ft_putstr_fd(" ", STDOUT_FILENO);
 		i++;
 	}
 	if (mini_echo_option(simple_cmd[1]) != 0)
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 	return (0);
 }
