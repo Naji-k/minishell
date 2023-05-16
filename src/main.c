@@ -42,6 +42,7 @@ You will need to implement job control using system calls like fork(), waitpid()
 
 #include "minishell.h"
 #include "executor.h"
+#include "builtin.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -49,6 +50,7 @@ int	main(int argc, char **argv, char **envp)
 	t_token		*tokens_head;
 	t_commands	*cmds_head;
 	t_tools		tools;
+	char		**env_array;
 
 	// atexit(check_leaks);
 	if (argc != 1)
@@ -57,7 +59,12 @@ int	main(int argc, char **argv, char **envp)
 
 	tokens_head = NULL;
 	cmds_head = NULL;
-	init_tools(&tools, envp);
+	//this function to put envp in t_env env_list;
+	init_tools_env(&tools.env_list, envp);
+	//convert env_list to char **env_array
+	env_array = env_list_to_array(&tools.env_list);
+	
+	init_tools(&tools, env_array);	//our old init_tools (can be deleted if we use linked-list all time)
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
@@ -66,13 +73,14 @@ int	main(int argc, char **argv, char **envp)
 	expander(&tokens_head, &tools);
 	parse_cmds(&tokens_head, &cmds_head);
 	print_cmds_list(&cmds_head);
-	printf("------------------------\n");
 	executor(&tools,&cmds_head);
 	free(string);
 	free_token_list(&tokens_head);
 	free_cmd_list(&cmds_head);
 	free_2d_arr(tools.envp);
 	free_2d_arr(tools.paths);
+	free_2d_arr(env_array);
+	free_env_list(&tools.env_list);
 	(void)(argv);
 	return (0);
 }

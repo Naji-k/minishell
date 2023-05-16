@@ -40,13 +40,3 @@ void	ft_dup2_check(int old, int new)
 			ft_putstr_fd("dup2 - 1\n", 2);
 	}
 }
-
-void	ft_pwd(void)
-{
-	char cwd[PATH_MAX];
-
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("\nCurrent working dir: %s\n", cwd);
-	else
-		perror("getcwd() error");
-}
