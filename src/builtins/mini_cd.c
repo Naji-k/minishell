@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "buildin.h"
+#include "builtin.h"
 #include "executor.h"
 
 int	mini_cd(t_tools *tools, char **simple_cmd)
