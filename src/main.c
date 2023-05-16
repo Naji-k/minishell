@@ -68,11 +68,11 @@ int	main(int argc, char **argv, char **envp)
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
-	// print_token_list(&tokens_head);
+	print_token_list(&tokens_head);
+	printf("-----------------------\n");
 	expander(&tokens_head, &tools);
 	parse_cmds(&tokens_head, &cmds_head);
 	print_cmds_list(&cmds_head);
-
 	executor(&tools,&cmds_head);
 	free(string);
 	free_token_list(&tokens_head);

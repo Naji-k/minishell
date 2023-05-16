@@ -52,8 +52,10 @@ void	print_cmds_list(t_commands **lst_head)
 
 	i = 0;
 	node = *lst_head;
+	printf("\n");
 	while (node)
 	{
+		printf("Printing Node:\n");
 		while (node->cmds[i] != NULL)
 		{
 			printf("Cmds: {%s}\n", node->cmds[i]);
@@ -64,6 +66,7 @@ void	print_cmds_list(t_commands **lst_head)
 		else
 			printf("Redirection: {%p}.\n", node->redirections);
 		printf("Builtin: {%s}\n", node->builtin);
+		printf("\n");
 		node = node->next;
 		i = 0;
 	}
