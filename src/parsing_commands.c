@@ -31,6 +31,37 @@ int	is_builtin(char *string)
 	return (FALSE);
 }
 
+void	handle_redirection(t_commands *node_cmds, t_token *start_node)
+{
+	t_token		*l_node;
+
+	if (node_cmds->redirections == NULL)
+	{
+		node_cmds->redirections = malloc(sizeof(t_token));
+		if (!node_cmds->redirections)
+			exit(EXIT_FAILURE);
+		node_cmds->redirections->cmd = ft_strdup(start_node->next->cmd);
+		if (node_cmds->redirections->cmd == NULL)
+			exit(EXIT_FAILURE);
+		node_cmds->redirections->index = start_node->next->index;
+		node_cmds->redirections->type = start_node->next->type;
+		node_cmds->redirections->next = NULL;
+	}
+	else
+	{
+		l_node = malloc(sizeof(t_token));
+		if (!l_node)
+			exit(EXIT_FAILURE);
+		l_node->cmd = ft_strdup(start_node->next->cmd);
+		if (l_node->cmd == NULL)
+			exit(EXIT_FAILURE);
+		l_node->index = start_node->next->index;
+		l_node->type = start_node->next->type;
+		l_node->next = NULL;
+		add_node_back((void **)&node_cmds->redirections, l_node, TOKEN_LIST);
+	}
+}
+
 void	create_cmd(t_token *start_node, t_token *target_node,
 		t_commands **cmd_head, int s_cmds)
 {
@@ -63,7 +94,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 		}
 		if (start_node->type == REDIRECTION || start_node->type == A_REDIRECTION)
 		{
-			node_cmds->redirections = start_node->next;
+			handle_redirection(node_cmds, start_node);
 			redirection = TRUE;
 		}
 		if (is_builtin(start_node->cmd))
@@ -103,13 +134,15 @@ void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 		return ;
 	while (node_token->next != NULL)
 	{
-		if (node_token->next->type != LITERAL && node_token->next->type != PIPE)
+		if (node_token->next->type != LITERAL && node_token->next->type != PIPE && redirection == FALSE)
 		{
-			redirection = !redirection;
+			redirection = TRUE;
 			s_cmds += 2;
 		}
 		if (redirection == FALSE)
+		{
 			s_cmds++;
+		}
 		if (node_token->type == PIPE)
 		{
 			// printf("Creating new command.\n");

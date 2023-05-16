@@ -28,7 +28,7 @@ void	print_2d_array(char **arr)
 /*
 	Prints contents of t_token linked_list.
 */
-void	print_token_list(t_token **lst_head)
+void	print_token_list(t_token **lst_head, int print_redirection)
 {
 	t_token	*node;
 
@@ -37,7 +37,12 @@ void	print_token_list(t_token **lst_head)
 		return ;
 	while (node)
 	{
-		printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd, node->type, node->index);
+		if (print_redirection == TRUE && node->next == NULL)
+			printf("Final Output Redirection: {%s}\n", node->cmd);
+		else if (print_redirection == TRUE)
+			printf("Redirection: {%s}\n", node->cmd);
+		else
+			printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd, node->type, node->index);
 		node = node->next;
 	}
 }
@@ -62,7 +67,7 @@ void	print_cmds_list(t_commands **lst_head)
 			i++;
 		}
 		if (node->redirections)
-			printf("Redirection: {%s}\n", node->redirections->cmd);
+			print_token_list(&node->redirections, TRUE);
 		else
 			printf("Redirection: {%p}.\n", node->redirections);
 		printf("Builtin: {%s}\n", node->builtin);
