@@ -1,19 +1,19 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
-#    Makefile                                           :+:    :+:             #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                      +:+                     #
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/25 13:56:08 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/04/25 13:56:08 by nakanoun      ########   odam.nl          #
+#    Updated: 2023/05/16 22:40:49 by ysrondy          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
 
 # CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address
-CFLAGS := -g -fsanitize=address
+# CFLAGS := -g -fsanitize=address
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a

@@ -63,19 +63,21 @@ int	main(int argc, char **argv, char **envp)
 	init_tools_env(&tools.env_list, envp);
 	//convert env_list to char **env_array
 	env_array = env_list_to_array(&tools.env_list);
-	
+
 	init_tools(&tools, env_array);	//our old init_tools (can be deleted if we use linked-list all time)
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
-	// print_token_list(&tokens_head);
+	// print_token_list(&tokens_head, FALSE);
 	printf("-----------------------\n");
 	expander(&tokens_head, &tools);
 	parse_cmds(&tokens_head, &cmds_head);
 	print_cmds_list(&cmds_head);
+	printf("-----------------------\n");
 	executor(&tools,&cmds_head);
 	free(string);
 	free_token_list(&tokens_head);
+	free_token_list(&cmds_head->redirections);
 	free_cmd_list(&cmds_head);
 	free_2d_arr(tools.envp);
 	free_2d_arr(tools.paths);

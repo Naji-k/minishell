@@ -46,7 +46,7 @@ typedef enum s_lst_type
 	CMDS_LIST = 2,
 }	t_lst_type;
 
-/* 
+/*
 	stuct for envp_list key,value
  */
 typedef struct s_env
@@ -126,7 +126,7 @@ void	expander(t_token **lst_tokens, t_tools *tools);
 char	*expand_arg(char *string, t_tools *tools);
 
 				/* Printing (DEBUGGING) */
-void	print_token_list(t_token **lst_head);
+void	print_token_list(t_token **lst_head, int print_redirection);
 void	print_cmds_list(t_commands **lst_head);
 void	print_2d_array(char **arr);
 
