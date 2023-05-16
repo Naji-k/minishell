@@ -26,7 +26,7 @@ void	redirection(t_commands *cmd)
 			if (file < 0)
 				ft_putstr_fd("file\n", 2);
 			if (dup2(file, STDOUT_FILENO) == -1)
-				ft_putstr_fd("dup2_file\n", 2);
+				ft_putstr_fd("redirection\n", 2);
 			close(file);
 		}
 	}
@@ -37,6 +37,6 @@ void	ft_dup2_check(int old, int new)
 	if (old != new)
 	{
 		if (dup2(old, new) == -1)
-			ft_putstr_fd("dup2 - 1\n", 2);
+			ft_putstr_fd("dup2 check = - 1\n", 2);
 	}
 }

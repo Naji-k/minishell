@@ -28,6 +28,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 {
 	if ((*cmd_head)->next == NULL)
 	{
+		if ((*cmd_head)->redirections)
+			redirection(*cmd_head);
 		if (!(*cmd_head)->builtin)
 		{
 			printf("one cmd\n");
@@ -35,7 +37,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		}
 		if ((*cmd_head)->builtin)
 		{
-			printf("<<<<<Buildin>>>>\n");
+			// printf("<<<<<Buildin>>>>\n");
 			execute_builtin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
 		}
 	}
@@ -66,11 +68,10 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 		{
 			multi_pipex_process(tools, &node, &in);
 			if (dup2(in, STDIN_FILENO) == -1)
-				ft_putstr_fd("dup2_file\n", 2);
+				ft_putstr_fd("multi_process\n", 2);
 		}
 		node = node->next;
 	}
-	// printf("LAST_cmd=%s\n", node->cmds[0]);
 	if (node->redirections)
 		redirection(node);
 	last_cmd(tools, &node);
@@ -93,24 +94,20 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 	if (pid == 0)
 	{
 		close(fd[0]);
+		ft_dup2_check(fd[1], STDOUT_FILENO);
 		if (node->redirections)
 			redirection(node);
-		else
-		{
-			ft_dup2_check(fd[1], STDOUT_FILENO);
-			// if (dup2(fd[1], STDOUT_FILENO) == -1)
-			// 	ft_putstr_fd("dup2 - 1\n", 2);
-		}
 		ft_dup2_check(*in, STDIN_FILENO);
-		// if (dup2(*in, STDIN_FILENO) == -1)
-		// 	ft_putstr_fd("dup2 - 1\n", 2);
 		if (node->builtin)
-			execute_builtin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
-		cmd_path = find_cmd_path(tools, node->cmds);
-		if (!cmd_path)
-			ft_putstr_fd("from find_path\n", 2);
-		if (execve(cmd_path, node->cmds, NULL) == -1)
-			ft_putstr_fd("execve:\n", 2);
+		{
+			execute_builtin(node->cmds[0])(tools, node->cmds);
+			exit(0); //should return the return value from builtin
+		}
+			cmd_path = find_cmd_path(tools, node->cmds);
+			if (!cmd_path)
+				ft_putstr_fd("from find_path\n", 2);
+			if (execve(cmd_path, node->cmds, NULL) == -1)
+				ft_putstr_fd("execve:\n", 2);
 	} //parent process
 	close(fd[1]);
 	close(*in);

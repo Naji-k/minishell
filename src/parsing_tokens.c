@@ -75,7 +75,7 @@ char	*sep_dollars(char *string)
 			new_string[j] = string[i];
 			i++;
 			j++;
-			while (is_whitespace(string[i]) == FALSE)
+			while (is_whitespace(string[i]) == FALSE && string[i] != '\0')
 			{
 				if (string[i] == '$')
 				{
