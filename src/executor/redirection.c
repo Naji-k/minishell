@@ -15,21 +15,23 @@
 
 void	redirection(t_commands *cmd)
 {
-	int	file;
+	int		file;
+	t_token	*redirection;
 
-	if (cmd->redirections)
+	redirection = cmd->redirections;
+	while (redirection)
 	{
 		// if (node->redirection->type == REDIRECTION)
 		{
-			file = open(cmd->redirections->cmd, O_CREAT | O_WRONLY | O_TRUNC,
-					0644);
+			file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (file < 0)
 				ft_putstr_fd("file\n", 2);
-			if (dup2(file, STDOUT_FILENO) == -1)
-				ft_putstr_fd("redirection\n", 2);
-			close(file);
+			redirection = redirection->next;
 		}
 	}
+	if (dup2(file, STDOUT_FILENO) == -1)
+		ft_putstr_fd("redirection\n", 2);
+	close(file);
 }
 
 void	ft_dup2_check(int old, int new)

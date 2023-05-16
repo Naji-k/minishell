@@ -29,21 +29,38 @@ static int	check_input(char *export_str)
 	return (0);
 }
 
+void	print_export_env(t_tools *tools)
+{
+	t_env	*env;
+	char	*s;
+	char	*tmp;
+
+	s = "\"";
+	env = tools->env_list;
+	while (env)
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd(env->key, STDOUT_FILENO);
+		tmp = ft_strjoin(s, env->value);
+		tmp = ft_strjoin(tmp, s);
+		ft_putendl_fd(tmp, STDOUT_FILENO);
+		free(tmp);
+		env = env->next;
+	}
+}
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
-	int i;
+	int		i;
+	char	s;
+	char	*tmp;
+
+	s = 34;
 	(void)tools;
 	(void)simple_cmd;
 	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
 	{
-		// mini_env(tools, simple_cmd);
-		while (tools->envp[i])
-		{
-			ft_putstr_fd("declare -x ", 1);
-			ft_putendl_fd(tools->envp[i], 1);
-			i++;
-		}
+		print_export_env(tools);
 	}
 	else
 		i = 1;
