@@ -52,60 +52,12 @@ int	skip_whitespaces(char *string)
 	return (i);
 }
 
-/*
-	v1 of function which adds a whitespace after 2 dollar signs or after $ARG in the input string.
-	Ex: $ARG$ = $ARG $.
-		echo $$$ = echo $$ $.
-	Required to correctly expand.
-	Corrections to be made: Get exact malloc amount | freeing old string | shortening it to 25 lines.
-*/
-char	*sep_dollars(char *string)
+int	skip_space_and_return(char *string, int start)
 {
-	int		i;
-	int		j;
-	char	*new_string;
-
-	new_string = malloc(sizeof(char) * (ft_strlen(string) * 10));
-	i = 0;
-	j = 0;
-	while (string[i] != '\0')
-	{
-		if (string[i] == '$' && is_whitespace(string[i + 1]) == FALSE && string[i + 1] != '$')
-		{
-			new_string[j] = string[i];
-			i++;
-			j++;
-			while (is_whitespace(string[i]) == FALSE && string[i] != '\0')
-			{
-				if (string[i] == '$')
-				{
-					new_string[j] = ' ';
-					new_string[j + 1] = '$';
-					j += 1;
-					break;
-				}
-				new_string[j] = string[i];
-				i++;
-				j++;
-			}
-		}
-		if (string[i] == '$' && string[i + 1] == '$' && (!is_whitespace(string[i + 2]) && string[i + 2] != '\0'))
-		{
-			new_string[j] = '$';
-			new_string[j + 1] = '$';
-			new_string[j + 2] = ' ';
-			j += 3;
-			i++;
-		}
-		else
-		{
-			new_string[j] = string[i];
-			j++;
-		}
-		i++;
-	}
-	new_string[j] = '\0';
-	return (new_string);
+	if (is_whitespace(string[start]))
+		return (start += 1);
+	else
+		return (start);
 }
 
 /*
@@ -133,9 +85,9 @@ void	parse_input(char *_string, t_token **tokens_head)
 			create_node(tokens_head, string, start, len);
 			start = i + 1;
 		}
-		if (is_whitespace(string[start]))
-			start++;
+		start = skip_space_and_return(string, start);
 		len++;
 		i++;
 	}
+	free(string);
 }
