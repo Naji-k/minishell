@@ -94,3 +94,17 @@ void	free_env_list(t_env **env_list)
 		free(temp);
 	}
 }
+
+t_env	*find_env_by_key(t_env **env_list, char *key)
+{
+	t_env	*env;
+
+	env = (*env_list);
+	while (env)
+	{
+		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
+}
