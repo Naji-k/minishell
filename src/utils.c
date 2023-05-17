@@ -17,6 +17,38 @@ void	check_leaks(void)
 	system("leaks -q minishell");
 }
 
+
+/*
+	Duplicates and returns a char ** array.
+*/
+char	**ft_arrdup(char **arr)
+{
+	int		i;
+	char	**new_arr;
+
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (arr[i] != NULL)
+		i++;
+	new_arr = malloc(sizeof(char *) * (i + 1));
+	if (!new_arr)
+		return (NULL);
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		new_arr[i] = ft_strdup(arr[i]);
+		if (new_arr[i] == NULL)
+		{
+			free_2d_arr(new_arr);
+			return (NULL);
+		}
+		i++;
+	}
+	new_arr[i] = NULL;
+	return (new_arr);
+}
+
 void	free_token_list(t_token **lst_head)
 {
 	t_token	*tmp;

@@ -59,12 +59,9 @@ int	main(int argc, char **argv, char **envp)
 
 	tokens_head = NULL;
 	cmds_head = NULL;
-	//this function to put envp in t_env env_list;
-	init_tools_env(&tools.env_list, envp);
-	//convert env_list to char **env_array
-	env_array = env_list_to_array(&tools.env_list);
 
-	init_tools(&tools, env_array);	//our old init_tools (can be deleted if we use linked-list all time)
+	init_tools_env(&tools.env_list, envp);
+	env_array = env_list_to_array(&tools.env_list);
 
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
@@ -79,8 +76,6 @@ int	main(int argc, char **argv, char **envp)
 	free_token_list(&tokens_head);
 	free_token_list(&cmds_head->redirections);
 	free_cmd_list(&cmds_head);
-	free_2d_arr(tools.envp);
-	free_2d_arr(tools.paths);
 	free_2d_arr(env_array);
 	free_env_list(&tools.env_list);
 	(void)(argv);

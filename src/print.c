@@ -24,7 +24,6 @@ void	print_2d_array(char **arr)
 	}
 }
 
-
 /*
 	Prints contents of t_token linked_list.
 */
