@@ -45,5 +45,3 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 	}
 	return (0);
 }
-
-

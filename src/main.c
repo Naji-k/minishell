@@ -63,6 +63,7 @@ int	main(int argc, char **argv, char **envp)
 	init_tools_env(&tools.env_list, envp);
 	env_array = env_list_to_array(&tools.env_list);
 	init_tools(&tools,env_array);	//keep this
+
 	string = readline("Minishell: ");
 	parse_input(string, &tokens_head);
 	// print_token_list(&tokens_head, FALSE);
@@ -77,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 	free_token_list(&cmds_head->redirections);
 	free_cmd_list(&cmds_head);
 	free_2d_arr(env_array);
-	free_2d_arr(tools.envp);	//keep this 
+	free_2d_arr(tools.envp);	//keep this
 	free_2d_arr(tools.paths);	//keep this
 	free_env_list(&tools.env_list);
 	(void)(argv);

@@ -1,18 +1,18 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
-#    Makefile                                           :+:    :+:             #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                      +:+                     #
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/25 13:56:08 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/05/17 10:13:53 by ysrondy       ########   odam.nl          #
+#    Updated: 2023/05/17 23:08:01 by ysrondy          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address
+# CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address
 # CFLAGS := -g -fsanitize=address
 
 #Lib
@@ -23,7 +23,6 @@ LIBFT_DIR = ./lib/libft
 OBJ_DIR	= obj
 
 HEADERS	:= -I ./include -I $(LIBFT_DIR)
-# FILES	:= main.c parsing_tokens.c linked_list_functions.c utils.c parsing_commands.c execute_cmd.c init_tools.c print.c expander.c
 SRCS	:= $(shell find ./src -iname "*.c")
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 

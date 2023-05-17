@@ -65,6 +65,31 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 }
 
 /*
+	Helper function which performs actual expansion of $ARG -> ARG_VALUE.
+*/
+t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
+{
+	char	*expanded_arg;
+
+	expanded_arg = expand_arg(node->cmd, tools);
+	printf("Looking to expand: %s\n", node->cmd);
+	if (!expanded_arg)
+	{
+		printf("%s not in env, deleting node\n", node->cmd);
+		delete_node(lst_tokens, node);
+		node = *lst_tokens;
+		return (node);
+	}
+	else
+	{
+		printf("Expanding %s to %s\n", node->cmd, expanded_arg);
+		free(node->cmd);
+		node->cmd = expanded_arg;
+		return (node);
+	}
+}
+
+/*
 	Loops through token list and checks if first letter of command is '$'.
 	If it is, calls the expand_arg function which will return the relevant
 	arg in the env referred to as the "expanded_arg".
@@ -75,7 +100,6 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 void	expander(t_token **lst_tokens, t_tools *tools)
 {
 	t_token	*node;
-	char	*expanded_arg;
 
 	node = *lst_tokens;
 	while (node)
@@ -92,22 +116,7 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 				|| node->cmd[1] == '\0')
 				;
 			else
-			{
-				expanded_arg = expand_arg(node->cmd, tools);
-				printf("Looking to expand: %s\n", node->cmd);
-				if (!expanded_arg)
-				{
-					printf("%s not in env, deleting node\n", node->cmd);
-					delete_node(lst_tokens, node);
-					node = *lst_tokens;
-				}
-				else
-				{
-					printf("Expanding %s to %s\n", node->cmd, expanded_arg);
-					free(node->cmd);
-					node->cmd = expanded_arg;
-				}
-			}
+				node = handle_expansion(lst_tokens, node, tools);
 		}
 		node = node->next;
 	}
