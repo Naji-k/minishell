@@ -23,6 +23,7 @@ int		mini_env(t_tools *tools, char **simple_cmd);
 int		mini_cd(t_tools *tools, char **simple_cmd);
 int		mini_echo_option(char *str);
 int		mini_export(t_tools *tools, char **simple_cmd);
+void	update_pwd_env(t_tools *tools);
 
 //env_list_func
 t_env	*env_new_node(char *env);
@@ -35,5 +36,6 @@ void	init_tools_env(t_env **env_list, char **envp);
 void	prinft_env(t_env **list);
 char	**env_list_to_array(t_env **env_list);
 void	free_env_list(t_env **env_list);
+t_env	*find_env_by_key(t_env **env_list, char *key);
 
 #endif
