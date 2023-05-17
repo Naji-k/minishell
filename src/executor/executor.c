@@ -56,7 +56,6 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 
 void	multi_comands(t_tools *tools, t_commands **cmd_head)
 {
-	int			file;
 	t_commands	*node;
 	int			in;
 
@@ -82,7 +81,6 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 	char		*cmd_path;
 	int			fd[2];
 	pid_t		pid;
-	int			file;
 	t_commands	*node;
 
 	node = *cmd_head;
@@ -111,7 +109,6 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 	} //parent process
 	close(fd[1]);
 	close(*in);
-	close(file);
 	*in = fd[0];
 }
 /* 
@@ -120,7 +117,6 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 void	last_cmd(t_tools *tools, t_commands **cmd_head)
 {
 	char	*cmd_path;
-	int		fd[2];
 	pid_t	pid;
 	int		stat;
 
@@ -157,7 +153,6 @@ char	*check_current_dir(char *cmd)
 int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 {
 	char		*cmd_path;
-	int			file;
 	t_commands	*node;
 
 	node = *cmd_head;
@@ -187,6 +182,8 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 	char	*cmd_path;
 	int		i;
 
+	tools->envp = env_list_to_array(&tools->env_list);
+	tools->paths = find_path(tools->envp);
 	cmd_path = check_current_dir(cmd[0]);
 	if (cmd_path)
 		return (cmd_path);

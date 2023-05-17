@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   init_tools.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/21 08:36:12 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/21 08:36:24 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   init_tools.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/21 08:36:12 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/04/21 08:36:24 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,10 @@ char	**find_path(char **envp)
 		ft_strlen(path_arr[0]) - 4);
 	add_bslash_path(path_arr);
 	return (path_arr);
+}
+
+void	init_tools(t_tools *tools, char **envp_arg)
+{
+	tools->envp = ft_arrdup(envp_arg);
+	tools->paths = find_path(tools->envp);
 }

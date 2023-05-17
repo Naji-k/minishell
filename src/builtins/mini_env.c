@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   mini_pwd.c                                         :+:    :+:            */
+/*   mini_env.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nakanoun <nakanoun@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/09 18:48:14 by nakanoun      #+#    #+#                 */
-/*   Updated: 2023/05/09 18:48:14 by nakanoun      ########   odam.nl         */
+/*   Created: 2023/05/17 15:14:20 by nakanoun      #+#    #+#                 */
+/*   Updated: 2023/05/17 15:14:20 by nakanoun      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 #include "executor.h"
 
-int	mini_pwd(t_tools *tools, char **simple_cmd)
+int	mini_env(t_tools *tools, char **simple_cmd)
 {
-	char	cwd[PATH_MAX];
-	
-	(void)(tools);
-	(void)(simple_cmd);
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("\nCurrent working dir: %s\n", cwd);
-	else
-		perror("getcwd() error");
-	return (0);
+	t_env	*env;
+
+	env = tools->env_list;
+	(void)simple_cmd;
+	while (env)
+	{
+		ft_putstr_fd(env->key, STDOUT_FILENO);
+		ft_putendl_fd(env->value, STDOUT_FILENO);
+		env = env->next;
+	}
+	return (-1);
 }

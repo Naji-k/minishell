@@ -17,6 +17,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 {
 	char	*path;
 
+	path = NULL;
 	// char	curdir[PATH_MAX];
 	printf("simple_cmd[1]=%s\n", simple_cmd[1]);
 	// if (getcwd(curdir, sizeof(curdir)))
@@ -25,7 +26,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		path = getenv("HOME");
 	else if (!ft_strncmp(simple_cmd[1], "-", 1)) //TO BE CHECKED IN LOOP
 	{
-		if (tools->old_pwd == '\0')
+		if (tools->old_pwd[0] == '\0')
 			return (1);
 		*simple_cmd = tools->old_pwd;
 	}

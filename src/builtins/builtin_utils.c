@@ -19,7 +19,7 @@
  */
 int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 {
-	int			i;
+	unsigned long			i;
 	const char	*buildin_func_list[] = {
 		"cd",
 		"env",
@@ -44,16 +44,4 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 	return (0);
 }
 
-int	mini_env(t_tools *tools, char **simple_cmd)
-{
-	int	i;
 
-	i = 0;
-	(void)simple_cmd;
-	while (tools->envp[i])
-	{
-		ft_putendl_fd(tools->envp[i], 1);
-		i++;
-	}
-	return (-1);
-}

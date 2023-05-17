@@ -62,7 +62,6 @@ char	**env_list_to_array(t_env **env_list)
 
 char	**get_paths(t_env **env_list)
 {
-	int		len;
 	t_env	*env;
 	char	**path_arr;
 

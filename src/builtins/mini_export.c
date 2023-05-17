@@ -51,10 +51,7 @@ void	print_export_env(t_tools *tools)
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int		i;
-	char	s;
-	char	*tmp;
 
-	s = 34;
 	(void)tools;
 	(void)simple_cmd;
 	i = 0;
