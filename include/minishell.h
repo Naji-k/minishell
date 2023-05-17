@@ -101,6 +101,11 @@ int		is_whitespace(char c);
 int		find_token_type(char c, char c_next);
 void	parse_input(char *string, t_token **tokens_head);
 
+				/* Parsing Dollar Expander */
+void	handle_arg_then_dollar(char *new_string, char *string, int *i, int *j);
+void	handle_dbl_dollars(char *new_string, char *string, int *i, int *j);
+char	*sep_dollars(char *string);
+
 				/* Parsing Commands */
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
 void	create_cmd(t_token *start_node, t_token *target_node,
