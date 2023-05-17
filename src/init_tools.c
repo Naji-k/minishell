@@ -14,38 +14,6 @@
 
 
 /*
-	Duplicates and returns a char ** array.
-*/
-char	**ft_arrdup(char **arr)
-{
-	int		i;
-	char	**new_arr;
-
-	if (!arr)
-		return (NULL);
-	i = 0;
-	while (arr[i] != NULL)
-		i++;
-	new_arr = malloc(sizeof(char *) * (i + 1));
-	if (!new_arr)
-		return (NULL);
-	i = 0;
-	while (arr[i] != NULL)
-	{
-		new_arr[i] = ft_strdup(arr[i]);
-		if (new_arr[i] == NULL)
-		{
-			free_2d_arr(new_arr);
-			return (NULL);
-		}
-		i++;
-	}
-	new_arr[i] = NULL;
-	return (new_arr);
-}
-
-
-/*
 	Adding a backslash after each path to make it easier for me to find
 	the executables later on.
 */
@@ -85,13 +53,4 @@ char	**find_path(char **envp)
 		ft_strlen(path_arr[0]) - 4);
 	add_bslash_path(path_arr);
 	return (path_arr);
-}
-
-/*
-	Initialises various variables which will be useful throughout the program.
-*/
-void	init_tools(t_tools *tools, char **envp_arg)
-{
-	tools->envp = ft_arrdup(envp_arg);
-	tools->paths = find_path(tools->envp);
 }

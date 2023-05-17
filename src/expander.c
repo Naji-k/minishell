@@ -21,23 +21,22 @@
 */
 char	*expand_arg(char *string, t_tools *tools)
 {
-	char	**envp;
+	t_env	*env_list;
 	char	*expanded_arg;
-	int		i;
 
-	i = 0;
-	envp = tools->envp;
-	while (envp[i])
+	env_list = tools->env_list;
+
+	while (env_list)
 	{
-		if (ft_strncmp((string + 1), envp[i], (ft_strlen(string) - 1)) == 0)
+		if (ft_strncmp((string + 1), env_list->key,
+				(ft_strlen(string) - 1)) == 0)
 		{
-			expanded_arg = ft_substr(envp[i], ft_strlen(string),
-					(ft_strlen(envp[i]) - ft_strlen(string)));
+			expanded_arg = ft_strdup(env_list->value);
 			if (!expanded_arg)
 				exit(EXIT_FAILURE);
 			return (expanded_arg);
 		}
-		i++;
+		env_list = env_list->next;
 	}
 	return (NULL);
 }
@@ -70,12 +69,8 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 	If it is, calls the expand_arg function which will return the relevant
 	arg in the env referred to as the "expanded_arg".
 	Frees old command and sets new expanded_arg as the new command in token list.
-	If cannot find it, sets cmd = '\0'.
-	NOTE: Function does not currently handle $ if it is part of a sentence.
-	The function always assumes that a $ will be followed by a variable in env.
-	Ex. echo " I love $ so much!"
-	This will return: "I love  so much."
-	(We need to fix this.)
+	If cannot find it, it deletes that node from the token list and resets node.
+	NOTE: $$ should equal ppid, but currently only gets current pid.
 */
 void	expander(t_token **lst_tokens, t_tools *tools)
 {
@@ -93,7 +88,8 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 				free(node->cmd);
 				node->cmd = ft_strdup(ft_itoa(getpid())); // can't use this function
 			}
-			else if (node->cmd[1] == is_whitespace(node->cmd[1]) || node->cmd[1] == '\0')
+			else if (node->cmd[1] == is_whitespace(node->cmd[1])
+				|| node->cmd[1] == '\0')
 				;
 			else
 			{
@@ -101,11 +97,13 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 				printf("Looking to expand: %s\n", node->cmd);
 				if (!expanded_arg)
 				{
-					printf("Couldn't find arg in env\n");
+					printf("%s not in env, deleting node\n", node->cmd);
 					delete_node(lst_tokens, node);
+					node = *lst_tokens;
 				}
 				else
 				{
+					printf("Expanding %s to %s\n", node->cmd, expanded_arg);
 					free(node->cmd);
 					node->cmd = expanded_arg;
 				}

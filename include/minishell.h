@@ -72,8 +72,8 @@ typedef struct s_token
 typedef struct s_tools
 {
 	// char					*args;
-	char					**paths;
-	char					**envp;
+	char					**paths; // needs to be deleted once Naji updates builtin functions.
+	char					**envp; // needs to be deleted once Naji updates builtin functions.
 	t_env					*env_list;
 	// struct s_simple_cmds	*simple_cmds;
 	// t_token					*lexer_list;

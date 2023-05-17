@@ -13,7 +13,7 @@
 #include "builtin.h"
 #include "executor.h"
 
-/* 
+/*
 	this is the Main func for buildins using strcmp
 	 we can call the builtin functions
  */
