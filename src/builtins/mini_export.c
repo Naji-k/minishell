@@ -17,16 +17,30 @@ static int	check_input(char *export_str)
 {
 	if (*export_str)
 	{
-		while (ft_isalnum(*export_str))
-			export_str++;
-		if (ft_isalnum(*export_str) == 0 && (*export_str != '='))
+		printf("cmd | %s\n", export_str);
+		if (ft_isalpha(export_str[0]))
 		{
-			printf("CATCHED = %c\n", *export_str);
+			while (ft_isalnum(*export_str))
+				export_str++;
+			if (*export_str != 0 && (*export_str != '='))
+			{
+				printf("CATCHED = %c\n", *export_str);
+				return (1);
+			}
+			else if (*export_str == 0)
+			{
+				// ft_strlcat(export_str, "=", ft_strlen(export_str ) + 1);
+				return (0);
+			}
+			return (0);
+		}
+		else
+		{
+			printf("is_NOT_alpha\n");
 			return (1);
 		}
-		// export_str++;
 	}
-	return (0);
+	return (1);
 }
 
 void	print_export_env(t_tools *tools)
@@ -41,32 +55,45 @@ void	print_export_env(t_tools *tools)
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
 		ft_putstr_fd(env->key, STDOUT_FILENO);
-		tmp = ft_strjoin(s, env->value);
-		tmp = ft_strjoin(tmp, s);
-		ft_putendl_fd(tmp, STDOUT_FILENO);
-		free(tmp);
+		if (env->value)
+		{
+			tmp = ft_strjoin(s, env->value);
+			tmp = ft_strjoin(tmp, s);
+			ft_putstr_fd(tmp, STDOUT_FILENO);
+			free(tmp);
+		}
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		env = env->next;
 	}
 }
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int		i;
+	t_env	*env_node;
 
-	(void)tools;
 	(void)simple_cmd;
+	env_node = NULL;
 	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
 	{
 		print_export_env(tools);
+		return (0);
 	}
-	else
-		i = 1;
+	i = 1;
 	while (simple_cmd[i] != NULL)
 	{
 		//check input
-		if (check_input(simple_cmd[i]) == 1)
+		if (!check_input(simple_cmd[i]))
+		{
+			env_node = env_new_node(simple_cmd[i]);
+			printf("key:%s\tvalue:%s\n", env_node->key, env_node->value);
+			env_add_back(&tools->env_list, env_node);
+		}
+		else
 			printf("ERROR\n");
 		i++;
 	}
+	printf("\n==============\n");
+	print_export_env(tools);
 	return (0);
 }

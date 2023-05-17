@@ -33,14 +33,15 @@ t_env	*env_new_node(char *env)
 			j = len - i;
 			new_node->value = ft_substr(env, i + 1, j);
 			new_node->has_value = true;
+			break;
 		}
 		i++;
 	}
-	// if (!new_node->value)			//this for empty value..
-	// {
-	// 	new_node->key = ft_substr(env, 0, i);
-	// 	new_node->has_value = false;
-	// }
+	if (!new_node->value)		 //this for empty value..
+	{
+		new_node->key = ft_substr(env, 0, i);
+		new_node->has_value = false;
+	}
 	new_node->next = NULL;
 	return (new_node);
 }

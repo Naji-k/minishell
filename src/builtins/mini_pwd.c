@@ -16,11 +16,11 @@
 int	mini_pwd(t_tools *tools, char **simple_cmd)
 {
 	char	cwd[PATH_MAX];
-	
+
 	(void)(tools);
 	(void)(simple_cmd);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("\nCurrent working dir: %s\n", cwd);
+		printf("Current working dir: %s\n", cwd);
 	else
 		perror("getcwd() error");
 	return (0);
