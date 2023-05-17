@@ -33,11 +33,11 @@ t_env	*env_new_node(char *env)
 			j = len - i;
 			new_node->value = ft_substr(env, i + 1, j);
 			new_node->has_value = true;
-			break;
+			break ;
 		}
 		i++;
 	}
-	if (!new_node->value)		 //this for empty value..
+	if (!new_node->value) //this for empty value..
 	{
 		new_node->key = ft_substr(env, 0, i);
 		new_node->has_value = false;
@@ -87,7 +87,7 @@ void	env_add_back(t_env **list, t_env *new)
 /* 
 	this function will search for specific env[key] and delete it
  */
-void	env_del_one(t_env **list, char *key)
+int	env_del_one(t_env **list, char *key)
 {
 	t_env	*temp;
 	t_env	*env;
@@ -103,9 +103,11 @@ void	env_del_one(t_env **list, char *key)
 			if (temp->next)
 				env->next = temp->next;
 			free(temp);
+			return (0);
 		}
 		env = env->next;
 	}
+	return(1);
 }
 
 /* 
