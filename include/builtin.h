@@ -24,13 +24,14 @@ int		mini_cd(t_tools *tools, char **simple_cmd);
 int		mini_echo_option(char *str);
 int		mini_export(t_tools *tools, char **simple_cmd);
 void	update_pwd_env(t_tools *tools);
+int		mini_unset(t_tools *tools, char **simple_cmd);
 
 //env_list_func
 t_env	*env_new_node(char *env);
 t_env	*env_last(t_env *node);
 int		env_size(t_env *node);
 void	env_add_back(t_env **list, t_env *new);
-void	env_del_one(t_env **list, char *key);
+int		env_del_one(t_env **list, char *key);
 
 void	init_tools_env(t_env **env_list, char **envp);
 void	prinft_env(t_env **list);
