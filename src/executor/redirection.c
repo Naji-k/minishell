@@ -31,7 +31,7 @@ void	redirection(t_commands *cmd)
 	}
 	if (dup2(file, STDOUT_FILENO) == -1)
 		ft_putstr_fd("redirection\n", 2);
-	close(file);
+	close(file); // need to close previous files otherwise file leak. 
 }
 
 void	ft_dup2_check(int old, int new)

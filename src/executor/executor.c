@@ -114,7 +114,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 /* 
 	After finish the loop on all (commands-1) so now just execute the last command
  */
-void	last_cmd(t_tools *tools, t_commands **cmd_head)
+void	last_cmd(t_tools *tools, t_commands **last_cmd)
 {
 	char	*cmd_path;
 	pid_t	pid;
@@ -123,10 +123,10 @@ void	last_cmd(t_tools *tools, t_commands **cmd_head)
 	pid = fork();
 	if (pid == 0)
 	{
-		cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
+		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds);
 		if (!cmd_path)
 			ft_putstr_fd("from find_path\n", 2);
-		if (execve(cmd_path, (*cmd_head)->cmds, NULL) == -1)
+		if (execve(cmd_path, (*last_cmd)->cmds, NULL) == -1)
 			ft_putstr_fd("execve:\n", 2);
 	}
 	while (wait(&stat) > 0)
@@ -156,10 +156,11 @@ int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	t_commands	*node;
 
 	node = *cmd_head;
-	if (node->redirections)
-	{
-		redirection(node);
-	}
+	// already did this previously in execute function. 
+	// if (node->redirections)
+	// {
+	// 	redirection(node);
+	// }
 	cmd_path = find_cmd_path(tools, node->cmds);
 	if (!cmd_path)
 		printf("path not found: \n");
@@ -168,7 +169,7 @@ int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 		if (execve(cmd_path, node->cmds, NULL) == -1)
 		{
 			printf("execve:\n\n");
-			return (2);
+			return (EXIT_FAILURE);
 		}
 	}
 	return (0);

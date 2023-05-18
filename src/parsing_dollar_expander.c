@@ -70,7 +70,7 @@ char	*sep_dollars(char *string)
 	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
 	i = 0;
 	j = 0;
-	printf("Old String: %s | len: %d\n", string, ft_strlen(string));
+	// printf("Old String: %s | len: %d\n", string, ft_strlen(string));
 	while (string[i] != '\0')
 	{
 		handle_arg_then_dollar(new_string, string, &i, &j);
@@ -78,6 +78,6 @@ char	*sep_dollars(char *string)
 		i++;
 	}
 	new_string[j] = '\0';
-	printf("New String: %s | len: %d\n", new_string, ft_strlen(new_string));
+	// printf("New String: %s | len: %d\n", new_string, ft_strlen(new_string));
 	return (new_string);
 }

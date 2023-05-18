@@ -47,7 +47,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 			simple_cmd[1] = ft_substr(simple_cmd[1], 1, ft_strlen(simple_cmd[1])
 					- 1);
 			ft_strlcat(path, simple_cmd[1], ft_strlen(simple_cmd[1])
-				+ ft_strlen(path) + 1);
+					+ ft_strlen(path) + 1);
 		}
 	}
 	else if (simple_cmd[1][0] == '.')

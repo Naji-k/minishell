@@ -18,12 +18,17 @@ int	mini_env(t_tools *tools, char **simple_cmd)
 	t_env	*env;
 
 	env = tools->env_list;
-	(void)simple_cmd;
-	while (env)
+	// (void)simple_cmd;
+	if (simple_cmd[1] == NULL)
 	{
-		ft_putstr_fd(env->key, STDOUT_FILENO);
-		ft_putendl_fd(env->value, STDOUT_FILENO);
-		env = env->next;
+		while (env)
+		{
+			ft_putstr_fd(env->key, STDOUT_FILENO);
+			ft_putendl_fd(env->value, STDOUT_FILENO);
+			env = env->next;
+		}
+		return (0);
 	}
-	return (-1);
+	printf("env: %s: No such file or directory", simple_cmd[1]);
+	return (127);
 }
