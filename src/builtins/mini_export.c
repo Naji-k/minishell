@@ -29,7 +29,6 @@ static int	check_input(char *export_str)
 			}
 			else if (*export_str == 0)
 			{
-				// ft_strlcat(export_str, "=", ft_strlen(export_str ) + 1);
 				return (0);
 			}
 			return (0);
@@ -66,6 +65,7 @@ void	print_export_env(t_tools *tools)
 		env = env->next;
 	}
 }
+
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int		i;

@@ -17,7 +17,7 @@
 	check if there "-n" option for echo
 	ex: echo -nnnnn hey (should not print with new_line)
  */
-int	mini_echo_option(char *str)
+static int	mini_echo_option(char *str)
 {
 	while (*str != '\0')
 	{
@@ -30,36 +30,51 @@ int	mini_echo_option(char *str)
 	return (0);
 }
 
-int	mini_echo(t_tools *tools, char **simple_cmd)
+static int	mini_echo_cheker(char *str)
 {
-	int		i;
-	char	*tmp;
-
-	i = 1;
-	tmp = "";
-	(void)tools;
-	if (simple_cmd[1] == '\0')
+	if (!str || str == '\0')
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		return (0);
 	}
-	while (mini_echo_option(simple_cmd[i]) == 0)
-		i++;
-	while (simple_cmd[i] != NULL && simple_cmd[i] != '\0')
+	return (1);
+}
+
+char	*echo_home(char *str)
+{
+	char	*tmp;
+
+	tmp = "";
+	tmp = getenv("HOME");
+	ft_putstr_fd(tmp, STDOUT_FILENO);
+	str = ft_substr(str, 1, ft_strlen(str));
+	return (str);
+}
+
+int	mini_echo(t_tools *tools, char **simple_cmd)
+{
+	int	i;
+
+	i = 1;
+	(void)tools;
+	if (mini_echo_cheker(simple_cmd[1]))
 	{
-		if (simple_cmd[i][0] == '~')
+		while (mini_echo_option(simple_cmd[i]) == 0)
+			i++;
+		while (simple_cmd[i] != NULL && simple_cmd[i] != '\0')
 		{
-			tmp = getenv("HOME");
-			ft_putstr_fd(tmp, STDOUT_FILENO);
-			simple_cmd[i] = ft_substr(simple_cmd[i], 1,
-					ft_strlen(simple_cmd[i]));
+			if (simple_cmd[i][0] == '~')
+			{
+				simple_cmd[i] = echo_home(simple_cmd[i]);
+			}
+			ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
+			if (simple_cmd[i + 1] != NULL)
+				ft_putstr_fd(" ", STDOUT_FILENO);
+			i++;
 		}
-		ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
-		if (simple_cmd[i + 1] != NULL)
-			ft_putstr_fd(" ", STDOUT_FILENO);
-		i++;
+		if (mini_echo_option(simple_cmd[1]) != 0)
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		return (0);
 	}
-	if (mini_echo_option(simple_cmd[1]) != 0)
-		ft_putstr_fd("\n", STDOUT_FILENO);
-	return (0);
+	return (1);
 }

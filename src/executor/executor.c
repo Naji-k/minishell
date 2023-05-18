@@ -26,6 +26,8 @@
  */
 void	executor(t_tools *tools, t_commands **cmd_head)
 {
+	if ((*cmd_head) == NULL)
+		exit(0);
 	if ((*cmd_head)->next == NULL)
 	{
 		if ((*cmd_head)->redirections)
@@ -101,11 +103,11 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 			execute_builtin(node->cmds[0])(tools, node->cmds);
 			exit(0); //should return the return value from builtin
 		}
-			cmd_path = find_cmd_path(tools, node->cmds);
-			if (!cmd_path)
-				ft_putstr_fd("from find_path\n", 2);
-			if (execve(cmd_path, node->cmds, NULL) == -1)
-				ft_putstr_fd("execve:\n", 2);
+		cmd_path = find_cmd_path(tools, node->cmds);
+		if (!cmd_path)
+			ft_putstr_fd("from find_path\n", 2);
+		if (execve(cmd_path, node->cmds, NULL) == -1)
+			ft_putstr_fd("execve:\n", 2);
 	} //parent process
 	close(fd[1]);
 	close(*in);
@@ -123,6 +125,12 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 	pid = fork();
 	if (pid == 0)
 	{
+		if ((*last_cmd)->builtin)
+		{
+			// printf("<<<<<Buildin>>>>\n");
+			execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
+			exit(0);
+		}
 		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds);
 		if (!cmd_path)
 			ft_putstr_fd("from find_path\n", 2);
@@ -156,7 +164,7 @@ int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	t_commands	*node;
 
 	node = *cmd_head;
-	// already did this previously in execute function. 
+	// already did this previously in execute function.
 	// if (node->redirections)
 	// {
 	// 	redirection(node);

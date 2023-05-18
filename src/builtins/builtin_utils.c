@@ -26,7 +26,8 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 		"echo",
 		"pwd",
 		"export",
-		"unset"
+		"unset",
+		"exit"
 	};
 	static int	(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
 		&mini_cd,
@@ -34,7 +35,8 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 		&mini_echo,
 		&mini_pwd,
 		&mini_export,
-		&mini_unset};
+		&mini_unset,
+		&mini_exit};
 
 	i = 0;
 	while (i < (sizeof(buildin_func_list) / sizeof(char *)))
