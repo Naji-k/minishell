@@ -60,6 +60,10 @@ int	skip_space_and_return(char *string, int start)
 		return (start);
 }
 
+
+// TODO: handle no spaces between NON-LITERALS. Ex: echo hello|wc>outfile
+// TODO: handle Ex: echo a$PWD'b'
+// TODO: Ex: $a (where a="")
 /*
 	Loops through string and creates t_token nodes delimited by a whitespace or the end of the string.
 */
