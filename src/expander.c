@@ -96,6 +96,10 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 	Frees old command and sets new expanded_arg as the new command in token list.
 	If cannot find it, it deletes that node from the token list and resets node.
 	NOTE: $$ should equal ppid, but currently only gets current pid.
+	TODO: Should split on spaces. $a="ls -l" should be "ls", "-l" instead of
+	being expanded to "ls -l".
+	TODO: Handle heredoc. Check if token before $ARG is <<, if it is, handle differently.
+	if "$ARG" do not expand inside hd. if $ARG, expand inside hd.
 */
 void	expander(t_token **lst_tokens, t_tools *tools)
 {
@@ -110,7 +114,7 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 			if (node->cmd[1] == '$')
 			{
 				free(node->cmd);
-				node->cmd = ft_strdup(ft_itoa(getpid())); // can't use this function
+				node->cmd = ft_itoa(getpid()); // can't use this function
 			}
 			else if (node->cmd[1] == is_whitespace(node->cmd[1])
 				|| node->cmd[1] == '\0')
