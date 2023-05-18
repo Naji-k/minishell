@@ -17,7 +17,7 @@
 	check if there "-n" option for echo
 	ex: echo -nnnnn hey (should not print with new_line)
  */
-static int	mini_echo_option(char *str)
+int	mini_echo_option(char *str)
 {
 	while (*str != '\0')
 	{
@@ -30,9 +30,9 @@ static int	mini_echo_option(char *str)
 	return (0);
 }
 
-static int	mini_echo_cheker(char *str)
+int	mini_echo_cheker(char *str)
 {
-	if (!str || str == '\0')
+	if (!str || *str == '\0')
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		return (0);
@@ -61,7 +61,7 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 	{
 		while (mini_echo_option(simple_cmd[i]) == 0)
 			i++;
-		while (simple_cmd[i] != NULL && simple_cmd[i] != '\0')
+		while (simple_cmd[i] != NULL && *simple_cmd[i] != '\0')
 		{
 			if (simple_cmd[i][0] == '~')
 			{

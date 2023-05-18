@@ -21,8 +21,8 @@ int (*execute_builtin(char *arg))(t_tools *tools, char **simple_cmd);
 int			mini_pwd(t_tools *tools, char **simple_cmd);
 /* echo */
 int			mini_echo(t_tools *tools, char **simple_cmd);
-static int	mini_echo_option(char *str);
-static int	mini_echo_cheker(char *str);
+int	mini_echo_option(char *str);
+int	mini_echo_cheker(char *str);
 char		*echo_home(char *str);
 /* export */
 int	mini_export(t_tools *tools,
