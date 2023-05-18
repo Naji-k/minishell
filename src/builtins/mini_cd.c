@@ -30,7 +30,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		else
 		{
 			ft_putstr_fd("cd: OLDPWD not set", STDERR_FILENO);
-			return (0);
+			return (EXIT_FAILURE);
 		}
 	}
 	else if (simple_cmd[1][0] == '~')
@@ -51,18 +51,27 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		}
 	}
 	else if (simple_cmd[1][0] == '.')
-	{
 		path = simple_cmd[1];
+	else	//cd src (going to child-directory)
+	{
+		path = getcwd(NULL, sizeof(PATH_MAX));
+		path = ft_strjoin(path,"/");
+		path = ft_strjoin(path,simple_cmd[1]);
 	}
 	tools->old_pwd = getcwd(NULL, sizeof(PATH_MAX));
 	printf("check_path=%s\n", path);
-	chdir(path);
+	if (chdir(path) < 0)
+	{
+		printf("cd: %s: No such file or directory\n",simple_cmd[1]);
+		return(EXIT_FAILURE);
+	}
+	//should protect receiving current DIR
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 	printf("OLDPWD =%s\n", tools->old_pwd);
 	printf("PWD =%s\n", tools->pwd);
 	update_pwd_env(tools);
 	printf("\n==============\n");
-	mini_env(tools, NULL);
+	// mini_env(tools, NULL);
 	return (0);
 }
 
