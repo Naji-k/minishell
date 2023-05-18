@@ -37,6 +37,7 @@ void	init_tools_env(t_env **env_list, char **envp)
 		env_add_back(env_list, cur);
 		i++;
 	}
+	env_del_one(env_list, "OLDPWD");
 }
 
 char	**env_list_to_array(t_env **env_list)
