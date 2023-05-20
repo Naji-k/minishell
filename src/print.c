@@ -33,7 +33,10 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 
 	node = *lst_head;
 	if (!node)
+	{
+		printf("Tried Printing Token List. Token List Empty.\n");
 		return ;
+	}
 	while (node)
 	{
 		if (print_redirection == TRUE && node->next == NULL)

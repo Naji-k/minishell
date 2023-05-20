@@ -67,6 +67,7 @@ void	free_token_list(t_token **lst_head)
 		free(first);
 		first = tmp;
 	}
+	*lst_head = NULL;
 }
 
 void	free_cmd_list(t_commands **lst_head)
@@ -87,6 +88,7 @@ void	free_cmd_list(t_commands **lst_head)
 		free(first);
 		first = tmp;
 	}
+	*lst_head = NULL;
 }
 
 void	free_2d_arr(char **arr)

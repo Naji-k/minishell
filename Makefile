@@ -1,18 +1,18 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
-#    Makefile                                           :+:    :+:             #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                      +:+                     #
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/25 13:56:08 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/05/18 11:16:11 by ysrondy       ########   odam.nl          #
+#    Updated: 2023/05/20 10:29:44 by ysrondy          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
 # CFLAGS := -g -fsanitize=address
 
 #Lib

@@ -64,19 +64,23 @@ int	main(int argc, char **argv, char **envp)
 	env_array = env_list_to_array(&tools.env_list);
 	init_tools(&tools,env_array);	//keep this
 
-	string = readline("Minishell: ");
-	parse_input(string, &tokens_head);
-	print_token_list(&tokens_head, FALSE);
-	printf("-----------------------\n");
-	expander(&tokens_head, &tools);
-	parse_cmds(&tokens_head, &cmds_head);
-	print_cmds_list(&cmds_head);
-	printf("-----------------------\n");
-	executor(&tools,&cmds_head);
-	free(string);
-	free_token_list(&tokens_head);
-	free_token_list(&cmds_head->redirections);
-	free_cmd_list(&cmds_head);
+	while (1)
+	{
+		string = readline("Minishell: ");
+		parse_input(string, &tokens_head);
+		printf("--------PARSING---------------\n");
+		print_token_list(&tokens_head, FALSE);
+		expander(&tokens_head, &tools);
+		parse_cmds(&tokens_head, &cmds_head);
+		print_cmds_list(&cmds_head);
+		printf("--------EXECUTION-------------\n");
+		executor(&tools,&cmds_head);
+		free(string);
+		free_token_list(&tokens_head);
+		free_token_list(&cmds_head->redirections);
+		free_cmd_list(&cmds_head);
+		printf("\n");
+	}
 	free_2d_arr(env_array);
 	free_2d_arr(tools.envp);	//keep this
 	free_2d_arr(tools.paths);	//keep this
