@@ -59,8 +59,6 @@ int	skip_space_and_return(char *string, int start)
 	else
 		return (start);
 }
-
-
 // TODO: handle no spaces between NON-LITERALS. Ex: echo hello|wc>outfile
 // TODO: handle Ex: echo a$PWD'b'
 // TODO: Ex: $a (where a="")
@@ -74,7 +72,10 @@ void	parse_input(char *_string, t_token **tokens_head)
 	int		len;
 	char	*string;
 
-	string = sep_dollars(_string);
+	// printf("String before: |%s|\n", _string);
+	string = handle_quotations(_string);
+	// printf("String after: |%s|\n", string);
+	string = sep_dollars(string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
 	start = i;

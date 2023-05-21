@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+/*
+	Ex: $USER$$ -> $USER $$
+*/
 void	handle_arg_then_dollar(char *new_string, char *string, int *i, int *j)
 {
 	if (string[*i] == '$' && is_whitespace(string[(*i + 1)]) == FALSE
@@ -59,7 +62,6 @@ void	handle_dbl_dollars(char *new_string, char *string, int *i, int *j)
 	Ex: $ARG$ = $ARG $.
 		echo $$$ = echo $$ $.
 	Required to correctly expand.
-	Corrections to be made: shortening it to 25 lines.
 */
 char	*sep_dollars(char *string)
 {
@@ -78,6 +80,7 @@ char	*sep_dollars(char *string)
 		i++;
 	}
 	new_string[j] = '\0';
+	free(string);
 	// printf("New String: %s | len: %d\n", new_string, ft_strlen(new_string));
 	return (new_string);
 }
