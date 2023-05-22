@@ -75,7 +75,6 @@ int	main(int argc, char **argv, char **envp)
 		print_cmds_list(&cmds_head);
 		printf("--------EXECUTION-------------\n");
 		executor(&tools,&cmds_head);
-		free(string);
 		free_token_list(&tokens_head);
 		free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);

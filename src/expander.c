@@ -88,7 +88,6 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 		return (node);
 	}
 }
-
 /*
 	Loops through token list and checks if first letter of command is '$'.
 	If it is, calls the expand_arg function which will return the relevant
@@ -121,6 +120,20 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 				;
 			else
 				node = handle_expansion(lst_tokens, node, tools);
+		}
+		else if (node->cmd[0] == '\'' && node->cmd[1] == '$'
+			&& node->cmd[ft_strlen(node->cmd) - 1] != '\'')
+		{
+			printf("Found expandable %s which will not be expanded.\n", node->cmd);
+			node->cmd = substring(node, 1);
+		}
+		else if (node->cmd[0] == '\'' && node->cmd[1] == '$'
+			&& node->cmd[ft_strlen(node->cmd) - 1] == '\'')
+		{
+			printf("Expand %s but add single quotation marks.\n", node->cmd);
+			node->cmd = substring(node, 2);
+			node = handle_expansion(lst_tokens, node, tools);
+			node->cmd = add_single_quote(node->cmd);
 		}
 		node = node->next;
 	}

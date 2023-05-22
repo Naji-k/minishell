@@ -106,11 +106,17 @@ void	handle_arg_then_dollar(char *new_string, char *string, int *i, int *j);
 void	handle_dbl_dollars(char *new_string, char *string, int *i, int *j);
 char	*sep_dollars(char *string);
 
+				/* Parsing Quotations */
+char	*handle_quotations(char *string);
+char	*substring(t_token *node, int i);
+char	*add_single_quote(char *string);
+
 				/* Parsing Commands */
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
 void	create_cmd(t_token *start_node, t_token *target_node,
 			t_commands **cmd_head, int num_nodes);
 int		is_builtin(char *string);
+
 
 				/* Init Tools */
 char	**ft_arrdup(char **arr);
