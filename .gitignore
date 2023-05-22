@@ -2,3 +2,4 @@ minishell
 *.o
 obj
 libft.a
+.vscode

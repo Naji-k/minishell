@@ -10,9 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
 #include "executor.h"
 #include "minishell.h"
+#include <string.h>
+#include <sys/errno.h>
 
 /* 
 	this file going to be the main one for the executor, so from here,
@@ -26,12 +27,15 @@
  */
 void	executor(t_tools *tools, t_commands **cmd_head)
 {
+	int	fd_i;
+	int	fd_o;
+
 	if ((*cmd_head) == NULL)
 		exit(0);
+	fd_i = dup(STDIN_FILENO);
+	fd_o = dup(STDOUT_FILENO);
 	if ((*cmd_head)->next == NULL)
 	{
-		if ((*cmd_head)->redirections)
-			redirection(*cmd_head);
 		if (!(*cmd_head)->builtin)
 		{
 			printf("one cmd\n");
@@ -48,7 +52,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		printf("multi_cmd\n");
 		multi_comands(tools, cmd_head);
 	}
-	// return (0);
+	dup2(fd_i, STDIN_FILENO);
+	dup2(fd_o, STDOUT_FILENO);
 }
 /* 
 	this func will split the commands to two parts: 
@@ -62,11 +67,17 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	int			in;
 
 	in = STDIN_FILENO;
+	// in = ft_calloc(2, sizeof(1));
+	// if (pipe(in) < 0)
+	// {
+	// 	ft_putstr_fd("in_pipe\n", 2);
+	// }
 	node = *cmd_head;
 	while (node->next != NULL)
 	{
 		if (node->cmds != NULL)
 		{
+			// multi_v2(tools, cmd_head, fd);
 			multi_pipex_process(tools, &node, &in);
 			if (dup2(in, STDIN_FILENO) == -1)
 				ft_putstr_fd("multi_process\n", 2);
@@ -78,6 +89,40 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	last_cmd(tools, &node);
 }
 
+void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd)
+{
+	pid_t		pid;
+	char		*cmd_path;
+	t_commands	*node;
+
+	node = *cmd_head;
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_putstr_fd("fork\n", 2);
+	}
+	if (pid == 0)
+	{
+		dup2(fd[1], STDOUT_FILENO);
+		// close(fd[1]);
+		close(fd[0]);
+		if (node->builtin)
+		{
+			execute_builtin(node->cmds[0])(tools, node->cmds);
+			exit(0);
+		}
+		cmd_path = find_cmd_path(tools, node->cmds);
+		if (!cmd_path)
+			ft_putstr_fd("from find path\n", 2);
+		if (execve(cmd_path, node->cmds, NULL) == -1)
+			ft_putstr_fd("execve:\n", 2);
+	}
+	dup2(fd[0], STDIN_FILENO);
+	close(fd[1]);
+	// close(fd[0]); /* Create new pipe for chaining the next two commands */
+	// fd = calloc(2, sizeof(int));
+	// pipe(fd);
+}
 void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 {
 	char		*cmd_path;
@@ -139,6 +184,7 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 	}
 	while (wait(&stat) > 0)
 		;
+	// wait(NULL);
 }
 /*
 	Here i am checking if the executor is a local(in project dir) | from env->PATH
@@ -158,29 +204,30 @@ char	*check_current_dir(char *cmd)
 	If it is only one cmnd, you don't have to fork... 
 	so just execute on the main process
  */
-int	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
+void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 {
 	char		*cmd_path;
 	t_commands	*node;
+	pid_t		pid;
 
 	node = *cmd_head;
-	// already did this previously in execute function.
-	// if (node->redirections)
-	// {
-	// 	redirection(node);
-	// }
-	cmd_path = find_cmd_path(tools, node->cmds);
-	if (!cmd_path)
-		printf("path not found: \n");
-	if (cmd_path)
+	pid = fork();
+	if (pid == 0)
 	{
-		if (execve(cmd_path, node->cmds, NULL) == -1)
+		if (node->redirections)
+			redirection(node);
+		cmd_path = find_cmd_path(tools, node->cmds);
+		if (!cmd_path)
+			printf("path not found: \n");
+		if (cmd_path)
 		{
-			printf("execve:\n\n");
-			return (EXIT_FAILURE);
+			if (execve(cmd_path, node->cmds, NULL) == -1)
+			{
+				printf("execve:\n\n");
+			}
 		}
 	}
-	return (0);
+	wait(&pid);
 }
 
 /*
