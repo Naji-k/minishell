@@ -13,87 +13,112 @@
 #include "builtin.h"
 #include "executor.h"
 
+/*  This fn just for testing purposes */
+void	debug_cd(t_tools *tools, char **simple_cmd, char *path)
+{
+	printf("simple_cmd[1]=%s\n", simple_cmd[1]);
+	printf("check_path=%s\n", path);
+	printf("OLDPWD =%s\n", tools->old_pwd);
+	printf("PWD =%s\n", tools->pwd);
+}
+
 int	mini_cd(t_tools *tools, char **simple_cmd)
+{
+	char	*path;
+	char	*tmp_opwd;
+
+	path = NULL;
+	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
+		path = cd_home_dir(tools);
+	else if (simple_cmd[1][0] == '-') //TO BE CHECKED IN LOOP
+		path = mini_cd_oldpwd(tools);
+	else if (simple_cmd[1][0] == '~')
+		path = cd_root_dir(simple_cmd[1]);
+	else if (simple_cmd[1][0] == '.')
+		path = simple_cmd[1];
+	else //cd src (going to child-directory)
+	{
+		path = getcwd(NULL, sizeof(PATH_MAX));
+		path = ft_strjoin(path, "/");
+		path = ft_strjoin(path, simple_cmd[1]);
+	}
+	//should protect receiving current DIR
+	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
+	if (!path)
+		return (EXIT_FAILURE);
+	if (chdir(path) < 0)
+	{
+		printf("cd: %s: No such file or directory\n", simple_cmd[1]);
+		return (EXIT_FAILURE);
+	}
+	update_pwd_env(tools, tmp_opwd);
+	debug_cd(tools, simple_cmd, path); //for testing
+	return (0);
+}
+/* This function will check if PWD
+	&& OLDPWD exists in env will update the Value of them */
+
+void	update_pwd_env(t_tools *tools, char *tmp_opwd)
+{
+	t_env	*pwd;
+	t_env	*old_pwd;
+
+	tools->old_pwd = ft_strdup(tmp_opwd);
+	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
+	pwd = find_env_by_key(&tools->env_list, "PWD");
+	if (pwd)
+		pwd->value = ft_strdup(tools->pwd);
+	old_pwd = find_env_by_key(&tools->env_list, "OLDPWD");
+	if (old_pwd)
+	{
+		old_pwd->has_value = TRUE;
+		old_pwd->value = ft_strdup(tools->old_pwd);
+	}
+	return ;
+}
+
+char	*cd_root_dir(char *simple_cmd)
 {
 	char	*path;
 
 	path = NULL;
-	// char	curdir[PATH_MAX];
-	// tools->old_pwd = "/Users/nakanoun/42cursus"; //for test
-	printf("simple_cmd[1]=%s\n", simple_cmd[1]);
-	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
+	if (simple_cmd[1] == '\0')
 		path = getenv("HOME");
-	else if (!ft_strncmp(simple_cmd[1], "-", 1)) //TO BE CHECKED IN LOOP
+	else
 	{
-		if (tools->old_pwd)
-			path = tools->old_pwd;
-		else
-		{
-			ft_putstr_fd("cd: OLDPWD not set", STDERR_FILENO);
-			return (EXIT_FAILURE);
-		}
+		path = getenv("HOME");
+		simple_cmd = ft_substr(simple_cmd, 1, ft_strlen(simple_cmd) - 1);
+		ft_strlcat(path, simple_cmd, ft_strlen(simple_cmd) + ft_strlen(path)
+			+ 1);
 	}
-	else if (simple_cmd[1][0] == '~')
-	{
-		if (simple_cmd[1][1] == '\0')
-		{
-			tools->old_pwd = getcwd(NULL, sizeof(PATH_MAX));
-			path = getenv("HOME");
-		}
-		else
-		{
-			tools->old_pwd = getcwd(NULL, sizeof(PATH_MAX));
-			path = getenv("HOME");
-			simple_cmd[1] = ft_substr(simple_cmd[1], 1, ft_strlen(simple_cmd[1])
-					- 1);
-			ft_strlcat(path, simple_cmd[1], ft_strlen(simple_cmd[1])
-					+ ft_strlen(path) + 1);
-		}
-	}
-	else if (simple_cmd[1][0] == '.')
-		path = simple_cmd[1];
-	else	//cd src (going to child-directory)
-	{
-		path = getcwd(NULL, sizeof(PATH_MAX));
-		path = ft_strjoin(path,"/");
-		path = ft_strjoin(path,simple_cmd[1]);
-	}
-	tools->old_pwd = getcwd(NULL, sizeof(PATH_MAX));
-	printf("check_path=%s\n", path);
-	if (chdir(path) < 0)
-	{
-		printf("cd: %s: No such file or directory\n",simple_cmd[1]);
-		return(EXIT_FAILURE);
-	}
-	//should protect receiving current DIR
-	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
-	printf("OLDPWD =%s\n", tools->old_pwd);
-	printf("PWD =%s\n", tools->pwd);
-	update_pwd_env(tools);
-	printf("\n==============\n");
-	// mini_env(tools, NULL);
-	return (0);
+	return (path);
 }
 
-void	update_pwd_env(t_tools *tools)
+char	*mini_cd_oldpwd(t_tools *tools)
 {
-	t_env	*pwd;
-	t_env	*old_pwd;
-	t_env	*tmp;
-	char	*old_pwd_value;
+	char	*path;
 
-	tmp = NULL;
-	pwd = find_env_by_key(&tools->env_list, "PWD");
-	pwd->value = ft_strdup(tools->pwd);
-	old_pwd = find_env_by_key(&tools->env_list, "OLDPWD");
-	if (!old_pwd)
-	{
-		old_pwd_value = ft_strjoin("OLDPWD=", tools->old_pwd);
-		tmp = env_new_node(old_pwd_value);
-		env_add_back(&tools->env_list, tmp);
-		free(old_pwd_value);
-	}
+	path = NULL;
+	if (tools->old_pwd != NULL)
+		path = tools->old_pwd;
 	else
-		old_pwd->value = ft_strdup(tools->old_pwd);
-	return ;
+	{
+		ft_putstr_fd("cd: OLDPWD not set", STDERR_FILENO);
+		return (NULL);
+	}
+	return (path);
+}
+
+char	*cd_home_dir(t_tools *tools)
+{
+	char	*path;
+
+	path = NULL;
+	path = expand_arg("$HOME", tools);
+	if (!path)
+	{
+		ft_putstr_fd("cd: HOME not set", STDERR_FILENO);
+		return (NULL);
+	}
+	return (path);
 }

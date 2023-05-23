@@ -23,6 +23,8 @@ int	mini_unset(t_tools *tools, char **simple_cmd)
 		printf("%s NOT FOUND\n", simple_cmd[1]);
 		return (1);
 	}
+	if (ft_strncmp(simple_cmd[1], "OLDPWD", 6) == 0)
+		tools->old_pwd = NULL;
 	prinft_env(&tools->env_list);
 	return (0);
 }
