@@ -52,16 +52,19 @@ void	print_export_env(t_tools *tools)
 	env = tools->env_list;
 	while (env)
 	{
-		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		ft_putstr_fd(env->key, STDOUT_FILENO);
-		if (env->value)
+		if (env->has_value == TRUE)
 		{
-			tmp = ft_strjoin(s, env->value);
-			tmp = ft_strjoin(tmp, s);
-			ft_putstr_fd(tmp, STDOUT_FILENO);
-			free(tmp);
+			ft_putstr_fd("declare -x ", STDOUT_FILENO);
+			ft_putstr_fd(env->key, STDOUT_FILENO);
+			if (env->value)
+			{
+				tmp = ft_strjoin(s, env->value);
+				tmp = ft_strjoin(tmp, s);
+				ft_putstr_fd(tmp, STDOUT_FILENO);
+				free(tmp);
+			}
+			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
-		ft_putstr_fd("\n", STDOUT_FILENO);
 		env = env->next;
 	}
 }
@@ -82,7 +85,6 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	i = 1;
 	while (simple_cmd[i] != NULL)
 	{
-		//check input
 		if (!check_input(simple_cmd[i]))
 		{
 			env_node = env_new_node(simple_cmd[i]);
@@ -93,7 +95,5 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 			printf("ERROR\n");
 		i++;
 	}
-	printf("\n==============\n");
-	print_export_env(tools);
 	return (0);
 }

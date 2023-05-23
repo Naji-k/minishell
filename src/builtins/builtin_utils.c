@@ -19,8 +19,8 @@
  */
 int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 {
-	unsigned long			i;
-	const char	*buildin_func_list[] = {
+	unsigned long	i;
+	const char		*buildin_func_list[] = {
 		"cd",
 		"env",
 		"echo",
@@ -29,7 +29,7 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 		"unset",
 		"exit"
 	};
-	static int	(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
+	static int		(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
 		&mini_cd,
 		&mini_env,
 		&mini_echo,

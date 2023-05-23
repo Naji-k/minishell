@@ -34,6 +34,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		exit(0);
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
+	tools->envp = env_list_to_array(&tools->env_list);
 	if ((*cmd_head)->next == NULL)
 	{
 		if (!(*cmd_head)->builtin)
@@ -42,15 +43,12 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 			execute_onc_cmd(tools, cmd_head);
 		}
 		if ((*cmd_head)->builtin)
-		{
-			// printf("<<<<<Buildin>>>>\n");
 			execute_builtin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
-		}
 	}
 	if ((*cmd_head)->next != NULL)
 	{
-		printf("multi_cmd\n");
-		multi_comands(tools, cmd_head);
+	printf("multi_cmd\n");
+	multi_comands(tools, cmd_head);
 	}
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
@@ -65,20 +63,17 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 {
 	t_commands	*node;
 	int			in;
+	int			fd[2];
 
 	in = STDIN_FILENO;
-	// in = ft_calloc(2, sizeof(1));
-	// if (pipe(in) < 0)
-	// {
-	// 	ft_putstr_fd("in_pipe\n", 2);
-	// }
 	node = *cmd_head;
 	while (node->next != NULL)
 	{
 		if (node->cmds != NULL)
 		{
-			// multi_v2(tools, cmd_head, fd);
-			multi_pipex_process(tools, &node, &in);
+			if (pipe(fd) == -1)
+				ft_putstr_fd("pipe:\n", 2);
+			multi_pipex_process(tools, &node, &in, fd);
 			if (dup2(in, STDIN_FILENO) == -1)
 				ft_putstr_fd("multi_process\n", 2);
 		}
@@ -89,50 +84,16 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	last_cmd(tools, &node);
 }
 
-void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd)
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
+		int *fd)
 {
-	pid_t		pid;
-	char		*cmd_path;
-	t_commands	*node;
+	char	*cmd_path;
+	pid_t	pid;
 
-	node = *cmd_head;
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putstr_fd("fork\n", 2);
-	}
-	if (pid == 0)
-	{
-		dup2(fd[1], STDOUT_FILENO);
-		// close(fd[1]);
-		close(fd[0]);
-		if (node->builtin)
-		{
-			execute_builtin(node->cmds[0])(tools, node->cmds);
-			exit(0);
-		}
-		cmd_path = find_cmd_path(tools, node->cmds);
-		if (!cmd_path)
-			ft_putstr_fd("from find path\n", 2);
-		if (execve(cmd_path, node->cmds, NULL) == -1)
-			ft_putstr_fd("execve:\n", 2);
-	}
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[1]);
-	// close(fd[0]); /* Create new pipe for chaining the next two commands */
-	// fd = calloc(2, sizeof(int));
-	// pipe(fd);
-}
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
-{
-	char		*cmd_path;
-	int			fd[2];
-	pid_t		pid;
-	t_commands	*node;
-
-	node = *cmd_head;
-	if (pipe(fd) == -1)
-		ft_putstr_fd("pipe:\n", 2);
+	// int		fd[2];
+	// int		i;
+	// if (pipe(fd) == -1)
+	// 	ft_putstr_fd("pipe:\n", 2);
 	pid = fork();
 	if (pid < 0)
 		ft_putstr_fd("fork\n", 2);
@@ -140,20 +101,22 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 	{
 		close(fd[0]);
 		ft_dup2_check(fd[1], STDOUT_FILENO);
-		if (node->redirections)
-			redirection(node);
-		ft_dup2_check(*in, STDIN_FILENO);
-		if (node->builtin)
+		if ((*cmd_head)->redirections)
+			redirection((*cmd_head));
+		// ft_dup2_check(*in, STDIN_FILENO);
+		if ((*cmd_head)->builtin)
 		{
-			execute_builtin(node->cmds[0])(tools, node->cmds);
-			exit(0); //should return the return value from builtin
+			// i = execute_builtin((*cmd_head)->cmds[0])(tools,(*cmd_head)->cmds);
+			//should return the return value from builtin
+			exit(execute_builtin((*cmd_head)->cmds[0])(tools,
+					(*cmd_head)->cmds));
 		}
-		cmd_path = find_cmd_path(tools, node->cmds);
+		cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
 		if (!cmd_path)
 			ft_putstr_fd("from find_path\n", 2);
-		if (execve(cmd_path, node->cmds, NULL) == -1)
+		if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 			ft_putstr_fd("execve:\n", 2);
-	} //parent process
+	}
 	close(fd[1]);
 	close(*in);
 	*in = fd[0];
@@ -161,11 +124,13 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in)
 /* 
 	After finish the loop on all (commands-1) so now just execute the last command
  */
+
 void	last_cmd(t_tools *tools, t_commands **last_cmd)
 {
 	char	*cmd_path;
 	pid_t	pid;
 	int		stat;
+	int		i;
 
 	pid = fork();
 	if (pid == 0)
@@ -173,13 +138,13 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 		if ((*last_cmd)->builtin)
 		{
 			// printf("<<<<<Buildin>>>>\n");
-			execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
-			exit(0);
+			i = execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
+			exit(i);
 		}
 		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds);
 		if (!cmd_path)
-			ft_putstr_fd("from find_path\n", 2);
-		if (execve(cmd_path, (*last_cmd)->cmds, NULL) == -1)
+			perror((*last_cmd)->cmds[0]);
+		if (execve(cmd_path, (*last_cmd)->cmds, tools->envp) == -1)
 			ft_putstr_fd("execve:\n", 2);
 	}
 	while (wait(&stat) > 0)
@@ -214,14 +179,14 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (node->redirections)
-			redirection(node);
 		cmd_path = find_cmd_path(tools, node->cmds);
 		if (!cmd_path)
-			printf("path not found: \n");
+			printf(" %s: No such file or directory", node->cmds[0]);
+		if (node->redirections)
+			redirection(node);
 		if (cmd_path)
 		{
-			if (execve(cmd_path, node->cmds, NULL) == -1)
+			if (execve(cmd_path, node->cmds, tools->envp) == -1)
 			{
 				printf("execve:\n\n");
 			}
@@ -238,22 +203,20 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 	char	*cmd_path;
 	int		i;
 
-	tools->envp = env_list_to_array(&tools->env_list);
 	tools->paths = find_path(tools->envp);
 	cmd_path = check_current_dir(cmd[0]);
 	if (cmd_path)
 		return (cmd_path);
-	i = -1;
-	while (tools->paths[++i])
+	if (tools->paths)
 	{
-		cmd_path = ft_strjoin(tools->paths[i], cmd[0]);
-		if (access(cmd_path, X_OK) == 0)
+		i = -1;
+		while (tools->paths[++i])
 		{
-			// printf("find_path=%s\n", cmd_path);
-			// ft_putstr_fd("FOUND path\n", 2);
-			return (cmd_path);
+			cmd_path = ft_strjoin(tools->paths[i], cmd[0]);
+			if (access(cmd_path, X_OK) == 0)
+				return (cmd_path);
+			free(cmd_path);
 		}
-		free(cmd_path);
 	}
 	//should free
 	return (NULL);

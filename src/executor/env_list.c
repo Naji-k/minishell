@@ -102,12 +102,14 @@ int	env_del_one(t_env **list, char *key)
 			temp = env->next;
 			if (temp->next)
 				env->next = temp->next;
+			else
+				env->next = NULL;
 			free(temp);
 			return (0);
 		}
 		env = env->next;
 	}
-	return(1);
+	return (1);
 }
 
 /* 

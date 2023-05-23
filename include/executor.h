@@ -13,8 +13,8 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
+# include "builtin.h"
 # include "minishell.h"
-#include "builtin.h"
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
@@ -26,10 +26,10 @@ void	executor(t_tools *tools, t_commands **cmd_head);
 char	*check_current_dir(char *cmd);
 
 //execute
-void		execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
+void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_comands(t_tools *tools, t_commands **cmd_head);
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in);
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in, int *fd);
 void	last_cmd(t_tools *tools, t_commands **cmd_head);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
 
