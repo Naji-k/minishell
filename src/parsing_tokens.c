@@ -59,8 +59,48 @@ int	skip_space_and_return(char *string, int start)
 	else
 		return (start);
 }
-// TODO: handle no spaces between NON-LITERALS. Ex: echo hello|wc>outfile
-// TODO: handle Ex: echo a$PWD'b'
+
+
+char	*add_spaces_non_literal(char *string)
+{
+	int		i;
+	char	*new_string;
+	int		j;
+
+	i = 0;
+	j = 0;
+	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
+	while (string[i] != '\0')
+	{
+		if (find_token_type(string[i], string[i + 1]) != LITERAL)
+		{
+			new_string[j] = ' ';
+			if (find_token_type(string[i], string[i + 1]) == A_REDIRECTION
+				|| find_token_type(string[i], string[i + 1]) == HEREDOC)
+			{
+				new_string[j + 1] = string[i];
+				new_string[j + 2] = string[i + 1];
+				new_string[j + 3] = ' ';
+				i += 2;
+				j += 4;
+			}
+			else
+			{
+				new_string[j + 1] = string[i];
+				new_string[j + 2] = ' ';
+				j += 3;
+				i++;
+			}
+		}
+		new_string[j] = string[i];
+		i++;
+		j++;
+	}
+	new_string[j] = '\0';
+	free(string);
+	return (new_string);
+
+}
 // TODO: Ex: $a (where a="")
 /*
 	Loops through string and creates t_token nodes delimited by a whitespace or the end of the string.
@@ -72,8 +112,9 @@ void	parse_input(char *_string, t_token **tokens_head)
 	int		len;
 	char	*string;
 
-	// printf("String before: |%s|\n", _string);
 	string = handle_quotations(_string);
+	// printf("String before: |%s|\n", string);
+	string = add_spaces_non_literal(string);
 	// printf("String after: |%s|\n", string);
 	string = sep_dollars(string);
 	i = skip_whitespaces(string);

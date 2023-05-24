@@ -31,7 +31,7 @@ int	is_builtin(char *string)
 	return (FALSE);
 }
 
-void	handle_redirection(t_commands *node_cmds, t_token *start_node)
+void	handle_redirection(t_commands *node_cmds, t_token *start_node, int type)
 {
 	t_token		*l_node;
 
@@ -43,8 +43,10 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node)
 		node_cmds->redirections->cmd = ft_strdup(start_node->next->cmd);
 		if (node_cmds->redirections->cmd == NULL)
 			exit(EXIT_FAILURE);
-		node_cmds->redirections->index = start_node->next->index;
-		node_cmds->redirections->type = start_node->next->type;
+		if (type == REDIRECTION)
+			node_cmds->redirections->type = start_node->next->type;
+		else if (type == HEREDOC)
+			node_cmds->redirections->type = start_node->type;
 		node_cmds->redirections->next = NULL;
 	}
 	else
@@ -55,8 +57,10 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node)
 		l_node->cmd = ft_strdup(start_node->next->cmd);
 		if (l_node->cmd == NULL)
 			exit(EXIT_FAILURE);
-		l_node->index = start_node->next->index;
-		l_node->type = start_node->next->type;
+		if (type == REDIRECTION)
+			l_node->type = start_node->next->type;
+		else if (type == HEREDOC)
+			l_node->type = start_node->type;
 		l_node->next = NULL;
 		add_node_back((void **)&node_cmds->redirections, l_node, TOKEN_LIST);
 	}
@@ -94,8 +98,15 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 		}
 		if (start_node->type == REDIRECTION || start_node->type == A_REDIRECTION)
 		{
-			handle_redirection(node_cmds, start_node);
+			handle_redirection(node_cmds, start_node, REDIRECTION);
 			redirection = TRUE;
+			i--;
+		}
+		if (start_node->type == HEREDOC || start_node->type == IN_FILE)
+		{
+			handle_redirection(node_cmds, start_node, HEREDOC);
+			redirection = TRUE;
+			i--;
 		}
 		if (is_builtin(start_node->cmd))
 			node_cmds->builtin = start_node->cmd; // temporary
