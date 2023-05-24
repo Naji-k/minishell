@@ -123,7 +123,7 @@ int		is_builtin(char *string);
 char	**ft_arrdup(char **arr);
 char	**find_path(char **envp);
 void	add_bslash_path(char **paths);
-void	init_tools(t_tools *tools, char **envp_arg);
+void	init_tools(t_tools *tools);
 
 				/* Linked_List Functions */
 void	*last_node(void *lst, t_lst_type type);

@@ -45,10 +45,7 @@ static int	check_input(char *export_str)
 void	print_export_env(t_tools *tools)
 {
 	t_env	*env;
-	char	*s;
-	char	*tmp;
 
-	s = "\"";
 	env = tools->env_list;
 	while (env)
 	{
@@ -58,10 +55,9 @@ void	print_export_env(t_tools *tools)
 			ft_putstr_fd(env->key, STDOUT_FILENO);
 			if (env->value)
 			{
-				tmp = ft_strjoin(s, env->value);
-				tmp = ft_strjoin(tmp, s);
-				ft_putstr_fd(tmp, STDOUT_FILENO);
-				free(tmp);
+				ft_putstr_fd("\"", STDOUT_FILENO);
+				ft_putstr_fd(env->value, STDOUT_FILENO);
+				ft_putstr_fd("\"", STDOUT_FILENO);
 			}
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		}

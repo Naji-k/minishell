@@ -60,10 +60,10 @@ char	**find_path(char **envp)
 	return (NULL);
 }
 
-void	init_tools(t_tools *tools, char **envp_arg)
+void	init_tools(t_tools *tools)
 {
-	tools->envp = ft_arrdup(envp_arg);
-	tools->paths = find_path(tools->envp);
+	// tools->envp = ft_arrdup(envp_arg);
+	// tools->paths = find_path(tools->envp);
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 }
