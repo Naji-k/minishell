@@ -36,6 +36,7 @@ void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
 //redirection
 void	redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
+int		here_doc(t_token *redirection);
 
 void	ft_pwd(void);
 
