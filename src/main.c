@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	atexit(check_leaks);
+	// atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 
@@ -63,8 +63,8 @@ int	main(int argc, char **argv, char **envp)
 	init_tools_env(&tools->env_list, envp);
 	init_tools(tools);	//keep this
 
-	// while (1)
-	// {
+	while (tools->loop)
+	{
 		string = readline("Minishell: ");
 		parse_input(string, &tokens_head);
 		printf("--------PARSING---------------\n");
@@ -78,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 		free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
 		printf("\n");
-	// }
+	}
 	free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this
 	free_env_list(&tools->env_list);

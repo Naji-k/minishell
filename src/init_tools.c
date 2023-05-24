@@ -66,4 +66,5 @@ void	init_tools(t_tools *tools)
 	// tools->paths = find_path(tools->envp);
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
+	tools->loop = true;
 }

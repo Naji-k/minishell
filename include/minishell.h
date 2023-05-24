@@ -83,7 +83,7 @@ typedef struct s_tools
 	// int						pipes;
 	// int						*pid;
 	// bool					heredoc;
-	// bool					reset;
+	bool					loop;
 }	t_tools;
 
 
