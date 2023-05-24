@@ -104,6 +104,8 @@ int	env_del_one(t_env **list, char *key)
 				env->next = temp->next;
 			else
 				env->next = NULL;
+			free(temp->key);
+			free(temp->value);
 			free(temp);
 			return (0);
 		}

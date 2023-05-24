@@ -38,10 +38,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	if ((*cmd_head)->next == NULL)
 	{
 		if (!(*cmd_head)->builtin)
-		{
-			printf("one cmd\n");
 			execute_onc_cmd(tools, cmd_head);
-		}
 		if ((*cmd_head)->builtin)
 			execute_builtin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
 	}
@@ -52,6 +49,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	}
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
+	// free_2d_arr(tools->envp);
 }
 /* 
 	this func will split the commands to two parts: 
@@ -213,6 +211,7 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 		while (tools->paths[++i])
 		{
 			cmd_path = ft_strjoin(tools->paths[i], cmd[0]);
+			free(tools->paths[i]);
 			if (access(cmd_path, X_OK) == 0)
 				return (cmd_path);
 			free(cmd_path);

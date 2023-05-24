@@ -49,8 +49,7 @@ int	main(int argc, char **argv, char **envp)
 	char		*string;
 	t_token		*tokens_head;
 	t_commands	*cmds_head;
-	t_tools		tools;
-	char		**env_array;
+	t_tools		*tools;
 
 	atexit(check_leaks);
 	if (argc != 1)
@@ -59,31 +58,33 @@ int	main(int argc, char **argv, char **envp)
 
 	tokens_head = NULL;
 	cmds_head = NULL;
+	tools = (t_tools*)malloc(sizeof(*tools));
 
-	init_tools_env(&tools.env_list, envp);
-	env_array = env_list_to_array(&tools.env_list);
-	init_tools(&tools,env_array);	//keep this
+	init_tools_env(&tools->env_list, envp);
+	init_tools(tools);	//keep this
 
-	while (1)
-	{
+	// while (1)
+	// {
 		string = readline("Minishell: ");
 		parse_input(string, &tokens_head);
 		printf("--------PARSING---------------\n");
 		print_token_list(&tokens_head, FALSE);
-		expander(&tokens_head, &tools);
+		expander(&tokens_head, tools);
 		parse_cmds(&tokens_head, &cmds_head);
 		print_cmds_list(&cmds_head);
 		printf("--------EXECUTION-------------\n");
-		executor(&tools,&cmds_head);
+		executor(tools,&cmds_head);
 		free_token_list(&tokens_head);
 		free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
 		printf("\n");
-	}
-	free_2d_arr(env_array);
-	free_2d_arr(tools.envp);	//keep this
-	free_2d_arr(tools.paths);	//keep this
-	free_env_list(&tools.env_list);
+	// }
+	free_2d_arr(tools->envp);	//keep this
+	// free_2d_arr(tools->paths);	//keep this
+	free_env_list(&tools->env_list);
+	free(tools->pwd);
+	free(tools->old_pwd);
+	free(tools);
 	(void)(argv);
 	return (0);
 }
