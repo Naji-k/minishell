@@ -39,8 +39,12 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 	}
 	while (node)
 	{
-		if (print_redirection == TRUE && node->next == NULL)
+		if (print_redirection == TRUE && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE)
 			printf("Final Output Redirection: {%s}\n", node->cmd);
+		else if (print_redirection == TRUE && node->type == HEREDOC)
+			printf("Heredoc Delimiter: {%s}\n", node->cmd);
+		else if (print_redirection == TRUE && node->type == IN_FILE)
+			printf("In File: {%s}\n", node->cmd);
 		else if (print_redirection == TRUE)
 			printf("Redirection: {%s}\n", node->cmd);
 		else
@@ -68,6 +72,8 @@ void	print_cmds_list(t_commands **lst_head)
 			printf("Cmds: {%s}\n", node->cmds[i]);
 			i++;
 		}
+		if (node->cmds[0] == NULL)
+			printf("Cmds: No Commands.\n");
 		if (node->redirections)
 			print_token_list(&node->redirections, TRUE);
 		else

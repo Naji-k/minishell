@@ -38,7 +38,8 @@ void	init_tools_env(t_env **env_list, char **envp)
 		i++;
 	}
 	cur = find_env_by_key(env_list, "OLDPWD");
-	cur->has_value = false;
+	if (cur)
+		cur->has_value = false;
 }
 
 char	**env_list_to_array(t_env **env_list)

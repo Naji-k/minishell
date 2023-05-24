@@ -23,15 +23,27 @@ char	*expand_arg(char *string, t_tools *tools)
 {
 	t_env	*env_list;
 	char	*expanded_arg;
+	int		len;
+	int		found_equal_sign;
 
 	env_list = tools->env_list;
-
+	found_equal_sign = FALSE;
+	expanded_arg = ft_strchr(string, '=');
+	if (expanded_arg == NULL)
+		len = ft_strlen(string) - 1;
+	else
+	{
+		len = expanded_arg - string;
+		found_equal_sign = TRUE;
+	}
 	while (env_list)
 	{
-		if (ft_strncmp((string + 1), env_list->key,
-				(ft_strlen(string) - 1)) == 0)
+		if (ft_strncmp((string + 1), env_list->key, len) == 0)
 		{
-			expanded_arg = ft_strdup(env_list->value);
+			if (found_equal_sign == TRUE)
+				expanded_arg = ft_strjoin(env_list->value, &string[len]);
+			else
+				expanded_arg = ft_strdup(env_list->value);
 			if (!expanded_arg)
 				exit(EXIT_FAILURE);
 			return (expanded_arg);
@@ -99,6 +111,7 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 	being expanded to "ls -l".
 	TODO: Handle heredoc. Check if token before $ARG is <<, if it is, handle differently.
 	if "$ARG" do not expand inside hd. if $ARG, expand inside hd.
+	// TODO: handle Ex: echo a$PWD'b'. Need to change expander.
 */
 void	expander(t_token **lst_tokens, t_tools *tools)
 {

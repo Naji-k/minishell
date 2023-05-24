@@ -77,6 +77,8 @@ char	*sep_dollars(char *string)
 	{
 		handle_arg_then_dollar(new_string, string, &i, &j);
 		handle_dbl_dollars(new_string, string, &i, &j);
+		if (i == ft_strlen(string))
+			break ;
 		i++;
 	}
 	new_string[j] = '\0';
