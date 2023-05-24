@@ -77,7 +77,7 @@ char	**get_paths(t_env **env_list)
 		if (!path_arr)
 			return (NULL);
 		ft_strlcpy(path_arr[0], ft_strchr(path_arr[0], '/'),
-			ft_strlen(path_arr[0]) - 4);
+				ft_strlen(path_arr[0]) - 4);
 		add_bslash_path(path_arr);
 		return (path_arr);
 	}
@@ -96,6 +96,8 @@ void	free_env_list(t_env **env_list)
 		free(temp->value);
 		free(temp);
 	}
+	free(*env_list);
+	*env_list = NULL;
 }
 
 t_env	*find_env_by_key(t_env **env_list, char *key)
