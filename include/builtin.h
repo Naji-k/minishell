@@ -35,6 +35,7 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd);
 char	*cd_root_dir(char *simple_cmd);
 char	*mini_cd_oldpwd(t_tools *tools);
 char	*cd_home_dir(t_tools *tools);
+char	*cd_sub_dir(char *simple_cmd);
 /* unset */
 int		mini_unset(t_tools *tools, char **simple_cmd);
 /* exit */

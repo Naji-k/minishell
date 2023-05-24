@@ -12,7 +12,7 @@
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror -g #-fsanitize=address,undefined
 # CFLAGS := -g -fsanitize=address
 
 #Lib
