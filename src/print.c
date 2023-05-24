@@ -39,8 +39,12 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 	}
 	while (node)
 	{
-		if (print_redirection == TRUE && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE)
+		if (print_redirection == TRUE && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE && node->type != A_REDIRECTION)
 			printf("Final Output Redirection: {%s}\n", node->cmd);
+		else if (print_redirection == TRUE && node->next == NULL && node->type == A_REDIRECTION)
+			printf("Final Append Redirection: {%s}\n", node->cmd);
+		else if (print_redirection == TRUE && node->type == A_REDIRECTION)
+			printf("Append Redirection: {%s}\n", node->cmd);
 		else if (print_redirection == TRUE && node->type == HEREDOC)
 			printf("Heredoc Delimiter: {%s}\n", node->cmd);
 		else if (print_redirection == TRUE && node->type == IN_FILE)

@@ -31,7 +31,7 @@ int	is_builtin(char *string)
 	return (FALSE);
 }
 
-void	handle_redirection(t_commands *node_cmds, t_token *start_node, int type)
+void	handle_redirection(t_commands *node_cmds, t_token *start_node)
 {
 	t_token		*l_node;
 
@@ -43,10 +43,7 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node, int type)
 		node_cmds->redirections->cmd = ft_strdup(start_node->next->cmd);
 		if (node_cmds->redirections->cmd == NULL)
 			exit(EXIT_FAILURE);
-		if (type == REDIRECTION)
-			node_cmds->redirections->type = start_node->next->type;
-		else if (type == HEREDOC)
-			node_cmds->redirections->type = start_node->type;
+		node_cmds->redirections->type = start_node->type;
 		node_cmds->redirections->next = NULL;
 	}
 	else
@@ -57,10 +54,7 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node, int type)
 		l_node->cmd = ft_strdup(start_node->next->cmd);
 		if (l_node->cmd == NULL)
 			exit(EXIT_FAILURE);
-		if (type == REDIRECTION)
-			l_node->type = start_node->next->type;
-		else if (type == HEREDOC)
-			l_node->type = start_node->type;
+		l_node->type = start_node->type;
 		l_node->next = NULL;
 		add_node_back((void **)&node_cmds->redirections, l_node, TOKEN_LIST);
 	}
@@ -96,15 +90,9 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 				node_cmds->cmds[i] = start_node->cmd;
 			}
 		}
-		if (start_node->type == REDIRECTION || start_node->type == A_REDIRECTION)
+		if (start_node->type != LITERAL && start_node->type != PIPE)
 		{
-			handle_redirection(node_cmds, start_node, REDIRECTION);
-			redirection = TRUE;
-			i--;
-		}
-		if (start_node->type == HEREDOC || start_node->type == IN_FILE)
-		{
-			handle_redirection(node_cmds, start_node, HEREDOC);
+			handle_redirection(node_cmds, start_node);
 			redirection = TRUE;
 			i--;
 		}
