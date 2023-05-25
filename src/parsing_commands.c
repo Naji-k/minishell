@@ -88,20 +88,19 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 			{
 				// printf("Node %s is at index %d\n", start_node->cmd, i);
 				node_cmds->cmds[i] = start_node->cmd;
+				i++;
 			}
 		}
 		if (start_node->type != LITERAL && start_node->type != PIPE)
 		{
 			handle_redirection(node_cmds, start_node);
 			redirection = TRUE;
-			i--;
 		}
 		if (is_builtin(start_node->cmd))
 			node_cmds->builtin = start_node->cmd; // temporary
-		i++;
 		start_node = start_node->next;
 	}
-	node_cmds->cmds[s_cmds - 1] = NULL;
+	node_cmds->cmds[i] = NULL;
 	node_cmds->next = NULL;
 	// printf("Added node: %s\n", node_cmds->cmds[0]);
 	add_node_back((void **)cmd_head, node_cmds, CMDS_LIST);
