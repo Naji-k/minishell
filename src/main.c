@@ -44,6 +44,10 @@ You will need to implement job control using system calls like fork(), waitpid()
 #include "executor.h"
 #include "builtin.h"
 
+/* Variable defined here */
+int g_exit_status = 0; 
+
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*string;
@@ -62,7 +66,7 @@ int	main(int argc, char **argv, char **envp)
 
 	init_tools_env(&tools->env_list, envp);
 	init_tools(tools);	//keep this
-
+	g_exit_status = 0;
 	while (tools->loop)
 	{
 		string = readline("Minishell: ");

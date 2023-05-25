@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   mini_exit.c                                        :+:    :+:            */
+/*   error_handling.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nakanoun <nakanoun@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/18 21:10:14 by nakanoun      #+#    #+#                 */
-/*   Updated: 2023/05/18 21:10:14 by nakanoun      ########   odam.nl         */
+/*   Created: 2023/05/25 19:30:57 by nakanoun      #+#    #+#                 */
+/*   Updated: 2023/05/25 19:30:57 by nakanoun      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
 #include "executor.h"
 
-int	mini_exit(t_tools *tools, char **simple_cmd)
+int	error_handling(char *str)
 {
-	(void)tools;
-	(void)simple_cmd;
-	printf("STATUS=%d\n",g_exit_status);
-	ft_putendl_fd("exit", STDERR_FILENO);
-	// tools->loop = false;
-	return (0);
+	ft_putstr_fd("Minishell: ", STDERR_FILENO);
+	if (errno == 2)
+	{
+		perror(str);
+		g_exit_status = 1;
+	}
+	if (errno == 9)
+	{
+		perror(str);
+		g_exit_status = 1;
+	}
+	else {
+		g_exit_status = errno;
+		printf("exit_errno=%d\n", g_exit_status);
+		perror(str);
+	}
+	return (ERROR);
 }
