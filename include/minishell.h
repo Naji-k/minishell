@@ -18,9 +18,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <unistd.h>
-#include <stdbool.h>
+# include <stdbool.h>
 # include "libft.h"
-#include <limits.h>
+# include <limits.h>
 
 # define FALSE 0
 # define TRUE 1
