@@ -13,14 +13,14 @@
 #include "executor.h"
 #include "minishell.h"
 
-void	redirection(t_commands *cmd)
+int	redirection(t_commands *cmd)
 {
 	int		file;
 	t_token	*redirection;
 
 	redirection = cmd->redirections;
-	printf("redirection_NAME: %s\n", redirection->cmd);
-	printf("redirection_TYPE: %u\n", redirection->type);
+	// printf("redirection_NAME: %s\n", redirection->cmd);
+	// printf("redirection_TYPE: %u\n", redirection->type);
 	while (redirection)
 	{
 		if (redirection->type == REDIRECTION)
@@ -28,7 +28,7 @@ void	redirection(t_commands *cmd)
 			printf("\nRedirection\n");
 			file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (file < 0)
-				ft_putstr_fd("file\n", 2);
+				return (error_handling(redirection->cmd));
 			if (dup2(file, STDOUT_FILENO) == -1)
 				ft_putstr_fd("error_redirection\n", 2);
 			redirection = redirection->next;
@@ -38,13 +38,11 @@ void	redirection(t_commands *cmd)
 			// printf("\ninfile\n");
 			file = open(redirection->cmd, O_RDONLY, 0644);
 			if (file < 0)
-			{
-				g_exit_status = errno;
-				perror(redirection->cmd);
-				printf("exit_error=%d",g_exit_status);
-			}
+				(error_handling(redirection->cmd));
 			if (dup2(file, STDIN_FILENO) == -1)
-				ft_putstr_fd("error_redirection\n", 2);
+			{
+				(error_handling(redirection->cmd));
+			}
 			redirection = redirection->next;
 		}
 		else if (redirection->type == HEREDOC)
@@ -72,6 +70,7 @@ void	redirection(t_commands *cmd)
 		}
 	}
 	close(file); // need to close previous files otherwise file leak.
+	return (SUCCESS);
 }
 
 void	ft_dup2_check(int old, int new)
@@ -86,18 +85,24 @@ void	ft_dup2_check(int old, int new)
 int	here_doc(t_token *redirection)
 {
 	int		file;
-	int		n;
+	int		i;
 	char	message[10000];
-	int		len_limiter;
 
-	n = 1;
-	len_limiter = ft_strlen(redirection->cmd);
-	file = open("heredoc", O_CREAT | O_RDWR, 0777);
-	while (ft_strncmp(message, redirection->cmd, len_limiter) != 0)
+	i = 1;
+	printf("heredoc\n");
+	file = open("heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (file < 0)
 	{
-		n = read(1, &message, 10000);
-		if (ft_strncmp(message, redirection->cmd, len_limiter) != 0)
-			write(file, &message, n);
+		g_exit_status = errno;
+		perror(redirection->cmd);
 	}
-	return (file);
+	dup2(file, STDOUT_FILENO);
+	while (i)
+	{
+		read(STDIN_FILENO, message, 10000);
+		if (ft_strncmp(message, redirection->cmd,
+				ft_strlen(redirection->cmd)) == 0)
+			i = 0;
+	}
+	return (0);
 }

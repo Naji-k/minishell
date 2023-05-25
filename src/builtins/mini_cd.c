@@ -42,7 +42,6 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!path)
 	{
-		printf("\nNO_PATH==========\n");
 		free(tmp_opwd);
 		return (EXIT_FAILURE);
 	}
@@ -114,6 +113,7 @@ char	*mini_cd_oldpwd(t_tools *tools)
 		path = ft_strdup(tools->old_pwd);
 	else
 	{
+		ft_putstr_fd("Minishell: ", STDERR_FILENO);
 		ft_putstr_fd("cd: OLDPWD not set", STDERR_FILENO);
 		return (NULL);
 	}
@@ -128,6 +128,7 @@ char	*cd_home_dir(t_tools *tools)
 	path = expand_arg("$HOME", tools);
 	if (!path)
 	{
+		ft_putstr_fd("Minishell: ", STDERR_FILENO);
 		ft_putstr_fd("cd: HOME not set", STDERR_FILENO);
 		return (NULL);
 	}

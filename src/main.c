@@ -47,9 +47,6 @@ You will need to implement job control using system calls like fork(), waitpid()
 /* Variable defined here */
 int g_exit_status = 0; 
 
-/* Script terminated by Control-C
-	g_exit_status = 130
- */
 
 int	main(int argc, char **argv, char **envp)
 {

@@ -15,11 +15,14 @@
 
 # include "builtin.h"
 # include "minishell.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
-#include <errno.h>
-#include <string.h>
+# include <string.h>
+
+# define ERROR -1
+# define SUCCESS 0
 
 char	*find_cmd_path(t_tools *tools, char **cmd);
 
@@ -31,17 +34,20 @@ char	*check_current_dir(char *cmd);
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_comands(t_tools *tools, t_commands **cmd_head);
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in, int *fd);
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
+			int *fd);
 void	last_cmd(t_tools *tools, t_commands **cmd_head);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
 
 //redirection
-void	redirection(t_commands *cmd);
+int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
 int		here_doc(t_token *redirection);
 
 void	ft_pwd(void);
 
+//error_handling
+int		error_handling(char *str);
 //builtins
 int		bn_echo(t_commands **cmd_head);
 void	bn_pwd(void);

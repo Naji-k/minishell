@@ -37,6 +37,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	tools->envp = env_list_to_array(&tools->env_list);
 	if ((*cmd_head)->next == NULL)
 	{
+		if ((*cmd_head)->redirections)
+			redirection((*cmd_head));
 		if (!(*cmd_head)->builtin)
 			execute_onc_cmd(tools, cmd_head);
 		if ((*cmd_head)->builtin)
@@ -44,8 +46,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	}
 	if ((*cmd_head)->next != NULL)
 	{
-	printf("multi_cmd\n");
-	multi_comands(tools, cmd_head);
+		printf("multi_cmd\n");
+		multi_comands(tools, cmd_head);
 	}
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
@@ -107,7 +109,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
 			// i = execute_builtin((*cmd_head)->cmds[0])(tools,(*cmd_head)->cmds);
 			//should return the return value from builtin
 			exit(execute_builtin((*cmd_head)->cmds[0])(tools,
-					(*cmd_head)->cmds));
+														(*cmd_head)->cmds));
 		}
 		cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
 		if (!cmd_path)
@@ -180,8 +182,6 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 		cmd_path = find_cmd_path(tools, node->cmds);
 		if (!cmd_path)
 			printf(" %s: command not found", node->cmds[0]);
-		if (node->redirections)
-			redirection(node);
 		if (cmd_path)
 		{
 			if (execve(cmd_path, node->cmds, tools->envp) == -1)
@@ -215,7 +215,7 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 			free(tools->paths[i]);
 			if (access(cmd_path, X_OK) == 0)
 			{
-				g_exit_status = 0;	
+				g_exit_status = 0;
 				return (cmd_path);
 			}
 			free(cmd_path);
