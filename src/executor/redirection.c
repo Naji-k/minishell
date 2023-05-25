@@ -37,16 +37,23 @@ void	redirection(t_commands *cmd)
 		{
 			// printf("\ninfile\n");
 			file = open(redirection->cmd, O_RDONLY, 0644);
-			if (!file)
-				perror("Infile:");
+			if (file < 0)
+			{
+				g_exit_status = errno;
+				perror(redirection->cmd);
+				printf("exit_error=%d",g_exit_status);
+			}
 			if (dup2(file, STDIN_FILENO) == -1)
 				ft_putstr_fd("error_redirection\n", 2);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == HEREDOC)
 		{
-			printf("\nheredoc\n");
-			// here_doc(redirection);
+			// printf("\nheredoc\n");
+			file = here_doc(redirection);
+			printf("heredoc=%d\tdelimiter=%s\n", file, redirection->cmd);
+			if (dup2(file, STDIN_FILENO) == -1)
+				ft_putstr_fd("error_redirection\n", 2);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == A_REDIRECTION)
@@ -79,18 +86,18 @@ void	ft_dup2_check(int old, int new)
 int	here_doc(t_token *redirection)
 {
 	int		file;
-	int		i;
+	int		n;
 	char	message[10000];
+	int		len_limiter;
 
-	i = 1;
-	printf("heredoc\n");
-	file = open("heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	dup2(file, STDOUT_FILENO);
-	while (i)
+	n = 1;
+	len_limiter = ft_strlen(redirection->cmd);
+	file = open("heredoc", O_CREAT | O_RDWR, 0777);
+	while (ft_strncmp(message, redirection->cmd, len_limiter) != 0)
 	{
-		read(STDIN_FILENO, message, 10000);
-		if (ft_strncmp(message, redirection->cmd,ft_strlen(redirection->cmd)) == 0)
-		i = 0;
+		n = read(1, &message, 10000);
+		if (ft_strncmp(message, redirection->cmd, len_limiter) != 0)
+			write(file, &message, n);
 	}
-	return (0);
+	return (file);
 }

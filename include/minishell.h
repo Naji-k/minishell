@@ -25,6 +25,12 @@
 # define FALSE 0
 # define TRUE 1
 
+/* 
+	Global variable
+ */
+
+extern int	g_exit_status;
+
 /*
 	An enum to easily identify the type of the token.
 */

@@ -17,7 +17,8 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 {
 	(void)tools;
 	(void)simple_cmd;
+	printf("STATUS=%d\n",g_exit_status);
 	ft_putendl_fd("exit", STDERR_FILENO);
-	tools->loop = false;
+	// tools->loop = false;
 	return (0);
 }

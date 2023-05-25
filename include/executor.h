@@ -18,6 +18,8 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
 char	*find_cmd_path(t_tools *tools, char **cmd);
 

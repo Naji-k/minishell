@@ -179,13 +179,14 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	{
 		cmd_path = find_cmd_path(tools, node->cmds);
 		if (!cmd_path)
-			printf(" %s: No such file or directory", node->cmds[0]);
+			printf(" %s: command not found", node->cmds[0]);
 		if (node->redirections)
 			redirection(node);
 		if (cmd_path)
 		{
 			if (execve(cmd_path, node->cmds, tools->envp) == -1)
 			{
+				g_exit_status = 126;
 				printf("execve:\n\n");
 			}
 		}
@@ -213,10 +214,14 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 			cmd_path = ft_strjoin(tools->paths[i], cmd[0]);
 			free(tools->paths[i]);
 			if (access(cmd_path, X_OK) == 0)
+			{
+				g_exit_status = 0;	
 				return (cmd_path);
+			}
 			free(cmd_path);
 		}
 	}
 	//should free
+	g_exit_status = 127;
 	return (NULL);
 }
