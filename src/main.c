@@ -45,7 +45,7 @@ You will need to implement job control using system calls like fork(), waitpid()
 #include "builtin.h"
 
 /* Variable defined here */
-int g_exit_status = 0; 
+int	g_exit_status = 0;
 
 
 int	main(int argc, char **argv, char **envp)
@@ -62,7 +62,7 @@ int	main(int argc, char **argv, char **envp)
 
 	tokens_head = NULL;
 	cmds_head = NULL;
-	tools = (t_tools*)malloc(sizeof(*tools));
+	tools = (t_tools *)malloc(sizeof(*tools));
 
 	init_tools_env(&tools->env_list, envp);
 	init_tools(tools);	//keep this

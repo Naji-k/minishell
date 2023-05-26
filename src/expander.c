@@ -100,6 +100,16 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 		return (node);
 	}
 }
+
+void	handle_exit_status(t_token *node)
+{
+	char	*new_string;
+
+	new_string = ft_strjoin(ft_itoa(g_exit_status), &node->cmd[2]);
+	free(node->cmd);
+	node->cmd = new_string;
+}
+
 /*
 	Loops through token list and checks if first letter of command is '$'.
 	If it is, calls the expand_arg function which will return the relevant
@@ -131,6 +141,8 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 			else if (node->cmd[1] == is_whitespace(node->cmd[1])
 				|| node->cmd[1] == '\0')
 				;
+			else if (node->cmd[1] == '?')
+				handle_exit_status(node);
 			else
 				node = handle_expansion(lst_tokens, node, tools);
 		}
