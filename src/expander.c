@@ -62,6 +62,13 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 
 	node = *lst_tokens;
 
+	if (node == node_to_delete)
+	{
+		free(node->cmd);
+		free(node);
+		*lst_tokens = NULL;
+		return ;
+	}
 	while (node)
 	{
 		if (node->next == node_to_delete)
@@ -74,6 +81,28 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 		}
 		node = node->next;
 	}
+}
+
+
+void	expansion_into_token_list(t_token **lst_tokens, t_token *node, char *expanded_arg)
+{
+	char	**split_expanded_arg;
+	int		i;
+
+	i = 0;
+	split_expanded_arg = ft_split(expanded_arg, ' ');
+	if (!split_expanded_arg)
+		exit(EXIT_FAILURE);
+	delete_node(lst_tokens, node);
+	while (split_expanded_arg[i] != NULL)
+	{
+		// printf("Created node.\n");
+		create_node(lst_tokens, split_expanded_arg[i], 0,
+			ft_strlen(split_expanded_arg[i]));
+		i++;
+	}
+	print_token_list(lst_tokens, FALSE);
+	free_2d_arr(split_expanded_arg);
 }
 
 /*
@@ -94,10 +123,9 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 	}
 	else
 	{
-		printf("Expanding %s to %s\n", node->cmd, expanded_arg);
-		free(node->cmd);
-		node->cmd = expanded_arg;
-		return (node);
+		printf("Expanding %s to %s. (Splits on white spaces.)\n", node->cmd, expanded_arg);
+		expansion_into_token_list(lst_tokens, node, expanded_arg);
+		return (*lst_tokens);
 	}
 }
 
