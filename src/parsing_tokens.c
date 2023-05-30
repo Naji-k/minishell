@@ -129,14 +129,15 @@ void	parse_input(char *_string, t_token **tokens_head)
 	int		len;
 	char	*string;
 	int		equal;
+	t_token *node;
 
-	// printf("String before: |%s|\n", _string);
+	printf("String before: |%s|\n", _string);
 	string = handle_quotations(_string);
-	// printf("String after: |%s|\n", string);
+	printf("String after: |%s|\n", string);
 	string = add_spaces_non_literal(string);
-	// printf("String after after: |%s|\n", string);
+	printf("String after after: |%s|\n", string);
 	string = sep_dollars(string);
-	// printf("String final: |%s|\n", string);
+	printf("String final: |%s|\n", string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
 	equal = FALSE;
@@ -156,7 +157,7 @@ void	parse_input(char *_string, t_token **tokens_head)
 			if (((string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE)))
 				len++;
 			// printf("Creating token node starting from %d for a length of %d.\n", start, len);
-			create_node(tokens_head, string, start, len);
+			node = create_node(tokens_head, string, start, len);
 			start = i + 1;
 		}
 		if (string[i] == '=')
@@ -170,4 +171,5 @@ void	parse_input(char *_string, t_token **tokens_head)
 		i++;
 	}
 	free(string);
+	(void)(node);
 }

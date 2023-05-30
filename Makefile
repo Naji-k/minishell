@@ -6,13 +6,13 @@
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/25 13:56:08 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/05/25 11:59:36 by ysrondy          ###   ########.fr        #
+#    Updated: 2023/05/29 09:33:07 by ysrondy          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror -g -fsanitize=address,undefined
 # CFLAGS := -g -fsanitize=address
 
 #Lib

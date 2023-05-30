@@ -20,6 +20,7 @@ void	handle_arg_then_dollar(char *new_string, char *string, int *i, int *j)
 	if (string[*i] == '$' && is_whitespace(string[(*i + 1)]) == FALSE
 		&& string[(*i + 1)] != '$')
 	{
+		printf("Enter\n");
 		new_string[*j] = string[*i];
 		*i += 1;
 		*j += 1;
@@ -57,6 +58,36 @@ void	handle_dbl_dollars(char *new_string, char *string, int *i, int *j)
 	}
 }
 
+void	handle_chars_before_arg(char *new_string, char *string, int *i, int *j)
+{
+	while (string[*i] != '\0')
+	{
+		if (string[(*i + 1)] == '$' && is_whitespace(string[*i]) == FALSE)
+		{
+			if (string[*i] == '\'')
+			{
+				new_string[*j] = ' ';
+				new_string[(*j + 1)] = string[*i];
+				*j += 2;
+				*i += 1;
+			}
+			else
+			{
+				new_string[*j] = string[*i];
+				new_string[(*j + 1)] = ' ';
+				*j += 2;
+				*i += 1;
+			}
+		}
+		else
+		{
+			new_string[*j] = string[*i];
+			*j += 1;
+			*i += 1;
+		}
+	}
+}
+
 /*
 	Function which adds a whitespace after 2 dollar signs or after $ARG in the input string.
 	Ex: $ARG$ = $ARG $.
@@ -75,6 +106,8 @@ char	*sep_dollars(char *string)
 	// printf("Old String: %s | len: %d\n", string, ft_strlen(string));
 	while (string[i] != '\0')
 	{
+		printf("Enter1\n");
+		handle_chars_before_arg(new_string, string, &i, &j);
 		handle_arg_then_dollar(new_string, string, &i, &j);
 		handle_dbl_dollars(new_string, string, &i, &j);
 		if (i == ft_strlen(string))
