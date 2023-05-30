@@ -13,7 +13,7 @@
 #include "builtin.h"
 #include "executor.h"
 
-static int	check_input(char *export_str)
+static int	check_input(char *export_str)	//error! 
 {
 	if (*export_str)
 	{
@@ -88,7 +88,10 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 			env_add_back(&tools->env_list, env_node);
 		}
 		else
+		{
+			g_exit_status = 1;
 			printf("ERROR\n");
+		}
 		i++;
 	}
 	return (0);

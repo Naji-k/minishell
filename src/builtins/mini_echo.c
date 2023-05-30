@@ -76,5 +76,5 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		return (0);
 	}
-	return (1);
+	return (EXIT_FAILURE);
 }
