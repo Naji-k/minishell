@@ -83,32 +83,58 @@ void	delete_node(t_token **lst_tokens, t_token *node_to_delete)
 	}
 }
 
-
-void	expansion_into_token_list(t_token **lst_tokens, t_token *node, char *expanded_arg)
+/*
+	Function which expands token into char** array and creates a node for each string.
+	Then implements string in exactly the right place where the original unexpanded node used to be.
+*/
+void	expansion_into_token_list(t_token **lst_tokens, t_token *node, char *expanded_arg, int single_quote)
 {
 	char	**split_expanded_arg;
 	int		i;
+	t_token	*node_before;
+	t_token	*node_after;
+	t_token	*new_node;
+	t_token	*last_node;
 
 	i = 0;
 	split_expanded_arg = ft_split(expanded_arg, ' ');
 	if (!split_expanded_arg)
 		exit(EXIT_FAILURE);
-	delete_node(lst_tokens, node);
+	node_before = *lst_tokens;
+	last_node = *lst_tokens;
+	while (last_node->next != NULL)
+		last_node = last_node->next;
+	while (node_before->next != node && node_before->next != NULL)
+		node_before = node_before->next;
+	node_after = node->next;
+	if (node == *lst_tokens)
+		delete_node(lst_tokens, node);
+	// printf("Node Before: %p, Last Node: %p, Node After: %p\n", node_before, last_node, node_after);
 	while (split_expanded_arg[i] != NULL)
 	{
-		// printf("Created node.\n");
-		create_node(lst_tokens, split_expanded_arg[i], 0,
-			ft_strlen(split_expanded_arg[i]));
+		new_node = create_node(lst_tokens, split_expanded_arg[i], 0,
+				ft_strlen(split_expanded_arg[i]));
+		// printf("Created New Node: %s\n", new_node->cmd);
+		if (i == 0 && new_node != *lst_tokens)
+			node_before->next = new_node;
+		if (single_quote == ADD_QUOTATION && i == 0)
+			new_node->cmd = add_single_quote(new_node->cmd, ADD_QUOTATION_BEGIN);
 		i++;
 	}
-	print_token_list(lst_tokens, FALSE);
+	if (single_quote == ADD_QUOTATION)
+		new_node->cmd = add_single_quote(new_node->cmd, ADD_QUOTATION_END);
+	new_node->next = node_after;
+	if (node != node_before)
+		last_node->next = NULL;
+	delete_node(lst_tokens, node);
 	free_2d_arr(split_expanded_arg);
 }
 
 /*
 	Helper function which performs actual expansion of $ARG -> ARG_VALUE.
 */
-t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
+t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools,
+	int single_quote)
 {
 	char	*expanded_arg;
 
@@ -124,7 +150,7 @@ t_token	*handle_expansion(t_token **lst_tokens, t_token *node, t_tools *tools)
 	else
 	{
 		printf("Expanding %s to %s. (Splits on white spaces.)\n", node->cmd, expanded_arg);
-		expansion_into_token_list(lst_tokens, node, expanded_arg);
+		expansion_into_token_list(lst_tokens, node, expanded_arg, single_quote);
 		return (*lst_tokens);
 	}
 }
@@ -149,7 +175,8 @@ void	handle_exit_status(t_token *node)
 	being expanded to "ls -l".
 	TODO: Handle heredoc. Check if token before $ARG is <<, if it is, handle differently.
 	if "$ARG" do not expand inside hd. if $ARG, expand inside hd.
-	// TODO: handle Ex: echo a$PWD'b'. Need to change expander.
+	TODO: handle Ex: echo a$PWD'b'. Need to change expander.
+	TODO: handle "$ARG" (spaces included like one big string) instead of $ARG.
 */
 void	expander(t_token **lst_tokens, t_tools *tools)
 {
@@ -171,23 +198,26 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 				;
 			else if (node->cmd[1] == '?')
 				handle_exit_status(node);
+			else if (node->index == SKIP)
+				;
 			else
-				node = handle_expansion(lst_tokens, node, tools);
+				node = handle_expansion(lst_tokens, node, tools, NO_QUOTATION);
 		}
 		else if (node->cmd[0] == '\'' && node->cmd[1] == '$'
 			&& node->cmd[ft_strlen(node->cmd) - 1] != '\'')
 		{
 			printf("Found expandable %s which will not be expanded.\n", node->cmd);
 			node->cmd = substring(node, 1);
+			node->index = SKIP;
 		}
 		else if (node->cmd[0] == '\'' && node->cmd[1] == '$'
 			&& node->cmd[ft_strlen(node->cmd) - 1] == '\'')
 		{
 			printf("Expand %s but add single quotation marks.\n", node->cmd);
 			node->cmd = substring(node, 2);
-			node = handle_expansion(lst_tokens, node, tools);
-			node->cmd = add_single_quote(node->cmd);
+			node = handle_expansion(lst_tokens, node, tools, ADD_QUOTATION);
 		}
-		node = node->next;
+		if (node)
+			node = node->next;
 	}
 }

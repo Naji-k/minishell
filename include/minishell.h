@@ -24,8 +24,13 @@
 
 # define FALSE 0
 # define TRUE 1
+# define ADD_QUOTATION 1
+# define ADD_QUOTATION_BEGIN 2
+# define ADD_QUOTATION_END 3
+# define NO_QUOTATION 0
+# define SKIP 666
 
-/* 
+/*
 	Global variable
  */
 
@@ -116,7 +121,7 @@ char	*sep_dollars(char *string);
 				/* Parsing Quotations */
 char	*handle_quotations(char *string);
 char	*substring(t_token *node, int i);
-char	*add_single_quote(char *string);
+char	*add_single_quote(char *string, int location);
 
 				/* Parsing Commands */
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
@@ -134,7 +139,7 @@ void	init_tools(t_tools *tools);
 				/* Linked_List Functions */
 void	*last_node(void *lst, t_lst_type type);
 void	add_node_back(void **lst_head, void *node, t_lst_type type);
-void	create_node(t_token **tokens_head, char *string, int start, int j);
+t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
 
 				/* Execution of Commands */
 // void	execute(t_tools *tools, t_commands **cmd_head);

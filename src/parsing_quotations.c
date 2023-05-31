@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*add_single_quote(char *string)
+char	*add_single_quote(char *string, int location)
 {
 	char	*new_string;
 	int		i;
@@ -20,16 +20,21 @@ char	*add_single_quote(char *string)
 
 	i = 0;
 	j = 1;
-	new_string = malloc(ft_strlen(string) + 3);
-	new_string[0] = '\'';
-	new_string[ft_strlen(string) + 1] = '\'';
+	new_string = malloc(ft_strlen(string) + 2);
+	if (location == ADD_QUOTATION_BEGIN)
+		new_string[0] = '\'';
+	else
+	{
+		new_string[ft_strlen(string)] = '\'';
+		j = 0;
+	}
 	while (string[i])
 	{
 		new_string[j] = string[i];
 		i++;
 		j++;
 	}
-	new_string[ft_strlen(string) + 2] = '\0';
+	new_string[ft_strlen(string) + 1] = '\0';
 	free(string);
 	return (new_string);
 }
@@ -60,12 +65,14 @@ char	*handle_quotations(char *string)
 	int		j;
 	int		double_quote;
 	int		single_quote;
+	int		dollar;
 
 	i = 0;
 	j = 0;
 	double_quote = FALSE;
 	single_quote = FALSE;
-	new_string = malloc(sizeof(char) * (ft_strlen(string) + 1));
+	dollar = FALSE;
+	new_string = malloc(sizeof(char) * (ft_strlen(string) + 2));
 	if (!new_string)
 		exit(EXIT_FAILURE);
 	while (string[i])
@@ -74,6 +81,18 @@ char	*handle_quotations(char *string)
 			i++;
 		if (string[i] == '"' && single_quote == FALSE)
 		{
+			if (string[i + 1] == '$')
+			{
+				dollar = TRUE;
+				new_string[j] = ' ';
+				j++;
+			}
+			if (dollar == TRUE && string[i + 1] != '$')
+			{
+				new_string[j] = ' ';
+				j++;
+				dollar = FALSE;
+			}
 			if (double_quote == TRUE)
 				double_quote = FALSE;
 			else
