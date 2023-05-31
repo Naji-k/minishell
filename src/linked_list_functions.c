@@ -70,7 +70,7 @@ void	add_node_back(void **lst_head, void *node, t_lst_type type)
 /*
 	Creates a t_token node inside the t_token linked list.
 */
-void	create_node(t_token **tokens_head, char *string, int start, int len)
+t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 {
 	t_token		*node;
 	static int	i = 0;
@@ -86,4 +86,5 @@ void	create_node(t_token **tokens_head, char *string, int start, int len)
 	i++;
 	node->next = NULL;
 	add_node_back((void **)tokens_head, node, TOKEN_LIST);
+	return (node);
 }
