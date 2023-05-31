@@ -28,6 +28,7 @@ char	*echo_home(char *str);
 /* export */
 
 int		mini_export(t_tools *tools, char **simple_cmd);
+t_env	*modify_env_value(t_env **env_list, char *simple_command);
 
 /* cd */
 int		mini_cd(t_tools *tools, char **simple_cmd);

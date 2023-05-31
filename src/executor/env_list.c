@@ -40,7 +40,7 @@ t_env	*env_new_node(char *env)
 	if (!new_node->value) //this for empty value..
 	{
 		new_node->key = ft_substr(env, 0, i);
-		new_node->has_value = false;
+		new_node->has_value = true;
 	}
 	new_node->next = NULL;
 	return (new_node);
