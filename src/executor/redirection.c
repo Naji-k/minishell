@@ -28,9 +28,12 @@ int	redirection(t_commands *cmd)
 			printf("\nRedirection\n");
 			file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (file < 0)
-				return (error_handling(redirection->cmd));
+				return (error_file_handling(redirection->cmd));
 			if (dup2(file, STDOUT_FILENO) == -1)
+			{
+				ft_putstr_fd("dup2",2);
 				ft_putstr_fd("error_redirection\n", 2);
+			}
 			redirection = redirection->next;
 		}
 		else if (redirection->type == IN_FILE)
@@ -38,10 +41,11 @@ int	redirection(t_commands *cmd)
 			// printf("\ninfile\n");
 			file = open(redirection->cmd, O_RDONLY, 0644);
 			if (file < 0)
-				(error_handling(redirection->cmd));
+				return (error_file_handling(redirection->cmd));
 			if (dup2(file, STDIN_FILENO) == -1)
 			{
-				(error_handling(redirection->cmd));
+				ft_putstr_fd("dup2",2);
+				(error_file_handling(redirection->cmd));
 			}
 			redirection = redirection->next;
 		}
@@ -59,7 +63,7 @@ int	redirection(t_commands *cmd)
 			printf("\nA_Redirection\n");
 			file = open(redirection->cmd, O_CREAT | O_RDWR | O_APPEND, 0644);
 			if (file < 0)
-				ft_putstr_fd("File_Appled\n", 2);
+				return (error_file_handling(redirection->cmd));
 			if (dup2(file, STDOUT_FILENO) == -1)
 				ft_putstr_fd("error_A_Redirection\n", 2);
 			redirection = redirection->next;

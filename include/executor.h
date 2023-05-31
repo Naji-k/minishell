@@ -47,7 +47,8 @@ int		here_doc(t_token *redirection);
 void	ft_pwd(void);
 
 //error_handling
-int		error_handling(char *str);
+int		error_file_handling(char *str);
+int		e_cmd_not_found(char *s_cmd);
 //builtins
 int		bn_echo(t_commands **cmd_head);
 void	bn_pwd(void);
