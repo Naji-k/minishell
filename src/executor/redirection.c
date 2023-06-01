@@ -25,52 +25,42 @@ int	redirection(t_commands *cmd)
 	{
 		if (redirection->type == REDIRECTION)
 		{
-			printf("\nRedirection\n");
+			dprintf(2, "\nRedirection\n");
 			file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (file < 0)
 				return (error_file_handling(redirection->cmd));
-			if (dup2(file, STDOUT_FILENO) == -1)
-			{
-				ft_putstr_fd("dup2",2);
-				ft_putstr_fd("error_redirection\n", 2);
-			}
+			ft_dup2_check(file, STDOUT_FILENO);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == IN_FILE)
 		{
-			// printf("\ninfile\n");
+			dprintf(2, "\ninfile\n");
 			file = open(redirection->cmd, O_RDONLY, 0644);
 			if (file < 0)
 				return (error_file_handling(redirection->cmd));
-			if (dup2(file, STDIN_FILENO) == -1)
-			{
-				ft_putstr_fd("dup2",2);
-				(error_file_handling(redirection->cmd));
-			}
+			ft_dup2_check(file, STDIN_FILENO);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == HEREDOC)
 		{
-			// printf("\nheredoc\n");
-			file = here_doc(redirection);
-			printf("heredoc=%d\tdelimiter=%s\n", file, redirection->cmd);
-			if (dup2(file, STDIN_FILENO) == -1)
-				ft_putstr_fd("error_redirection\n", 2);
+			// dprintf(2,"heredoc=%d\tdelimiter=%s\n", file, redirection->cmd);
+			file = here_doc(redirection, cmd);
+			dprintf(2,"out=%d in=%d file=%d\n", STDOUT_FILENO, STDIN_FILENO, file);
+			// ft_dup2_check(file, STDIN_FILENO);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == A_REDIRECTION)
 		{
-			printf("\nA_Redirection\n");
+			dprintf(2, "\nA_Redirection\n");
 			file = open(redirection->cmd, O_CREAT | O_RDWR | O_APPEND, 0644);
 			if (file < 0)
 				return (error_file_handling(redirection->cmd));
-			if (dup2(file, STDOUT_FILENO) == -1)
-				ft_putstr_fd("error_A_Redirection\n", 2);
+			ft_dup2_check(file, STDOUT_FILENO);
 			redirection = redirection->next;
 		}
 		else
 		{
-			printf("UNKNOW\n");
+			dprintf(2, "UNKNOW\n");
 		}
 	}
 	close(file); // need to close previous files otherwise file leak.
@@ -86,14 +76,16 @@ void	ft_dup2_check(int old, int new)
 	}
 }
 
-int	here_doc(t_token *redirection)
+int	here_doc(t_token *redirection, t_commands *cmd)
 {
 	int		file;
 	int		i;
 	char	message[10000];
+	// int		t_out;
 
 	i = 1;
-	printf("heredoc\n");
+	// t_out = dup(STDOUT_FILENO);
+	dprintf(2, "==heredoc\tcmd=%s\n", cmd->cmds[0]);
 	file = open("heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (file < 0)
 	{
@@ -108,5 +100,6 @@ int	here_doc(t_token *redirection)
 				ft_strlen(redirection->cmd)) == 0)
 			i = 0;
 	}
-	return (0);
+	// ft_dup2_check(file, STDIN_FILENO);
+	return (file);
 }

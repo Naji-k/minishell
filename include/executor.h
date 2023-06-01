@@ -20,11 +20,12 @@
 # include <limits.h>
 # include <stdio.h>
 # include <string.h>
+# include <sys/stat.h>
 
 # define ERROR -1
 # define SUCCESS 0
 
-char	*find_cmd_path(t_tools *tools, char **cmd);
+char	*find_cmd_path(t_tools *tools, char *cmd);
 
 void	executor(t_tools *tools, t_commands **cmd_head);
 //check_list
@@ -34,15 +35,16 @@ char	*check_current_dir(char *cmd);
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_comands(t_tools *tools, t_commands **cmd_head);
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
+void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			int *fd);
-void	last_cmd(t_tools *tools, t_commands **cmd_head);
+pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
+void	wait_last_pid(pid_t last_pid);
 
 //redirection
 int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
-int		here_doc(t_token *redirection);
+int	here_doc(t_token *redirection, t_commands *cmd);
 
 void	ft_pwd(void);
 
