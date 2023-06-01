@@ -38,7 +38,8 @@ char	*expand_arg(char *string, t_tools *tools)
 	}
 	while (env_list)
 	{
-		if (ft_strncmp((string + 1), env_list->key, len) == 0)
+		if (ft_strncmp((string + 1), env_list->key, len) == 0
+			&& env_list->key[len] == '=')
 		{
 			if (found_equal_sign == TRUE)
 				expanded_arg = ft_strjoin(env_list->value, &string[len]);

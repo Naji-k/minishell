@@ -131,13 +131,13 @@ void	parse_input(char *_string, t_token **tokens_head)
 	int		equal;
 	t_token *node;
 
-	printf("String before: |%s|\n", _string);
+	printf("Original String: |%s|\n", _string);
 	string = handle_quotations(_string);
-	printf("String after: |%s|\n", string);
+	printf("String after handling quotations: |%s|\n", string);
 	string = add_spaces_non_literal(string);
-	printf("String after after: |%s|\n", string);
+	printf("String after adding spaces for non literals: |%s|\n", string);
 	string = sep_dollars(string);
-	printf("String final: |%s|\n", string);
+	printf("Final string after seperating dollars: |%s|\n", string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
 	equal = FALSE;
