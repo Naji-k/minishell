@@ -54,11 +54,17 @@ char	**env_list_to_array(t_env **env_list)
 	i = 0;
 	while (tmp->next)
 	{
-		env[i] = ft_strjoin(tmp->key, tmp->value);
+		if (tmp->value)
+			env[i] = ft_strjoin(tmp->key, tmp->value);
+		else
+			env[i] = ft_strdup(tmp->key);
 		i++;
 		tmp = tmp->next;
 	}
-	env[i] = ft_strjoin(tmp->key, tmp->value);
+	if (tmp->value)
+		env[i] = ft_strjoin(tmp->key, tmp->value);
+	else
+		env[i] = ft_strdup(tmp->key);
 	env[i + 1] = NULL;
 	return (env);
 }

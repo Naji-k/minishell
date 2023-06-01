@@ -12,8 +12,11 @@
 
 #include "executor.h"
 #include "minishell.h"
+#include <fcntl.h>
 #include <string.h>
 #include <sys/errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 /* 
 	this file going to be the main one for the executor, so from here,
@@ -38,17 +41,16 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	if ((*cmd_head)->next == NULL)
 	{
 		if ((*cmd_head)->redirections)
-			redirection((*cmd_head));
+			if (redirection((*cmd_head)))
+				return ;
 		if (!(*cmd_head)->builtin)
 			execute_onc_cmd(tools, cmd_head);
 		if ((*cmd_head)->builtin)
-			execute_builtin((*cmd_head)->cmds[0])(tools, (*cmd_head)->cmds);
+			g_exit_status = execute_builtin((*cmd_head)->cmds[0])(tools,
+					(*cmd_head)->cmds);
 	}
 	if ((*cmd_head)->next != NULL)
-	{
-		printf("multi_cmd\n");
 		multi_comands(tools, cmd_head);
-	}
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
 	// free_2d_arr(tools->envp);
@@ -80,7 +82,8 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 		node = node->next;
 	}
 	if (node->redirections)
-		redirection(node);
+		if (redirection(node))
+			return ;
 	last_cmd(tools, &node);
 }
 
@@ -90,10 +93,6 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
 	char	*cmd_path;
 	pid_t	pid;
 
-	// int		fd[2];
-	// int		i;
-	// if (pipe(fd) == -1)
-	// 	ft_putstr_fd("pipe:\n", 2);
 	pid = fork();
 	if (pid < 0)
 		ft_putstr_fd("fork\n", 2);
@@ -102,20 +101,19 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int *in,
 		close(fd[0]);
 		ft_dup2_check(fd[1], STDOUT_FILENO);
 		if ((*cmd_head)->redirections)
-			redirection((*cmd_head));
-		// ft_dup2_check(*in, STDIN_FILENO);
+			if (redirection((*cmd_head)))
+				exit(EXIT_FAILURE);
 		if ((*cmd_head)->builtin)
 		{
-			// i = execute_builtin((*cmd_head)->cmds[0])(tools,(*cmd_head)->cmds);
 			//should return the return value from builtin
 			exit(execute_builtin((*cmd_head)->cmds[0])(tools,
 														(*cmd_head)->cmds));
 		}
 		cmd_path = find_cmd_path(tools, (*cmd_head)->cmds);
 		if (!cmd_path)
-			ft_putstr_fd("from find_path\n", 2);
+			exit(e_cmd_not_found((*cmd_head)->cmds[0]));
 		if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
-			ft_putstr_fd("execve:\n", 2);
+			e_cmd_not_found((*cmd_head)->cmds[0]);
 	}
 	close(fd[1]);
 	close(*in);
@@ -129,7 +127,7 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 {
 	char	*cmd_path;
 	pid_t	pid;
-	int		stat;
+	int		status;
 	int		i;
 
 	pid = fork();
@@ -137,19 +135,23 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 	{
 		if ((*last_cmd)->builtin)
 		{
-			// printf("<<<<<Buildin>>>>\n");
 			i = execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
 			exit(i);
 		}
 		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds);
 		if (!cmd_path)
-			perror((*last_cmd)->cmds[0]);
-		if (execve(cmd_path, (*last_cmd)->cmds, tools->envp) == -1)
-			ft_putstr_fd("execve:\n", 2);
+			e_cmd_not_found((*last_cmd)->cmds[0]);
+		if (cmd_path)
+		{
+			if (execve(cmd_path, (*last_cmd)->cmds, tools->envp) == -1)
+				e_cmd_not_found((*last_cmd)->cmds[0]);
+		}
 	}
-	while (wait(&stat) > 0)
+	waitpid(pid, &status, 0);
+	while (wait(NULL) > 0)
 		;
-	// wait(NULL);
+	if (WIFEXITED(status))
+		g_exit_status = WEXITSTATUS(status);
 }
 /*
 	Here i am checking if the executor is a local(in project dir) | from env->PATH
@@ -158,10 +160,7 @@ void	last_cmd(t_tools *tools, t_commands **last_cmd)
 char	*check_current_dir(char *cmd)
 {
 	if (access(cmd, F_OK) == -1)
-	{
-		// ft_putstr_fd("it's not local\n", 2);
 		return (NULL);
-	}
 	return (cmd);
 }
 
@@ -174,24 +173,27 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	char		*cmd_path;
 	t_commands	*node;
 	pid_t		pid;
+	int			status;
 
 	node = *cmd_head;
-	pid = fork();
-	if (pid == 0)
+	cmd_path = find_cmd_path(tools, node->cmds);
+	if (!cmd_path)
 	{
-		cmd_path = find_cmd_path(tools, node->cmds);
-		if (!cmd_path)
-			printf(" %s: command not found", node->cmds[0]);
-		if (cmd_path)
+		e_cmd_not_found(node->cmds[0]);
+		return ;
+	}
+	if (cmd_path)
+	{
+		pid = fork();
+		if (pid == 0)
 		{
 			if (execve(cmd_path, node->cmds, tools->envp) == -1)
-			{
-				g_exit_status = 126;
-				printf("execve:\n\n");
-			}
+				exit(e_cmd_not_found(node->cmds[0]));
 		}
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			g_exit_status = WEXITSTATUS(status);
 	}
-	wait(&pid);
 }
 
 /*
@@ -213,15 +215,11 @@ char	*find_cmd_path(t_tools *tools, char **cmd)
 		{
 			cmd_path = ft_strjoin(tools->paths[i], cmd[0]);
 			free(tools->paths[i]);
-			if (access(cmd_path, X_OK) == 0)
-			{
-				g_exit_status = 0;
+			if (access(cmd_path, F_OK) == 0)
 				return (cmd_path);
-			}
 			free(cmd_path);
 		}
 	}
 	//should free
-	g_exit_status = 127;
 	return (NULL);
 }

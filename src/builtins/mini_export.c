@@ -13,7 +13,7 @@
 #include "builtin.h"
 #include "executor.h"
 
-static int	check_input(char *export_str)
+static int	check_input(char *export_str) //error!
 {
 	if (*export_str)
 	{
@@ -83,13 +83,34 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	{
 		if (!check_input(simple_cmd[i]))
 		{
-			env_node = env_new_node(simple_cmd[i]);
+			env_node = modify_env_value(&tools->env_list, simple_cmd[i]);
+			if (!env_node)
+				env_node = env_new_node(simple_cmd[i]);
 			printf("key:%s\tvalue:%s\n", env_node->key, env_node->value);
 			env_add_back(&tools->env_list, env_node);
 		}
 		else
+		{
+			g_exit_status = 1;
 			printf("ERROR\n");
+		}
 		i++;
 	}
 	return (0);
+}
+
+t_env	*modify_env_value(t_env **env_list, char *simple_command)
+{
+	t_env *env_node;
+	char **key_value;
+
+	env_node = NULL;
+	key_value = ft_split(simple_command, '=');
+	if (find_env_by_key(env_list, key_value[0]))
+	{
+		env_del_one(env_list, key_value[0]);
+		env_node = env_new_node(simple_command);
+	}
+	free_2d_arr(key_value);
+	return (env_node);
 }
