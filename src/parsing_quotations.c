@@ -57,7 +57,8 @@ char	*substring(t_token *node, int i)
 	free(node->cmd);
 	return (new_string);
 }
-
+// TODO: Fix issue where quotation marks are one right after the other. echo "$USER""$USER".
+// Has to do with the way I increment.
 char	*handle_quotations(char *string)
 {
 	char	*new_string;
@@ -65,14 +66,14 @@ char	*handle_quotations(char *string)
 	int		j;
 	int		double_quote;
 	int		single_quote;
-	int		dollar;
+	int		single_inside_double;
 
 	i = 0;
 	j = 0;
 	double_quote = FALSE;
 	single_quote = FALSE;
-	dollar = FALSE;
-	new_string = malloc(sizeof(char) * (ft_strlen(string) + 2));
+	single_inside_double = FALSE;
+	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
 	if (!new_string)
 		exit(EXIT_FAILURE);
 	while (string[i])
@@ -81,33 +82,55 @@ char	*handle_quotations(char *string)
 			i++;
 		if (string[i] == '"' && single_quote == FALSE)
 		{
-			if (string[i + 1] == '$')
-			{
-				dollar = TRUE;
-				new_string[j] = ' ';
-				j++;
-			}
-			if (dollar == TRUE && string[i + 1] != '$')
-			{
-				new_string[j] = ' ';
-				j++;
-				dollar = FALSE;
-			}
+			// printf("Entering Double Quote on %c, next one is %c at index %d\n", string[i], string[i + 1], i);
 			if (double_quote == TRUE)
+			{
+				new_string[j] = ' ';
+				j++;
+				while (string[i] == '"')
+					i++;
 				double_quote = FALSE;
+			}
 			else
+			{
+				new_string[j] = ' ';
+				j++;
+				i++;
 				double_quote = TRUE;
-			i++;
+			}
 		}
 		if (string[i] == '\'' && double_quote == FALSE)
 		{
 			if (string[i + 1] == '$')
 				i--;
 			if (single_quote == TRUE)
+			{
+				new_string[j] = ' ';
+				j++;
+				while (string[i] == '\'')
+					i++;
 				single_quote = FALSE;
+			}
 			else
+			{
+				new_string[j] = ' ';
+				j++;
+				i++;
 				single_quote = TRUE;
-			i++;
+			}
+		}
+		if (string[i] == '\'' && double_quote == TRUE)
+		{
+			if (single_inside_double == FALSE)
+			{
+				new_string[j] = ' ';
+				j++;
+				single_inside_double = TRUE;
+			}
+			else
+			{
+				single_inside_double = FALSE;
+			}
 		}
 		new_string[j] = string[i];
 		i++;

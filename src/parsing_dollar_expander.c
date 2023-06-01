@@ -64,7 +64,7 @@ void	handle_chars_before_arg(char *new_string, char *string, int *i, int *j)
 	{
 		if (string[(*i + 1)] == '$' && is_whitespace(string[*i]) == FALSE)
 		{
-			if (string[*i] == '\'')
+			if (string[*i] == '\'' || string[*i] == '"')
 			{
 				new_string[*j] = ' ';
 				new_string[(*j + 1)] = string[*i];
@@ -106,7 +106,6 @@ char	*sep_dollars(char *string)
 	// printf("Old String: %s | len: %d\n", string, ft_strlen(string));
 	while (string[i] != '\0')
 	{
-		printf("Enter1\n");
 		handle_chars_before_arg(new_string, string, &i, &j);
 		handle_arg_then_dollar(new_string, string, &i, &j);
 		handle_dbl_dollars(new_string, string, &i, &j);
