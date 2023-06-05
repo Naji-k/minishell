@@ -17,8 +17,22 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 {
 	(void)tools;
 	(void)simple_cmd;
-	printf("STATUS=%d\n",g_exit_status);
-	ft_putendl_fd("exit", STDERR_FILENO);
+	printf("STATUS=%d\n", g_exit_status);
+	ft_putendl_fd("exit", 1);
 	// tools->loop = false;
-	return (0);
+	free_2d_arr(tools->envp); //keep this
+	// free_2d_arr(tools->paths);	//keep this
+	free_env_list(&tools->env_list);
+	free(tools->pwd);
+	free(tools->old_pwd);
+	free(tools);
+	exit(0);
 }
+/* 
+exit 40: (exit_code)
+exit asd : do not exit
+exit | exit
+exit 34 asd 
+exit (MAX 2 args 1st alpha, 2nd num)
+exit: can exit if there one NUM ARGS but should check for NON-NUMERIC ARGS
+ */
