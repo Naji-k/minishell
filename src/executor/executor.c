@@ -35,6 +35,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 
 	if ((*cmd_head) == NULL)
 		exit(0);
+	if (is_heredoc((*cmd_head)) == ERROR)
+		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
 	tools->envp = env_list_to_array(&tools->env_list);
@@ -73,16 +75,21 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	dprintf(2, "MULTI\n");
 	while (node->next != NULL)
 	{
-		dprintf(2, "cmd=%s\n", node->cmds[0]);
 		if (pipe(fd) == -1)
 			ft_putstr_fd("pipe:\n", 2);
 		multi_pipex_process(tools, &node, old_fd, fd);
 		close(fd[1]);
 		if (node != *cmd_head)
-			close(old_fd);
+		{
+		if (is_heredoc(node) == ERROR)
+			return ;
+		close(old_fd);
+		}
 		old_fd = fd[0];
 		node = node->next;
 	}
+	if (is_heredoc(node) == ERROR)
+		return ;
 	if (node->redirections)
 		if (redirection(node))
 			return ;
