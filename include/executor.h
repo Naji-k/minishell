@@ -45,7 +45,7 @@ void	wait_last_pid(pid_t last_pid);
 int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
 int		create_heredoc(t_token *redirection, t_commands *cmd);
-int		is_heredoc(t_commands *cmd);
+int		is_heredoc(t_commands **cmd);
 
 //error_handling
 int		error_file_handling(char *str);

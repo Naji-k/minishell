@@ -12,20 +12,26 @@
 
 #include "executor.h"
 
-int	is_heredoc(t_commands *cmd)
+int	is_heredoc(t_commands **cmd)
 {
+	t_commands	*s_cmd;
+	t_token		*heredoc;
 
-	if (cmd->redirections && cmd->redirections->type == HEREDOC)
+	s_cmd = (*cmd);
+	while (s_cmd)
 	{
-		// heredoc = cmd->redirections;
-		fprintf(stderr, "HERE\n");
-		while (cmd->redirections && cmd->redirections->type == HEREDOC)
+		if (s_cmd->redirections && s_cmd->redirections->type == HEREDOC)
 		{
-			if (create_heredoc(cmd->redirections, cmd) == -1)
-				return (ERROR);
-			cmd->redirections = cmd->redirections->next;
+			heredoc = s_cmd->redirections;
+			while (heredoc && heredoc->type == HEREDOC)
+			{
+				dprintf(2, "Create heredoc named as %s\n", heredoc->cmd);
+				if (create_heredoc(heredoc, s_cmd) == -1)
+					return (ERROR);
+				heredoc = heredoc->next;
+			}
 		}
-		return (SUCCESS);
+		s_cmd = s_cmd->next;
 	}
 	return (SUCCESS);
 }
@@ -54,6 +60,16 @@ int	create_heredoc(t_token *redirection, t_commands *cmd)
 			if (ft_strncmp(line, redirection->cmd,
 					ft_strlen(redirection->cmd)) == 0)
 				break ;
+			/* TODO:
+			I am Creating a file named as HEREDOC_DELIMITER, 
+			but inside the file you have to expand the inputs,,
+			line= should be expanded from env, also should take care of ' "" 
+			ex:
+			cat << 'EOF'
+			cat << EOF
+			IN OUR MINISHELL YOU CAN SEE THE INPUTS IN A FILE SO DONT HAVE TO USE cat 
+			<< EOF , << 'EOF'
+			 */
 			write(file, line, ft_strlen(line));
 			write(file, "\n", 1);
 		}

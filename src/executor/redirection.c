@@ -19,8 +19,8 @@ int	redirection(t_commands *cmd)
 	t_token	*redirection;
 
 	redirection = cmd->redirections;
-	// printf("redirection_NAME: %s\n", redirection->cmd);
-	// printf("redirection_TYPE: %u\n", redirection->type);
+	// dprintf(2,"redirection_NAME: %s\n", redirection->cmd);
+	// dprintf(2,"redirection_TYPE: %u\n", redirection->type);
 	while (redirection)
 	{
 		if (redirection->type == REDIRECTION)
@@ -43,11 +43,11 @@ int	redirection(t_commands *cmd)
 		}
 		else if (redirection->type == HEREDOC)
 		{
+			dprintf(2, "\nHEREDOC\n");
 			file = open(redirection->cmd, O_RDONLY, 0644);
 			if (file < 0)
 				return (error_file_handling(redirection->cmd));
 			ft_dup2_check(file, STDIN_FILENO);
-			close(file);
 			redirection = redirection->next;
 		}
 		else if (redirection->type == A_REDIRECTION)
@@ -62,7 +62,7 @@ int	redirection(t_commands *cmd)
 		else
 			dprintf(2, "UNKNOW\n");
 	}
-	close(file); // need to close previous files otherwise file leak.
+	// close(file); // need to close previous files otherwise file leak.
 	return (SUCCESS);
 }
 
