@@ -12,10 +12,7 @@
 
 #include "minishell.h"
 
-//TODO: Fix one letter segfault. | Done
-//TODO: Fix strcmp cdddddd. | Done
 //TODO: Fix $$.
-//TODO: Expand ~.
 
 /*
 	Returns true if the char is a whitespace and false if it is not.
