@@ -32,12 +32,12 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		path = cd_home_dir(tools);
 	else if (simple_cmd[1][0] == '-') //TO BE CHECKED IN LOOP
 		path = mini_cd_oldpwd(tools);
-	else if (simple_cmd[1][0] == '~')
-		path = cd_root_dir(simple_cmd[1]);
+	// else if (simple_cmd[1][0] == '~')
+	// 	path = cd_root_dir(simple_cmd[1]);
 	else if (simple_cmd[1][0] == '.')
 		path = ft_strdup(simple_cmd[1]);
 	else //cd src (going to child-directory)
-		path = cd_sub_dir(simple_cmd[1]);
+		path = ft_strdup(simple_cmd[1]);
 	//should protect receiving current DIR
 	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!path)
@@ -85,7 +85,7 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	return ;
 }
 
-char	*cd_root_dir(char *simple_cmd)
+/* char	*cd_root_dir(char *simple_cmd)
 {
 	char	*path;
 	char	*sub_cmd;
@@ -102,7 +102,7 @@ char	*cd_root_dir(char *simple_cmd)
 	}
 	free(sub_cmd);
 	return (path);
-}
+} */
 
 char	*mini_cd_oldpwd(t_tools *tools)
 {

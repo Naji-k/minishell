@@ -35,7 +35,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 
 	if ((*cmd_head) == NULL)
 		exit(0);
-	if (is_heredoc((*cmd_head)) == ERROR)
+	if (is_heredoc((cmd_head)) == ERROR)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
@@ -46,8 +46,11 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 			if (redirection((*cmd_head)))
 				return ;
 		if ((*cmd_head)->builtin)
+		{
 			g_exit_status = execute_builtin((*cmd_head)->cmds[0])(tools,
 																	(*cmd_head)->cmds);
+				return;
+		}
 		if ((*cmd_head)->cmds[0])
 			execute_onc_cmd(tools, cmd_head);
 	}
@@ -81,18 +84,11 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 		close(fd[1]);
 		if (node != *cmd_head)
 		{
-		if (is_heredoc(node) == ERROR)
-			return ;
-		close(old_fd);
+			close(old_fd);
 		}
 		old_fd = fd[0];
 		node = node->next;
 	}
-	if (is_heredoc(node) == ERROR)
-		return ;
-	if (node->redirections)
-		if (redirection(node))
-			return ;
 	last_pid = last_cmd(tools, &node, old_fd);
 	wait_last_pid(last_pid);
 }
@@ -146,13 +142,14 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 	if (pid == 0)
 	{
 		ft_dup2_check(old_fd, STDIN_FILENO);
+		if ((*last_cmd)->redirections)
+			if (redirection((*last_cmd)))
+				exit(EXIT_FAILURE);
 		if ((*last_cmd)->builtin)
 		{
 			i = execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
 			exit(i);
 		}
-		dprintf(2, "last_cmd[0]=%s last_cmd[1]=%s\n", (*last_cmd)->cmds[0],
-				(*last_cmd)->cmds[1]);
 		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds[0]);
 		if (!cmd_path)
 			e_cmd_not_found((*last_cmd)->cmds[0]);
