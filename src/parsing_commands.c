@@ -14,19 +14,19 @@
 
 int	is_builtin(char *string)
 {
-	if (ft_strncmp(string, "cd", 2) == 0)
+	if (ft_strncmp(string, "cd", 2) == 0 && string[2] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "echo", 4) == 0)
+	if (ft_strncmp(string, "echo", 4) == 0 && string[4] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "env", 3) == 0)
+	if (ft_strncmp(string, "env", 3) == 0 && string[3] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "exit", 4) == 0)
+	if (ft_strncmp(string, "exit", 4) == 0 && string[4] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "export", 6) == 0)
+	if (ft_strncmp(string, "export", 6) == 0 && string[6] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "pwd", 3) == 0)
+	if (ft_strncmp(string, "pwd", 3) == 0 && string[3] == '\0')
 		return (TRUE);
-	if (ft_strncmp(string, "unset", 5) == 0)
+	if (ft_strncmp(string, "unset", 5) == 0 && string[5] == '\0')
 		return (TRUE);
 	return (FALSE);
 }
@@ -97,7 +97,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 			redirection = TRUE;
 		}
 		if (is_builtin(start_node->cmd))
-			node_cmds->builtin = start_node->cmd; // temporary
+			node_cmds->builtin = start_node->cmd;
 		start_node = start_node->next;
 	}
 	node_cmds->cmds[i] = NULL;
