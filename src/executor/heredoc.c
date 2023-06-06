@@ -15,17 +15,17 @@
 int	is_heredoc(t_commands *cmd)
 {
 
-	if (cmd->redirections->type == HEREDOC)
+	if (cmd->redirections && cmd->redirections->type == HEREDOC)
 	{
 		// heredoc = cmd->redirections;
-			fprintf(stderr, "HERE\n");
-			while (cmd->redirections && cmd->redirections->type == HEREDOC)
-			{
-				if (create_heredoc(cmd->redirections, cmd) == -1)
-					return (ERROR);
-				cmd->redirections = cmd->redirections->next;
-			}
-			return (SUCCESS);
+		fprintf(stderr, "HERE\n");
+		while (cmd->redirections && cmd->redirections->type == HEREDOC)
+		{
+			if (create_heredoc(cmd->redirections, cmd) == -1)
+				return (ERROR);
+			cmd->redirections = cmd->redirections->next;
+		}
+		return (SUCCESS);
 	}
 	return (SUCCESS);
 }

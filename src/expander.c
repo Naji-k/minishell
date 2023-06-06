@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "builtin.h"
 /*
 	Compares the string after the '$' with the environment variables.
 	If it exists, it substrings and returns everything after the '='
@@ -165,6 +166,15 @@ void	handle_exit_status(t_token *node)
 	node->cmd = new_string;
 }
 
+void	handle_home_dir(t_token *node, t_tools *tools)
+{
+	t_env	*env;
+
+	env = find_env_by_key(&tools->env_list, "HOME");
+	node->cmd = env->value;
+}
+
+
 /*
 	Loops through token list and checks if first letter of command is '$'.
 	If it is, calls the expand_arg function which will return the relevant
@@ -218,6 +228,8 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 			node->cmd = substring(node, 2);
 			node = handle_expansion(lst_tokens, node, tools, ADD_QUOTATION);
 		}
+		else if (ft_strncmp(node->cmd, "~", 1) == 0)
+			handle_home_dir(node, tools);
 		if (node)
 			node = node->next;
 	}

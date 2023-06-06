@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   parsing_tokens.c                                   :+:    :+:            */
+/*   parsing_tokens.c                                   :+:      :+:    :+:   */
 /*                                                     +:+                    */
 /*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/11 07:51:57 by ysrondy       #+#    #+#                 */
-/*   Updated: 2023/04/11 07:51:58 by ysrondy       ########   odam.nl         */
+/*   Updated: 2023/06/01 19:08:22 by ysrondy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+//TODO: Fix $$.
 
 /*
 	Returns true if the char is a whitespace and false if it is not.
@@ -107,6 +109,8 @@ int	is_next_non_literal(char *string, int i)
 	while (string[i] != '\0')
 	{
 		i++;
+		if (string[i] == '\0')
+			return (FALSE);
 		while (is_whitespace(string[i]))
 			i++;
 		if (find_token_type(string[i], string[i + 1]) != LITERAL)

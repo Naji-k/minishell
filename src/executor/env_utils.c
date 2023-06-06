@@ -113,7 +113,8 @@ t_env	*find_env_by_key(t_env **env_list, char *key)
 	env = (*env_list);
 	while (env)
 	{
-		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+		if ((ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+			&& env->key[ft_strlen(key)] == '=')
 			return (env);
 		env = env->next;
 	}
