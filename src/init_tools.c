@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "executor.h"
 #include "minishell.h"
 
 /*
@@ -34,10 +35,10 @@ void	add_bslash_path(char **paths)
 	}
 }
 
-/*
-	Looks for "PATH" inside env and ft_splits them based on ":".
-*/
-char	**find_path(char **envp)
+
+	// Looks for "PATH" inside env and ft_splits them based on ":".
+
+ char	**find_path(char **envp)
 {
 	int		i;
 	char	**path_arr;
@@ -45,7 +46,7 @@ char	**find_path(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], "PATH", 4) == 0)
+		if (ft_strncmp(envp[i], "PATH", 5) == 0)
 		{
 			path_arr = ft_split(envp[i], ':');
 			if (!path_arr)
@@ -58,6 +59,20 @@ char	**find_path(char **envp)
 		i++;
 	}
 	return (NULL);
+}
+
+char	**get_paths2(t_env **env_list)
+{
+	char	**path_arr;
+	t_env	*path;
+
+	path_arr = NULL;
+	path = find_env_by_key(env_list, "PATH");
+	if (!path)
+		return (NULL);
+	path_arr = ft_split(path->value, ':');
+	add_bslash_path(path_arr);
+	return (path_arr);
 }
 
 void	init_tools(t_tools *tools)

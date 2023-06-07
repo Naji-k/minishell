@@ -75,9 +75,9 @@ char	**get_paths(t_env **env_list)
 	char	**path_arr;
 
 	env = (*env_list);
-	while (env->next && ft_strncmp(env->key, "PATH", 4) != 0)
+	while (env->next && ft_strncmp(env->key, "PATH", 5) != 0)
 		env = env->next;
-	if (ft_strncmp(env->key, "PATH", 4) == 0)
+	if (ft_strncmp(env->key, "PATH", 5) == 0)
 	{
 		path_arr = ft_split(env->value, ':');
 		if (!path_arr)

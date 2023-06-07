@@ -15,12 +15,12 @@
 
 int	mini_exit(t_tools *tools, char **simple_cmd)
 {
-	(void)tools;
 	(void)simple_cmd;
 	printf("STATUS=%d\n", g_exit_status);
 	ft_putendl_fd("exit", 1);
 	// tools->loop = false;
-	free_2d_arr(tools->envp); //keep this
+	// fprintf(stderr, "%p\n", tools->envp[0]);
+	// free_2d_arr(tools->envp); //keep this
 	// free_2d_arr(tools->paths);	//keep this
 	free_env_list(&tools->env_list);
 	free(tools->pwd);
