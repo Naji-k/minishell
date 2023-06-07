@@ -18,14 +18,14 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* 
+/*
 	this file going to be the main one for the executor, so from here,
 	I would like to make some checks
 	ex: 1 cmd, multi cmnds, direction?
 	and from here call the specific functions
  */
 
-/* 
+/*
 	executor: MAIN FUNC for executing part..
  */
 void	executor(t_tools *tools, t_commands **cmd_head)
@@ -35,7 +35,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 
 	if ((*cmd_head) == NULL)
 		exit(0);
-	if (is_heredoc((cmd_head)) == ERROR)
+	if (is_heredoc(cmd_head, tools) == ERROR)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
@@ -60,8 +60,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	dup2(fd_o, STDOUT_FILENO);
 	// free_2d_arr(tools->envp);
 }
-/* 
-	this func will split the commands to two parts: 
+/*
+	this func will split the commands to two parts:
 	LOOP: on all commands -1 ex:lst command
 	and run the last command separately
  */
@@ -128,7 +128,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			exit(1);
 	}
 }
-/* 
+/*
 	After finish the loop on all (commands-1) so now just execute the last command
  */
 
@@ -185,7 +185,7 @@ char	*check_current_dir(char *cmd)
 }
 
 /*
-	If it is only one cmnd, you don't have to fork... 
+	If it is only one cmnd, you don't have to fork...
 	so just execute on the main process
  */
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)

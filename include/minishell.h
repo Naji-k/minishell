@@ -33,7 +33,6 @@
 /*
 	Global variable
  */
-
 extern int	g_exit_status;
 
 /*

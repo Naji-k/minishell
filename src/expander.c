@@ -169,9 +169,29 @@ void	handle_exit_status(t_token *node)
 void	handle_home_dir(t_token *node, t_tools *tools)
 {
 	t_env	*env;
+	char	*path;
+	char	*final_path;
 
 	env = find_env_by_key(&tools->env_list, "HOME");
-	node->cmd = env->value;
+	if (node->cmd[1] == '/')
+	{
+		path = ft_strdup(env->value);
+		if (!path)
+			exit(EXIT_FAILURE);
+		final_path = ft_strjoin(path, (&node->cmd[1]));
+		if (!final_path)
+			exit(EXIT_FAILURE);
+		free(path);
+		free(node->cmd);
+		node->cmd = final_path;
+	}
+	else if (node->cmd[1] == '\0')
+	{
+		node->cmd = env->value;
+		return ;
+	}
+	else
+		return ;
 }
 
 
