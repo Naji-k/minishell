@@ -44,8 +44,8 @@ void	wait_last_pid(pid_t last_pid);
 //redirection
 int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
-int		create_heredoc(t_token *redirection, t_commands *cmd);
-int		is_heredoc(t_commands **cmd);
+int		create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools);
+int		is_heredoc(t_commands **cmd, t_tools *tools);
 
 //error_handling
 int		error_file_handling(char *str);
@@ -56,7 +56,7 @@ void	bn_pwd(void);
 #endif
 
 /*  TEST CASES
-ls -la | cat | cat | git | grep add 
+ls -la | cat | cat | git | grep add
 ls -la | cat > 1 | echo hii > 2 | echo hello > 3 | git | grep git > 4
 
 ls -la >out | echo hii  >2 | echo hello  >3 | git > 4			**BUG
