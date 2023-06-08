@@ -81,14 +81,15 @@ int	main(int argc, char **argv, char **envp)
 		free_token_list(&tokens_head);
 		free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
-		printf("\n");
 	}
 	// free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this
-	free_env_list(&tools->env_list);
+	
+	//do not have to free them when submit the project
+/* 	free_env_list(&tools->env_list);
 	free(tools->pwd);
 	free(tools->old_pwd);
-	free(tools);
+	free(tools); */
 	(void)(argv);
 	return (0);
 }

@@ -92,8 +92,9 @@ typedef struct s_tools
 	char					*old_pwd;
 	// int						pipes;
 	// int						*pid;
-	// bool					heredoc;
+	bool					heredoc;
 	bool					loop;
+	bool					has_pipe;	//ask Youssef to make it true when there is two cmds
 }	t_tools;
 
 

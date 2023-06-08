@@ -41,6 +41,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	fd_o = dup(STDOUT_FILENO);
 	if ((*cmd_head)->next == NULL)
 	{
+		tools->has_pipe = false;
 		if ((*cmd_head)->redirections)
 			if (redirection((*cmd_head)))
 				return ;
@@ -48,7 +49,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		{
 			g_exit_status = execute_builtin((*cmd_head)->cmds[0])(tools,
 																	(*cmd_head)->cmds);
-				return;
+			return ;
 		}
 		if ((*cmd_head)->cmds[0])
 			execute_onc_cmd(tools, cmd_head);
@@ -74,6 +75,7 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	old_fd = STDIN_FILENO;
 	node = *cmd_head;
 	dprintf(2, "MULTI\n");
+	tools->has_pipe = true;
 	while (node->next != NULL)
 	{
 		if (pipe(fd) == -1)
@@ -117,10 +119,10 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		if ((*cmd_head)->cmds[0])
 		{
 			cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
-			dprintf(2, "\nRETURNED cmd_path=%s\n", cmd_path);	
+			// dprintf(2, "\nRETURNED cmd_path=%s\n", cmd_path);
 			if (!cmd_path)
 				exit(e_cmd_not_found((*cmd_head)->cmds[0]));
-				tools->envp = env_list_to_array(&tools->env_list);
+			tools->envp = env_list_to_array(&tools->env_list);
 			if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 				e_cmd_not_found((*cmd_head)->cmds[0]);
 		}
