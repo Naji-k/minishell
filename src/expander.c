@@ -187,7 +187,8 @@ void	handle_home_dir(t_token *node, t_tools *tools)
 	}
 	else if (node->cmd[1] == '\0')
 	{
-		node->cmd = env->value;
+		free(node->cmd);
+		node->cmd = ft_strdup(env->value);
 		return ;
 	}
 	else

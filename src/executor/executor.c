@@ -39,9 +39,9 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
-	tools->envp = env_list_to_array(&tools->env_list);
 	if ((*cmd_head)->next == NULL)
 	{
+		tools->has_pipe = false;
 		if ((*cmd_head)->redirections)
 			if (redirection((*cmd_head)))
 				return ;
@@ -49,7 +49,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		{
 			g_exit_status = execute_builtin((*cmd_head)->cmds[0])(tools,
 																	(*cmd_head)->cmds);
-				return;
+			return ;
 		}
 		if ((*cmd_head)->cmds[0])
 			execute_onc_cmd(tools, cmd_head);
@@ -58,7 +58,6 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		multi_comands(tools, cmd_head);
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
-	// free_2d_arr(tools->envp);
 }
 /*
 	this func will split the commands to two parts:
@@ -76,6 +75,7 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	old_fd = STDIN_FILENO;
 	node = *cmd_head;
 	dprintf(2, "MULTI\n");
+	tools->has_pipe = true;
 	while (node->next != NULL)
 	{
 		if (pipe(fd) == -1)
@@ -119,8 +119,10 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		if ((*cmd_head)->cmds[0])
 		{
 			cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
+			// dprintf(2, "\nRETURNED cmd_path=%s\n", cmd_path);
 			if (!cmd_path)
 				exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+			tools->envp = env_list_to_array(&tools->env_list);
 			if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 				e_cmd_not_found((*cmd_head)->cmds[0]);
 		}
@@ -130,6 +132,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 }
 /*
 	After finish the loop on all (commands-1) so now just execute the last command
+	and returns the last PID to wait for it
  */
 
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
@@ -155,6 +158,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 			e_cmd_not_found((*last_cmd)->cmds[0]);
 		if (cmd_path)
 		{
+			tools->envp = env_list_to_array(&tools->env_list);
 			if (execve(cmd_path, (*last_cmd)->cmds, tools->envp) == -1)
 				e_cmd_not_found((*last_cmd)->cmds[0]);
 		}
@@ -207,6 +211,7 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 		pid = fork();
 		if (pid == 0)
 		{
+			tools->envp = env_list_to_array(&tools->env_list);
 			if (execve(cmd_path, node->cmds, tools->envp) == -1)
 				exit(e_cmd_not_found(node->cmds[0]));
 		}
@@ -222,25 +227,34 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 char	*find_cmd_path(t_tools *tools, char *cmd)
 {
 	char	*cmd_path;
+	char	*tmp;
 	int		i;
 
 	// dprintf(2, "find_cmd[0]=%s\n", cmd);
-	tools->paths = find_path(tools->envp);
+	cmd_path = NULL;
 	cmd_path = check_current_dir(cmd);
 	if (cmd_path)
 		return (cmd_path);
+	tools->paths = get_paths2(&tools->env_list);
 	if (tools->paths)
 	{
 		i = -1;
 		while (tools->paths[++i])
 		{
-			cmd_path = ft_strjoin(tools->paths[i], cmd);
-			free(tools->paths[i]);
+			// cmd_path = NULL;
+			tmp = ft_strjoin(tools->paths[i], cmd);
+			cmd_path = tmp;
 			if (access(cmd_path, F_OK) == 0)
+			{
+				// free(tmp);
+				free_2d_arr(tools->paths);
 				return (cmd_path);
-			free(cmd_path);
+			}
+			free(tmp);
+			// free(cmd_path);
 		}
 	}
 	//should free
+	free_2d_arr(tools->paths);
 	return (NULL);
 }
