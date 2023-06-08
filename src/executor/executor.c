@@ -117,6 +117,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		if ((*cmd_head)->cmds[0])
 		{
 			cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
+			dprintf(2, "\nRETURNED cmd_path=%s\n", cmd_path);	
 			if (!cmd_path)
 				exit(e_cmd_not_found((*cmd_head)->cmds[0]));
 				tools->envp = env_list_to_array(&tools->env_list);
@@ -228,10 +229,11 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 	int		i;
 
 	// dprintf(2, "find_cmd[0]=%s\n", cmd);
-	tools->paths = get_paths2(&tools->env_list);
+	cmd_path = NULL;
 	cmd_path = check_current_dir(cmd);
 	if (cmd_path)
 		return (cmd_path);
+	tools->paths = get_paths2(&tools->env_list);
 	if (tools->paths)
 	{
 		i = -1;
@@ -240,14 +242,13 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 			// cmd_path = NULL;
 			tmp = ft_strjoin(tools->paths[i], cmd);
 			cmd_path = tmp;
-			free(tmp);
-			// free(tools->paths[i]);
 			if (access(cmd_path, F_OK) == 0)
 			{
+				// free(tmp);
 				free_2d_arr(tools->paths);
 				return (cmd_path);
 			}
-			// free(tmp);
+			free(tmp);
 			// free(cmd_path);
 		}
 	}

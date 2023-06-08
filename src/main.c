@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **envp)
 		free_cmd_list(&cmds_head);
 		printf("\n");
 	}
-	free_2d_arr(tools->envp);	//keep this
+	// free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this
 	free_env_list(&tools->env_list);
 	free(tools->pwd);
