@@ -217,6 +217,8 @@ void	expander(t_token **lst_tokens, t_tools *tools)
 	node = *lst_tokens;
 	while (node)
 	{
+		if (node->type == HEREDOC)
+			node->next->index = SKIP;
 		// printf("Command: %s\n", node->cmd);
 		if (node->cmd[0] == '$')
 		{

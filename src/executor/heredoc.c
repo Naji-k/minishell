@@ -12,7 +12,7 @@
 
 #include "executor.h"
 
-int	is_heredoc(t_commands **cmd, t_tools *tools)
+int	is_heredoc(t_commands **cmd, t_tools *tools, char *og_string)
 {
 	t_commands	*s_cmd;
 	t_token		*heredoc;
@@ -26,7 +26,7 @@ int	is_heredoc(t_commands **cmd, t_tools *tools)
 			while (heredoc && heredoc->type == HEREDOC)
 			{
 				dprintf(2, "Create heredoc named as %s\n", heredoc->cmd);
-				if (create_heredoc(heredoc, s_cmd, tools) == -1)
+				if (create_heredoc(heredoc, s_cmd, tools, og_string) == -1)
 					return (ERROR);
 				heredoc = heredoc->next;
 			}
@@ -44,7 +44,8 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i)
 
 	j = 0;
 	str_to_be_expanded = malloc(sizeof(char) * 20);
-	while (is_whitespace(line[*i]) == FALSE && line[*i] != '\0')
+	while ((is_whitespace(line[*i]) == FALSE && line[*i] != '\0')
+		&& (line[*i] != '"' && line[*i] != '\''))
 	{
 		str_to_be_expanded[j] = line[*i];
 		*i += 1;
@@ -68,7 +69,7 @@ char	*expand_heredoc(char *line, t_tools *tools)
 	i = 0;
 	j = 0;
 	x = 0;
-	final_string = malloc(sizeof(char) * ft_strlen(line) * 100);
+	final_string = malloc(sizeof(char) * ft_strlen(line) * 10);
 	while (line[i] != '\0')
 	{
 		final_string[j] = line[i];
@@ -93,7 +94,32 @@ char	*expand_heredoc(char *line, t_tools *tools)
 	return (final_string);
 }
 
-int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
+int	hd_has_quotations(char *string)
+{
+	int	i;
+	int	found_quotation;
+
+	i = 0;
+	found_quotation = FALSE;
+	while (string[i])
+	{
+		if (find_token_type(string[i], string[i + 1]) == HEREDOC)
+		{
+			i += 2;
+			while (is_whitespace(string[i]))
+				i++;
+			if (string[i] == '\'' || string[i] == '"')
+				found_quotation = TRUE;
+			else
+				found_quotation = FALSE;
+		}
+		i++;
+	}
+	return (found_quotation);
+}
+
+int	create_heredoc(t_token *redirection, t_commands *cmd,
+	t_tools *tools, char *og_string)
 {
 	int		file;
 	char	*line;
@@ -117,20 +143,19 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 			if (ft_strncmp(line, redirection->cmd,
 					ft_strlen(redirection->cmd)) == 0)
 				break ;
-			line = expand_heredoc(line, tools);
-			printf("Line after expansion: %s\n", line);
-			/* TODO:
-			I am Creating a file named as HEREDOC_DELIMITER,
-			but inside the file you have to expand the inputs,,
-			line= should be expanded from env, also should take care of ' ""
-			ex:
-			cat << 'EOF'
-			cat << EOF
-			IN OUR MINISHELL YOU CAN SEE THE INPUTS IN A FILE SO DONT HAVE TO USE cat
-			<< EOF , << 'EOF'
-			 */
-			write(file, line, ft_strlen(line));
-			write(file, "\n", 1);
+			if (hd_has_quotations(og_string) == TRUE)
+			{
+				// printf("Hd has quotations, literally copy paste.\n");
+				write(file, line, ft_strlen(line));
+				write(file, "\n", 1);
+			}
+			else
+			{
+				line = expand_heredoc(line, tools);
+				printf("Line after expansion: %s\n", line);
+				write(file, line, ft_strlen(line));
+				write(file, "\n", 1);
+			}
 		}
 		close(file);
 	}

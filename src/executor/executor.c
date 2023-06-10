@@ -28,14 +28,14 @@
 /*
 	executor: MAIN FUNC for executing part..
  */
-void	executor(t_tools *tools, t_commands **cmd_head)
+void	executor(t_tools *tools, t_commands **cmd_head, char *og_string)
 {
 	int	fd_i;
 	int	fd_o;
 
 	if ((*cmd_head) == NULL)
 		exit(0);
-	if (is_heredoc(cmd_head, tools) == ERROR)
+	if (is_heredoc(cmd_head, tools, og_string) == ERROR)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
