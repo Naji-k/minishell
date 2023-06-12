@@ -45,7 +45,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		free(tmp_opwd);
 		return (EXIT_FAILURE);
 	}
-	if (chdir(path) < 0)
+	if (chdir(path) == ERROR)
 	{
 		printf("cd: %s: No such file or directory\n", simple_cmd[1]);
 		free(path);

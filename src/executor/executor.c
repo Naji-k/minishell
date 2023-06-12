@@ -78,7 +78,7 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	tools->has_pipe = true;
 	while (node->next != NULL)
 	{
-		if (pipe(fd) == -1)
+		if (pipe(fd) == ERROR)
 			ft_putstr_fd("pipe:\n", 2);
 		multi_pipex_process(tools, &node, old_fd, fd);
 		close(fd[1]);
@@ -100,8 +100,16 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 	pid_t	pid;
 
 	pid = fork();
-	if (pid < 0)
-		ft_putstr_fd("fork\n", 2);
+	if (pid == ERROR)
+	{
+		close(old_fd);
+		close(fd[0]);
+		close(fd[1]);
+		perror("fork");
+		g_exit_status = 1;
+		return;
+	}
+		// ft_putstr_fd("fork\n", 2);
 	if (pid == 0)
 	{
 		close(fd[0]);
@@ -142,6 +150,8 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 	int		i;
 
 	pid = fork();
+	if (pid == ERROR)
+		ft_putstr_fd("fork\n", 2);
 	if (pid == 0)
 	{
 		ft_dup2_check(old_fd, STDIN_FILENO);
@@ -209,6 +219,8 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	if (cmd_path)
 	{
 		pid = fork();
+		if (pid == ERROR)
+			ft_putstr_fd("fork\n", 2);
 		if (pid == 0)
 		{
 			tools->envp = env_list_to_array(&tools->env_list);
