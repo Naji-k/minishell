@@ -79,13 +79,15 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	while (node->next != NULL)
 	{
 		if (pipe(fd) == ERROR)
-			ft_putstr_fd("pipe:\n", 2);
-		multi_pipex_process(tools, &node, old_fd, fd);
+			error_file_handling("pipe");
+		if (multi_pipex_process(tools, &node, old_fd, fd) == ERROR)
+		{
+			// CLOSE PIPES
+			return ;
+		}
 		close(fd[1]);
 		if (node != *cmd_head)
-		{
 			close(old_fd);
-		}
 		old_fd = fd[0];
 		node = node->next;
 	}
@@ -93,7 +95,7 @@ void	multi_comands(t_tools *tools, t_commands **cmd_head)
 	wait_last_pid(last_pid);
 }
 
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
+int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		int *fd)
 {
 	char	*cmd_path;
@@ -102,14 +104,9 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 	pid = fork();
 	if (pid == ERROR)
 	{
-		close(old_fd);
-		close(fd[0]);
-		close(fd[1]);
-		perror("fork");
-		g_exit_status = 1;
-		return;
+		close_pipes(fd, old_fd);
+		return (error_file_handling("fork"));
 	}
-		// ft_putstr_fd("fork\n", 2);
 	if (pid == 0)
 	{
 		close(fd[0]);
@@ -137,6 +134,7 @@ void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		else
 			exit(1);
 	}
+	return (SUCCESS);
 }
 /*
 	After finish the loop on all (commands-1) so now just execute the last command
@@ -151,7 +149,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 
 	pid = fork();
 	if (pid == ERROR)
-		ft_putstr_fd("fork\n", 2);
+		error_file_handling("fork");
 	if (pid == 0)
 	{
 		ft_dup2_check(old_fd, STDIN_FILENO);
@@ -220,7 +218,7 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	{
 		pid = fork();
 		if (pid == ERROR)
-			ft_putstr_fd("fork\n", 2);
+			error_file_handling("fork");
 		if (pid == 0)
 		{
 			tools->envp = env_list_to_array(&tools->env_list);
@@ -253,20 +251,30 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 		i = -1;
 		while (tools->paths[++i])
 		{
-			// cmd_path = NULL;
 			tmp = ft_strjoin(tools->paths[i], cmd);
 			cmd_path = tmp;
 			if (access(cmd_path, F_OK) == 0)
 			{
-				// free(tmp);
 				free_2d_arr(tools->paths);
 				return (cmd_path);
 			}
 			free(tmp);
-			// free(cmd_path);
 		}
 	}
-	//should free
 	free_2d_arr(tools->paths);
 	return (NULL);
+}
+
+int	close_pipes(int *fd, int old_fd)
+{
+	if (fd)
+	{
+		if (close(fd[0] == ERROR))
+			ft_putstr_fd("close fails\n", STDERR_FILENO);
+		if (close(fd[1] == ERROR))
+			ft_putstr_fd("close fails\n", STDERR_FILENO);
+	}
+	if (close(old_fd) == ERROR)
+		ft_putstr_fd("close fails\n", STDERR_FILENO);
+	return (0);
 }

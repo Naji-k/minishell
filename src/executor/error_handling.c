@@ -24,6 +24,12 @@ int	error_file_handling(char *str)
 		perror(str);
 	else if (errno == EISDIR)
 		perror(str);
+	else if (errno == EACCES)
+		perror(str);
+	else if (errno == EAGAIN)
+		perror(str);
+	else if (errno == ENOMEM)
+		perror(str);
 	else
 	{
 		g_exit_status = errno;

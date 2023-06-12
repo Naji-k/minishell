@@ -71,7 +71,8 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 	{
 		if (is_all_numric(simple_cmd[1]) == true)
 		{
-			ft_putendl_fd("exit", STDOUT_FILENO);
+			if (!tools->has_pipe)
+				ft_putendl_fd("exit", STDOUT_FILENO);
 			if (simple_cmd[2] == NULL)
 			{
 				g_exit_status = ft_atoi(simple_cmd[1]);
@@ -88,12 +89,10 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 		{
 			g_exit_status = 255;
 			if (tools->has_pipe == false)
-			{
 				ft_putendl_fd("exit", STDOUT_FILENO);
-				ft_putstr_fd("Minishell: exit: ", STDERR_FILENO);
-				ft_putstr_fd(simple_cmd[1], STDERR_FILENO);
-				ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-			}
+			ft_putstr_fd("Minishell: exit: ", STDERR_FILENO);
+			ft_putstr_fd(simple_cmd[1], STDERR_FILENO);
+			ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 			free_all_exit(tools);
 		}
 	}

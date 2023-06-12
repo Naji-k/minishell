@@ -82,4 +82,6 @@ void	init_tools(t_tools *tools)
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 	tools->loop = true;
+	tools->has_pipe = false;
+	tools->heredoc = 0;
 }

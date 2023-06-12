@@ -73,6 +73,7 @@ int	main(int argc, char **argv, char **envp)
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
 			exit(EXIT_FAILURE);
+		printf("\n");
 		parse_input(string, &tokens_head);
 		printf("--------PARSING---------------\n");
 		print_token_list(&tokens_head, FALSE);

@@ -33,9 +33,10 @@ char	*check_current_dir(char *cmd);
 
 //execute
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
+int		close_pipes(int *fd, int old_fd);
 //multi cmnds
 void	multi_comands(t_tools *tools, t_commands **cmd_head);
-void	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
+int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			int *fd);
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
