@@ -13,57 +13,73 @@
 #include "executor.h"
 #include "minishell.h"
 
-int	redirection(t_commands *cmd)
+static int	redirect_output(t_token *redirection)
+{
+	int	file;
+
+	if (redirection->type == REDIRECTION)
+	{
+		file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (file < 0)
+			return (error_file_handling(redirection->cmd));
+		ft_dup2_check(file, STDOUT_FILENO);
+	}
+	else if (redirection->type == A_REDIRECTION)
+	{
+		file = open(redirection->cmd, O_CREAT | O_RDWR | O_APPEND, 0644);
+		if (file < 0)
+			return (error_file_handling(redirection->cmd));
+		ft_dup2_check(file, STDOUT_FILENO);
+	}
+	return (SUCCESS);
+}
+
+static int	redirect_input(t_token *redirection)
 {
 	int		file;
-	t_token	*redirection;
+	char	*path;
 
+	path = NULL;
+	if (redirection->type == IN_FILE)
+	{
+		file = open(redirection->cmd, O_RDONLY, 0644);
+		if (file < 0)
+			return (error_file_handling(redirection->cmd));
+		ft_dup2_check(file, STDIN_FILENO);
+	}
+	else if (redirection->type == HEREDOC)
+	{
+		path = ft_strjoin("/tmp/", ft_itoa(redirection->index));
+		file = open(path, O_RDONLY, 0644);
+		unlink(path);
+		free(path);
+		if (file < 0)
+			return (error_file_handling(redirection->cmd));
+		ft_dup2_check(file, STDIN_FILENO);
+	}
+	return (SUCCESS);
+}
+
+int	redirection(t_commands *cmd)
+{
+	t_token	*redirection;
+	int		return_val;
+
+	return_val = SUCCESS;
 	redirection = cmd->redirections;
-	// dprintf(2,"redirection_NAME: %s\n", redirection->cmd);
-	// dprintf(2,"redirection_TYPE: %u\n", redirection->type);
 	while (redirection)
 	{
-		if (redirection->type == REDIRECTION)
-		{
-			dprintf(2, "\nRedirection\n");
-			file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-			if (file < 0)
-				return (error_file_handling(redirection->cmd));
-			ft_dup2_check(file, STDOUT_FILENO);
-			redirection = redirection->next;
-		}
-		else if (redirection->type == IN_FILE)
-		{
-			dprintf(2, "\ninfile\n");
-			file = open(redirection->cmd, O_RDONLY, 0644);
-			if (file < 0)
-				return (error_file_handling(redirection->cmd));
-			ft_dup2_check(file, STDIN_FILENO);
-			redirection = redirection->next;
-		}
-		else if (redirection->type == HEREDOC)
-		{
-			dprintf(2, "\nHEREDOC\n");
-			file = open(redirection->cmd, O_RDONLY, 0644);
-			if (file < 0)
-				return (error_file_handling(redirection->cmd));
-			ft_dup2_check(file, STDIN_FILENO);
-			redirection = redirection->next;
-		}
-		else if (redirection->type == A_REDIRECTION)
-		{
-			dprintf(2, "\nA_Redirection\n");
-			file = open(redirection->cmd, O_CREAT | O_RDWR | O_APPEND, 0644);
-			if (file < 0)
-				return (error_file_handling(redirection->cmd));
-			ft_dup2_check(file, STDOUT_FILENO);
-			redirection = redirection->next;
-		}
+		if (redirection->type == REDIRECTION
+			|| redirection->type == A_REDIRECTION)
+			return_val = redirect_output(redirection);
+		else if (redirection->type == IN_FILE || redirection->type == HEREDOC)
+			return_val = redirect_input(redirection);
 		else
 			dprintf(2, "UNKNOW\n");
+		redirection = redirection->next;
 	}
 	// close(file); // need to close previous files otherwise file leak.
-	return (SUCCESS);
+	return (return_val);
 }
 
 void	ft_dup2_check(int old, int new)

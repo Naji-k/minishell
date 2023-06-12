@@ -118,25 +118,32 @@ int	hd_has_quotations(char *string)
 	return (found_quotation);
 }
 
-int	create_heredoc(t_token *redirection, t_commands *cmd,
-	t_tools *tools)
+int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 {
 	int		file;
 	char	*line;
+	char	*path;
 	pid_t	pid;
 
 	file = 0;
 	line = NULL;
-	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s\n", cmd->cmds[0],
-			redirection->cmd);
+	path = ft_calloc(15, sizeof(char));
+	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s index=%d\n", cmd->cmds[0],
+			redirection->cmd, redirection->index);
+	if (!path)
+		return (-1);
 	pid = fork();
 	if (pid == ERROR)
 		return (ERROR);
 	if (pid == 0)
 	{
-		file = open(redirection->cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		path = ft_strjoin("/tmp/", ft_itoa(tools->heredoc));
+		printf("path=%s\n", path);
+		file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (file < 0)
 			return (error_file_handling(redirection->cmd));
+		dprintf(2, "index=%dtools index=%d\n", redirection->index,
+				tools->heredoc);
 		while (1)
 		{
 			line = readline("> ");
@@ -160,7 +167,8 @@ int	create_heredoc(t_token *redirection, t_commands *cmd,
 		close(file);
 		_exit(0);
 	}
+	redirection->index = tools->heredoc;
+	tools->heredoc += 1; //check if status id ok
 	wait(&pid);
-
 	return (SUCCESS);
 }

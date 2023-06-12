@@ -15,26 +15,21 @@
 int	error_file_handling(char *str)
 {
 	ft_putstr_fd("Minishell: ", STDERR_FILENO);
-	if (errno == 2)
-	{
+	g_exit_status = 1;
+	if (errno == ENOENT)
 		perror(str);
-		g_exit_status = 1;
-	}
-	else if (errno == 9)
-	{
+	else if (errno == EBADF)
 		perror(str);
-		g_exit_status = 1;
-	}
-	else if (errno == 13)
-	{
+	else if (errno == EACCES)
 		perror(str);
-		g_exit_status = 1;
-	}
-	else if (errno == 21)
-	{
+	else if (errno == EISDIR)
 		perror(str);
-		g_exit_status = 1;
-	}
+	else if (errno == EACCES)
+		perror(str);
+	else if (errno == EAGAIN)
+		perror(str);
+	else if (errno == ENOMEM)
+		perror(str);
 	else
 	{
 		g_exit_status = errno;
@@ -73,7 +68,7 @@ int	e_cmd_not_found(char *s_cmd)
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		g_exit_status = 127;
 	}
-	else if (errno == 13)
+	else if (errno == EACCES)
 	{
 		if (is_directory(s_cmd) != 0)
 			perror(s_cmd);
@@ -84,6 +79,28 @@ int	e_cmd_not_found(char *s_cmd)
 		ft_putstr_fd(s_cmd, STDERR_FILENO);
 		ft_putstr_fd(ft_itoa(errno), STDERR_FILENO);
 		g_exit_status = errno;
+	}
+	return (g_exit_status);
+}
+
+int	e_pipe_fork(char *str)
+{
+	ft_putstr_fd("Minishell: ", STDERR_FILENO);
+	g_exit_status = 1;
+	if (errno == EMFILE)
+	{
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putstr_fd(": Too many open files", STDERR_FILENO);
+	}
+	else if (errno == EAGAIN)
+	{
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putstr_fd(": Resource temporarily unavailable", STDERR_FILENO);
+	}
+	else if (errno == EACCES)
+	{
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putstr_fd(": Permission denied", STDERR_FILENO);
 	}
 	return (g_exit_status);
 }

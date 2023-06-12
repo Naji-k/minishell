@@ -93,7 +93,7 @@ typedef struct s_tools
 	char					*og_string;
 	// int						pipes;
 	// int						*pid;
-	bool					heredoc;
+	int						heredoc;
 	bool					loop;
 	bool					has_pipe;	//ask Youssef to make it true when there is two cmds
 }	t_tools;
