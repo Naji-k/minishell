@@ -90,6 +90,7 @@ typedef struct s_tools
 	// t_token					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
+	char					*og_string;
 	// int						pipes;
 	// int						*pid;
 	bool					heredoc;

@@ -27,7 +27,7 @@
 
 char	*find_cmd_path(t_tools *tools, char *cmd);
 
-void	executor(t_tools *tools, t_commands **cmd_head, char *og_string);
+void	executor(t_tools *tools, t_commands **cmd_head);
 //check_list
 char	*check_current_dir(char *cmd);
 
@@ -45,8 +45,8 @@ void	wait_last_pid(pid_t last_pid);
 int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
 int		create_heredoc(t_token *redirection, t_commands *cmd,
-			t_tools *tools, char *og_string);
-int		is_heredoc(t_commands **cmd, t_tools *tools, char *og_string);
+			t_tools *tools);
+int		is_heredoc(t_commands **cmd, t_tools *tools);
 
 //error_handling
 int		error_file_handling(char *str);
