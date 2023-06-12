@@ -51,7 +51,6 @@ int	g_exit_status = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	char		*string;
-	char		*og_string;
 	t_token		*tokens_head;
 	t_commands	*cmds_head;
 	t_tools		*tools;
@@ -71,8 +70,8 @@ int	main(int argc, char **argv, char **envp)
 	while (tools->loop)
 	{
 		string = readline("Minishell: ");
-		og_string = ft_strdup(string);
-		if (!og_string)
+		tools->og_string = ft_strdup(string);
+		if (!tools->og_string)
 			exit(EXIT_FAILURE);
 		parse_input(string, &tokens_head);
 		printf("--------PARSING---------------\n");
@@ -81,7 +80,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_cmds(&tokens_head, &cmds_head);
 		print_cmds_list(&cmds_head);
 		printf("--------EXECUTION-------------\n");
-		executor(tools, &cmds_head, og_string);
+		executor(tools, &cmds_head);
 		free_token_list(&tokens_head);
 		free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);

@@ -12,7 +12,7 @@
 
 #include "executor.h"
 
-int	is_heredoc(t_commands **cmd, t_tools *tools, char *og_string)
+int	is_heredoc(t_commands **cmd, t_tools *tools)
 {
 	t_commands	*s_cmd;
 	t_token		*heredoc;
@@ -26,7 +26,7 @@ int	is_heredoc(t_commands **cmd, t_tools *tools, char *og_string)
 			while (heredoc && heredoc->type == HEREDOC)
 			{
 				dprintf(2, "Create heredoc named as %s\n", heredoc->cmd);
-				if (create_heredoc(heredoc, s_cmd, tools, og_string) == -1)
+				if (create_heredoc(heredoc, s_cmd, tools) == -1)
 					return (ERROR);
 				heredoc = heredoc->next;
 			}
@@ -119,7 +119,7 @@ int	hd_has_quotations(char *string)
 }
 
 int	create_heredoc(t_token *redirection, t_commands *cmd,
-	t_tools *tools, char *og_string)
+	t_tools *tools)
 {
 	int		file;
 	char	*line;
@@ -143,7 +143,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd,
 			if (ft_strncmp(line, redirection->cmd,
 					ft_strlen(redirection->cmd)) == 0)
 				break ;
-			if (hd_has_quotations(og_string) == TRUE)
+			if (hd_has_quotations(tools->og_string) == TRUE)
 			{
 				// printf("Hd has quotations, literally copy paste.\n");
 				write(file, line, ft_strlen(line));
@@ -158,7 +158,9 @@ int	create_heredoc(t_token *redirection, t_commands *cmd,
 			}
 		}
 		close(file);
+		_exit(0);
 	}
 	wait(&pid);
+
 	return (SUCCESS);
 }
