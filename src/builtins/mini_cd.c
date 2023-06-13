@@ -30,32 +30,28 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 	path = NULL;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
 		path = cd_home_dir(tools);
-	else if (simple_cmd[1][0] == '-') //TO BE CHECKED IN LOOP
+	else if (simple_cmd[1][0] == '-')
 		path = mini_cd_oldpwd(tools);
-	// else if (simple_cmd[1][0] == '~')
-	// 	path = cd_root_dir(simple_cmd[1]);
-	else if (simple_cmd[1][0] == '.')
-		path = ft_strdup(simple_cmd[1]);
 	else //cd src (going to child-directory)
 		path = ft_strdup(simple_cmd[1]);
-	//should protect receiving current DIR
 	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!path)
 	{
-		free(tmp_opwd);
+		if (tmp_opwd)
+			free(tmp_opwd);
 		return (EXIT_FAILURE);
 	}
 	if (chdir(path) == ERROR)
 	{
-		printf("cd: %s: No such file or directory\n", simple_cmd[1]);
+		error_file_handling(simple_cmd[1]);
 		free(path);
-		free(tmp_opwd);
+		if (tmp_opwd)
+			free(tmp_opwd);
 		return (EXIT_FAILURE);
 	}
 	update_pwd_env(tools, tmp_opwd);
 	debug_cd(tools, simple_cmd, path); //for testing
 	free(path);
-	free(tmp_opwd);
 	return (0);
 }
 /* This function will check if PWD
@@ -66,11 +62,15 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	t_env	*pwd;
 	t_env	*old_pwd;
 
-	tools->old_pwd = ft_strdup(tmp_opwd);
-	free(tools->pwd);
+	tools->old_pwd = ftp_strdup(tmp_opwd);
+	if (tools->pwd || tools->pwd != '\0')
+		free(tools->pwd);
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
+	if (!tools->pwd)
+		ft_putstr_fd("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n",
+					STDERR_FILENO);
 	pwd = find_env_by_key(&tools->env_list, "PWD");
-	if (pwd)
+	if (pwd && tools->pwd)
 	{
 		free(pwd->value);
 		pwd->value = ft_strdup(tools->pwd);
@@ -85,25 +85,6 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	return ;
 }
 
-/* char	*cd_root_dir(char *simple_cmd)
-{
-	char	*path;
-	char	*sub_cmd;
-
-	path = NULL;
-	sub_cmd = NULL;
-	if (simple_cmd[1] == '\0')
-		path = ft_strdup(getenv("HOME"));
-	else
-	{
-		path = getenv("HOME");
-		sub_cmd = ft_substr(simple_cmd, 1, ft_strlen(simple_cmd) - 1);
-		path = ft_strjoin(path, sub_cmd);
-	}
-	free(sub_cmd);
-	return (path);
-} */
-
 char	*mini_cd_oldpwd(t_tools *tools)
 {
 	char	*path;
@@ -114,7 +95,7 @@ char	*mini_cd_oldpwd(t_tools *tools)
 	else
 	{
 		ft_putstr_fd("Minishell: ", STDERR_FILENO);
-		ft_putstr_fd("cd: OLDPWD not set", STDERR_FILENO);
+		ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO);
 		return (NULL);
 	}
 	return (path);
@@ -129,7 +110,7 @@ char	*cd_home_dir(t_tools *tools)
 	if (!path)
 	{
 		ft_putstr_fd("Minishell: ", STDERR_FILENO);
-		ft_putstr_fd("cd: HOME not set", STDERR_FILENO);
+		ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
 		return (NULL);
 	}
 	return (path);
@@ -137,11 +118,10 @@ char	*cd_home_dir(t_tools *tools)
 
 char	*cd_sub_dir(char *simple_cmd)
 {
-	char *path;
+	char	*path;
 
 	path = getcwd(NULL, sizeof(PATH_MAX));
 	ft_strlcat(path, "/", ft_strlen(path) + 2);
-	ft_strlcat(path, simple_cmd, ft_strlen(path) + ft_strlen(simple_cmd)
-			+ 1);
+	ft_strlcat(path, simple_cmd, ft_strlen(path) + ft_strlen(simple_cmd) + 1);
 	return (path);
 }

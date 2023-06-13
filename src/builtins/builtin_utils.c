@@ -20,7 +20,7 @@
 int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 {
 	unsigned long	i;
-	const char		*buildin_func_list[] = {
+	const char		*builtin_func_list[] = {
 		"cd",
 		"env",
 		"echo",
@@ -39,11 +39,12 @@ int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
 		&mini_exit};
 
 	i = 0;
-	while (i < (sizeof(buildin_func_list) / sizeof(char *)))
+	while (i < (sizeof(builtin_func_list) / sizeof(char *)))
 	{
-		if (ft_strncmp(args, buildin_func_list[i], ft_strlen(args)) == 0)
+		if (ft_strncmp(args, builtin_func_list[i], ft_strlen(args)) == 0)
 			return ((*builtin_func[i]));
 		i++;
 	}
 	return (0);
 }
+

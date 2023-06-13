@@ -15,9 +15,11 @@
 
 char	*ftp_strdup(char *s)
 {
-	char	*str;
-	size_t	len;
+	char *str;
+	size_t len;
 
+	if (!s || s[0] == '\0')
+		return (NULL);
 	len = ft_strlen(s);
 	str = ft_calloc((len + 1), sizeof(char));
 	if (!str)
