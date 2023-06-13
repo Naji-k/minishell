@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/09 08:40:59 by ysrondy           #+#    #+#             */
+/*                                                        ::::::::            */
+/*   ft_strdup.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/10/09 08:40:59 by ysrondy       #+#    #+#                 */
 /*   Updated: 2022/10/23 16:51:40 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <stdlib.h>
 
 char	*ft_strdup(const char *s)
@@ -17,6 +18,8 @@ char	*ft_strdup(const char *s)
 	char	*ptr;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	while (s[i] != '\0')
 		i++;
 	ptr = (char *)malloc(sizeof(char) * (i + 1));

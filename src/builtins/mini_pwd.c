@@ -22,6 +22,9 @@ int	mini_pwd(t_tools *tools, char **simple_cmd)
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("Current working dir: %s\n", cwd);
 	else
+	{
 		perror("getcwd() error");
-	return (0);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
