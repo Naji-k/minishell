@@ -29,22 +29,9 @@ static bool	is_all_numric(char *str)
 	}
 	return (true);
 }
-/* static int	exit_args(char **simple_cmd)
-{
-	int	i;
 
-	i = 1;
-	while (simple_cmd[i] != NULL)
-	{
-		if (is_all_numric(simple_cmd[i]))
-			i++;
-	}
-	return (0);
-}
- */
 void	free_all_exit(t_tools *tools)
 {
-	// tools->loop = false;
 	free_env_list(&tools->env_list);
 	if (tools->pwd != NULL || tools->pwd != '\0')
 		free(tools->pwd);
@@ -61,6 +48,22 @@ void	error_exit(char *cmd)
 	ft_putstr_fd(": numeric argument required\n", STDOUT_FILENO);
 }
 
+void	exit_with_number(t_tools *tools, char **simple_cmd)
+{
+	if (!tools->has_pipe)
+		ft_putendl_fd("exit", STDOUT_FILENO);
+	if (simple_cmd[2] == NULL)
+	{
+		g_exit_status = ft_atoi(simple_cmd[1]);
+		free_all_exit(tools);
+	}
+	else if (simple_cmd[2] != NULL)
+	{
+		g_exit_status = 1;
+		ft_putstr_fd("Minishell: exit: too many arguments\n", STDERR_FILENO);
+	}
+}
+
 int	mini_exit(t_tools *tools, char **simple_cmd)
 {
 	if (simple_cmd[1] == NULL)
@@ -72,21 +75,7 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 	else
 	{
 		if (is_all_numric(simple_cmd[1]) == true)
-		{
-			if (!tools->has_pipe)
-				ft_putendl_fd("exit", STDOUT_FILENO);
-			if (simple_cmd[2] == NULL)
-			{
-				g_exit_status = ft_atoi(simple_cmd[1]);
-				free_all_exit(tools);
-			}
-			else if (simple_cmd[2] != NULL)
-			{
-				g_exit_status = 1;
-				ft_putstr_fd("Minishell: exit: too many arguments\n",
-								STDERR_FILENO);
-			}
-		}
+			exit_with_number(tools, simple_cmd);
 		else if (is_all_numric(simple_cmd[1]) == false)
 		{
 			g_exit_status = 255;

@@ -28,21 +28,16 @@ static int	check_input(char *export_str) //error!
 				return (1);
 			}
 			else if (*export_str == 0)
-			{
 				return (0);
-			}
 			return (0);
 		}
 		else
-		{
-			printf("is_NOT_alpha\n");
-			return (1);
-		}
+			return(EXIT_FAILURE);
 	}
 	return (1);
 }
 
-void	print_export_env(t_tools *tools)
+static int	print_export_env(t_tools *tools)
 {
 	t_env	*env;
 
@@ -63,6 +58,8 @@ void	print_export_env(t_tools *tools)
 		}
 		env = env->next;
 	}
+	g_exit_status = 0;
+	return(EXIT_SUCCESS);
 }
 
 int	mini_export(t_tools *tools, char **simple_cmd)
@@ -74,13 +71,11 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	env_node = NULL;
 	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
-	{
-		print_export_env(tools);
-		return (0);
-	}
+		return (print_export_env(tools));
 	i = 1;
 	while (simple_cmd[i] != NULL)
 	{
+		printf("cmd[1]=%s\tcmd[2]=%s\n", simple_cmd[1], simple_cmd[2]);
 		if (!check_input(simple_cmd[i]))
 		{
 			env_node = modify_env_value(&tools->env_list, simple_cmd[i]);
@@ -88,15 +83,18 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 				env_node = env_new_node(simple_cmd[i]);
 			printf("key:%s\tvalue:%s\n", env_node->key, env_node->value);
 			env_add_back(&tools->env_list, env_node);
+			g_exit_status = 0;
 		}
 		else
 		{
+			ft_putstr_fd("Minishell: export: ", STDERR_FILENO);
+			ft_putstr_fd(simple_cmd[i], STDERR_FILENO);
+			ft_putstr_fd(": not a valid identifier\n", STDERR_FILENO);
 			g_exit_status = 1;
-			printf("ERROR\n");
 		}
 		i++;
 	}
-	return (0);
+	return (g_exit_status);
 }
 
 t_env	*modify_env_value(t_env **env_list, char *simple_command)
