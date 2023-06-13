@@ -15,27 +15,20 @@
 t_env	*env_new_node(char *env)
 {
 	int		i;
-	int		len;
-	int		j;
 	t_env	*new_node;
 
 	i = 0;
-	len = ft_strlen(env);
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
 		return (NULL);
 	new_node->value = NULL;
-	while (env[i])
-	{
-		if (env[i] == '=')
-		{
-			new_node->key = ft_substr(env, 0, i + 1);
-			j = len - i;
-			new_node->value = ft_substr(env, i + 1, j);
-			new_node->has_value = true;
-			break ;
-		}
+	while (env[i] != '\0' && env[i] != '=')
 		i++;
+	if (env[i] == '=')
+	{
+		new_node->key = ft_substr(env, 0, i + 1);
+		new_node->value = ft_substr(env, i + 1, ft_strlen(env) - i);
+		new_node->has_value = true;
 	}
 	if (!new_node->value) //this for empty value..
 	{
