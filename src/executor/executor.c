@@ -34,7 +34,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	int	fd_o;
 
 	if (!(*cmd_head))
-		return;
+		return ;
 	if (is_heredoc(cmd_head, tools) == ERROR)
 		return ;
 	fd_i = dup(STDIN_FILENO);
@@ -47,20 +47,20 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	dup2(fd_o, STDOUT_FILENO);
 }
 
-void one_cmd_handler(t_tools *tools, t_commands **cmd_head)
+void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 {
-		tools->has_pipe = false;
-		if ((*cmd_head)->redirections)
-			if (redirection((*cmd_head)))
-				return ;
-		if ((*cmd_head)->builtin)
-		{
-			g_exit_status = execute_builtin((*cmd_head)->cmds[0])(tools,
-																	(*cmd_head)->cmds);
+	tools->has_pipe = false;
+	if ((*cmd_head)->redirections)
+		if (redirection((*cmd_head)))
 			return ;
-		}
-		if ((*cmd_head)->cmds[0])
-			execute_onc_cmd(tools, cmd_head);
+	if ((*cmd_head)->builtin)
+	{
+		g_exit_status = run_builtin((*cmd_head)->cmds[0], tools,
+				(*cmd_head)->cmds);
+		return ;
+	}
+	if ((*cmd_head)->cmds[0])
+		execute_onc_cmd(tools, cmd_head);
 }
 /*
 	this func will split the commands to two parts:
@@ -101,7 +101,6 @@ void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
 int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		int *fd)
 {
-	char	*cmd_path;
 	pid_t	pid;
 
 	pid = fork();
@@ -119,23 +118,12 @@ int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			if (redirection((*cmd_head)))
 				exit(EXIT_FAILURE);
 		if ((*cmd_head)->builtin)
-		{
-			//should return the return value from builtin
-			exit(execute_builtin((*cmd_head)->cmds[0])(tools,
-														(*cmd_head)->cmds));
-		}
+			exit (run_builtin((*cmd_head)->cmds[0], tools,
+					(*cmd_head)->cmds));
 		if ((*cmd_head)->cmds[0])
-		{
-			cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
-			// dprintf(2, "\nRETURNED cmd_path=%s\n", cmd_path);
-			if (!cmd_path)
-				exit(e_cmd_not_found((*cmd_head)->cmds[0]));
-			tools->envp = env_list_to_array(&tools->env_list);
-			if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
-				e_cmd_not_found((*cmd_head)->cmds[0]);
-		}
+			execve_cmd(tools, cmd_head);
 		else
-			exit(1);
+			exit(EXIT_FAILURE);
 	}
 	return (SUCCESS);
 }
@@ -146,9 +134,7 @@ int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 {
-	char	*cmd_path;
 	pid_t	pid;
-	int		i;
 
 	pid = fork();
 	if (pid == ERROR)
@@ -160,22 +146,23 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 			if (redirection((*last_cmd)))
 				exit(EXIT_FAILURE);
 		if ((*last_cmd)->builtin)
-		{
-			i = execute_builtin((*last_cmd)->cmds[0])(tools, (*last_cmd)->cmds);
-			exit(i);
-		}
-		cmd_path = find_cmd_path(tools, (*last_cmd)->cmds[0]);
-		if (!cmd_path)
-			e_cmd_not_found((*last_cmd)->cmds[0]);
-		if (cmd_path)
-		{
-			tools->envp = env_list_to_array(&tools->env_list);
-			if (execve(cmd_path, (*last_cmd)->cmds, tools->envp) == -1)
-				e_cmd_not_found((*last_cmd)->cmds[0]);
-		}
+			exit(run_builtin((*last_cmd)->cmds[0], tools, (*last_cmd)->cmds));
+		execve_cmd(tools, last_cmd);
 	}
 	close(old_fd);
 	return (pid);
+}
+
+void	execve_cmd(t_tools *tools, t_commands **cmd_head)
+{
+	char	*cmd_path;
+
+	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
+	if (!cmd_path)
+		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+	tools->envp = env_list_to_array(&tools->env_list);
+	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
+		e_cmd_not_found((*cmd_head)->cmds[0]);
 }
 
 void	wait_last_pid(pid_t last_pid)
@@ -217,21 +204,18 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 		e_cmd_not_found(node->cmds[0]);
 		return ;
 	}
-	if (cmd_path)
+	pid = fork();
+	if (pid == ERROR)
+		error_file_handling("fork");
+	if (pid == 0)
 	{
-		pid = fork();
-		if (pid == ERROR)
-			error_file_handling("fork");
-		if (pid == 0)
-		{
-			tools->envp = env_list_to_array(&tools->env_list);
-			if (execve(cmd_path, node->cmds, tools->envp) == -1)
-				exit(e_cmd_not_found(node->cmds[0]));
-		}
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
+		tools->envp = env_list_to_array(&tools->env_list);
+		if (execve(cmd_path, node->cmds, tools->envp) == -1)
+			exit(e_cmd_not_found(node->cmds[0]));
 	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		g_exit_status = WEXITSTATUS(status);
 }
 
 /*

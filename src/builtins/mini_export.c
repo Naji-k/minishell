@@ -32,7 +32,7 @@ static int	check_input(char *export_str) //error!
 			return (0);
 		}
 		else
-			return(EXIT_FAILURE);
+			return (EXIT_FAILURE);
 	}
 	return (1);
 }
@@ -59,7 +59,15 @@ static int	print_export_env(t_tools *tools)
 		env = env->next;
 	}
 	g_exit_status = 0;
-	return(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
+}
+
+static void	error_export(char *simple_cmd)
+{
+	ft_putstr_fd("Minishell: export: ", STDERR_FILENO);
+	ft_putstr_fd(simple_cmd, STDERR_FILENO);
+	ft_putstr_fd(": not a valid identifier\n", STDERR_FILENO);
+	g_exit_status = 1;
 }
 
 int	mini_export(t_tools *tools, char **simple_cmd)
@@ -67,9 +75,7 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	int		i;
 	t_env	*env_node;
 
-	(void)simple_cmd;
 	env_node = NULL;
-	i = 0;
 	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
 		return (print_export_env(tools));
 	i = 1;
@@ -86,12 +92,7 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 			g_exit_status = 0;
 		}
 		else
-		{
-			ft_putstr_fd("Minishell: export: ", STDERR_FILENO);
-			ft_putstr_fd(simple_cmd[i], STDERR_FILENO);
-			ft_putstr_fd(": not a valid identifier\n", STDERR_FILENO);
-			g_exit_status = 1;
-		}
+			error_export(simple_cmd[i]);
 		i++;
 	}
 	return (g_exit_status);
@@ -99,8 +100,8 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 
 t_env	*modify_env_value(t_env **env_list, char *simple_command)
 {
-	t_env *env_node;
-	char **key_value;
+	t_env	*env_node;
+	char	**key_value;
 
 	env_node = NULL;
 	key_value = ft_split(simple_command, '=');
