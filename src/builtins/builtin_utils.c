@@ -15,36 +15,23 @@
 
 /*
 	this is the Main func for buildins using strcmp
-	 we can call the builtin functions
+		we can call the builtin functions
  */
-int	(*execute_builtin(char *args))(t_tools *tools, char **simple_cmd)
+int	run_builtin(char *arg, t_tools *tools, char **simple_cmd)
 {
-	unsigned long	i;
-	const char		*builtin_func_list[] = {
-		"cd",
-		"env",
-		"echo",
-		"pwd",
-		"export",
-		"unset",
-		"exit"
-	};
-	static int		(*builtin_func[])(t_tools *tools, char **simple_cmd) = {
-		&mini_cd,
-		&mini_env,
-		&mini_echo,
-		&mini_pwd,
-		&mini_export,
-		&mini_unset,
-		&mini_exit};
-
-	i = 0;
-	while (i < (sizeof(builtin_func_list) / sizeof(char *)))
-	{
-		if (ft_strncmp(args, builtin_func_list[i], ft_strlen(args)) == 0)
-			return ((*builtin_func[i]));
-		i++;
-	}
-	return (0);
+	if (ft_strncmp(arg, "cd", 3) == 0)
+		return (mini_cd(tools, simple_cmd));
+	if (ft_strncmp(arg, "env", 4) == 0)
+		return (mini_env(tools, simple_cmd));
+	if (ft_strncmp(arg, "echo", 5) == 0)
+		return (mini_echo(tools, simple_cmd));
+	if (ft_strncmp(arg, "pwd", 4) == 0)
+		return (mini_pwd(tools, simple_cmd));
+	if (ft_strncmp(arg, "export", 7) == 0)
+		return (mini_export(tools, simple_cmd));
+	if (ft_strncmp(arg, "unset", 6) == 0)
+		return (mini_unset(tools, simple_cmd));
+	if (ft_strncmp(arg, "exit", 5) == 0)
+		return (mini_exit(tools, simple_cmd));
+	return (EXIT_FAILURE);
 }
-

@@ -34,13 +34,9 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		path = mini_cd_oldpwd(tools);
 	else //cd src (going to child-directory)
 		path = ft_strdup(simple_cmd[1]);
-	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!path)
-	{
-		if (tmp_opwd)
-			free(tmp_opwd);
 		return (EXIT_FAILURE);
-	}
+	tmp_opwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (chdir(path) == ERROR)
 	{
 		error_file_handling(simple_cmd[1]);
@@ -59,30 +55,31 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 
 void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 {
-	t_env	*pwd;
-	t_env	*old_pwd;
+	t_env	*tmp;
 
 	tools->old_pwd = ftp_strdup(tmp_opwd);
 	if (tools->pwd || tools->pwd[0] != '\0')
 		free(tools->pwd);
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!tools->pwd)
-		ft_putstr_fd("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n",
-					STDERR_FILENO);
-	pwd = find_env_by_key(&tools->env_list, "PWD");
-	if (pwd && tools->pwd)
 	{
-		free(pwd->value);
-		pwd->value = ft_strdup(tools->pwd);
+		ft_putstr_fd("cd: error retrieving current directory: ", STDERR_FILENO);
+		ft_putstr_fd("getcwd: cannot access parent directories\n",
+			STDERR_FILENO);
 	}
-	old_pwd = find_env_by_key(&tools->env_list, "OLDPWD");
-	if (old_pwd)
+	tmp = find_env_by_key(&tools->env_list, "PWD");
+	if (tmp && tools->pwd)
 	{
-		free(old_pwd->value);
-		old_pwd->has_value = TRUE;
-		old_pwd->value = ft_strdup(tools->old_pwd);
+		free(tmp->value);
+		tmp->value = ft_strdup(tools->pwd);
 	}
-	return ;
+	tmp = find_env_by_key(&tools->env_list, "OLDPWD");
+	if (tmp)
+	{
+		free(tmp->value);
+		tmp->has_value = TRUE;
+		tmp->value = ft_strdup(tools->old_pwd);
+	}
 }
 
 char	*mini_cd_oldpwd(t_tools *tools)
