@@ -33,14 +33,22 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	int	fd_i;
 	int	fd_o;
 
-	if ((*cmd_head) == NULL)
-		exit(0);
+	if (!(*cmd_head))
+		return;
 	if (is_heredoc(cmd_head, tools) == ERROR)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
 	if ((*cmd_head)->next == NULL)
-	{
+		one_cmd_handler(tools, cmd_head);
+	if ((*cmd_head)->next != NULL)
+		multi_commands_handler(tools, cmd_head);
+	dup2(fd_i, STDIN_FILENO);
+	dup2(fd_o, STDOUT_FILENO);
+}
+
+void one_cmd_handler(t_tools *tools, t_commands **cmd_head)
+{
 		tools->has_pipe = false;
 		if ((*cmd_head)->redirections)
 			if (redirection((*cmd_head)))
@@ -53,11 +61,6 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		}
 		if ((*cmd_head)->cmds[0])
 			execute_onc_cmd(tools, cmd_head);
-	}
-	if ((*cmd_head)->next != NULL)
-		multi_comands(tools, cmd_head);
-	dup2(fd_i, STDIN_FILENO);
-	dup2(fd_o, STDOUT_FILENO);
 }
 /*
 	this func will split the commands to two parts:
@@ -65,7 +68,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	and run the last command separately
  */
 
-void	multi_comands(t_tools *tools, t_commands **cmd_head)
+void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
 {
 	t_commands	*node;
 	int			old_fd;
