@@ -63,7 +63,7 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	t_env	*old_pwd;
 
 	tools->old_pwd = ftp_strdup(tmp_opwd);
-	if (tools->pwd || tools->pwd != '\0')
+	if (tools->pwd || tools->pwd[0] != '\0')
 		free(tools->pwd);
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 	if (!tools->pwd)

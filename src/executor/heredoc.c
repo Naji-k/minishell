@@ -142,7 +142,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 		file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (file < 0)
 			return (error_file_handling(redirection->cmd));
-		dprintf(2, "index=%dtools index=%d\n", redirection->index,
+		dprintf(2, "index=%d  tools index=%d\n", redirection->index,
 				tools->heredoc);
 		while (1)
 		{

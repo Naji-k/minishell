@@ -32,11 +32,12 @@ void	executor(t_tools *tools, t_commands **cmd_head);
 char	*check_current_dir(char *cmd);
 
 //execute
+void	one_cmd_handler(t_tools *tools, t_commands **cmd_head);
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
 int		close_pipes(int *fd, int old_fd);
 //multi cmnds
-void	multi_comands(t_tools *tools, t_commands **cmd_head);
-int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
+void	multi_commands_handler(t_tools *tools, t_commands **cmd_head);
+int		multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			int *fd);
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
@@ -45,8 +46,7 @@ void	wait_last_pid(pid_t last_pid);
 //redirection
 int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
-int		create_heredoc(t_token *redirection, t_commands *cmd,
-			t_tools *tools);
+int		create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools);
 int		is_heredoc(t_commands **cmd, t_tools *tools);
 
 //error_handling
