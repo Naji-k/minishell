@@ -115,8 +115,8 @@ int		find_token_type(char c, char c_next);
 void	parse_input(char *string, t_token **tokens_head);
 
 				/* Parsing Dollar Expander */
-void	handle_arg_then_dollar(char *new_string, char *string, int *i, int *j);
-void	handle_dbl_dollars(char *new_string, char *string, int *i, int *j);
+void	handle_arg_then_dollar(char *new_string, char *string, int i, int j);
+int		handle_dbl_dollars(char *new_string, char *string, int i, int j);
 char	*sep_dollars(char *string);
 
 				/* Parsing Quotations */

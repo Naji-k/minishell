@@ -132,30 +132,26 @@ void	parse_input(char *_string, t_token **tokens_head)
 	int		start;
 	int		len;
 	char	*string;
-	int		equal;
 	t_token *node;
 
 	printf("Original String: |%s|\n", _string);
+	printf("Handling quotations...\n");
 	string = handle_quotations(_string);
 	printf("String after handling quotations: |%s|\n", string);
+	printf("Adding spaces after non literals...\n");
 	string = add_spaces_non_literal(string);
 	printf("String after adding spaces for non literals: |%s|\n", string);
+	printf("Separating dollars...\n");
 	string = sep_dollars(string);
 	printf("Final string after seperating dollars: |%s|\n", string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
-	equal = FALSE;
 	start = i;
+
 	while (string[i] != '\0')
 	{
-		if (is_next_non_literal(string, i) == TRUE)
-		{
-			// printf("equal is now false.\n");
-			equal = FALSE;
-		}
 		if ((is_whitespace(string[i]) == TRUE \
-			&& is_whitespace(string[i - 1]) == FALSE \
-			&& equal == FALSE) \
+			&& is_whitespace(string[i - 1]) == FALSE) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE))
 		{
 			if (((string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE)))
@@ -164,12 +160,6 @@ void	parse_input(char *_string, t_token **tokens_head)
 			node = create_node(tokens_head, string, start, len);
 			start = i + 1;
 		}
-		if (string[i] == '=')
-		{
-			// printf("Found equal!\n");
-			equal = TRUE;
-		}
-		// printf("I= %d\n", i);
 		start = skip_space_and_return(string, start);
 		len++;
 		i++;

@@ -34,16 +34,17 @@ char	*expand_arg(char *string, t_tools *tools)
 		len = ft_strlen(string) - 1;
 	else
 	{
-		len = expanded_arg - string;
+		printf("This is an export.\n");
+		len = expanded_arg - string - 1;
 		found_equal_sign = TRUE;
 	}
 	while (env_list)
 	{
 		if (ft_strncmp((string + 1), env_list->key, len) == 0
-			&& env_list->key[len] == '=')
+			&& ft_strlen(env_list->key) >= len && env_list->key[len] == '=')
 		{
 			if (found_equal_sign == TRUE)
-				expanded_arg = ft_strjoin(env_list->value, &string[len]);
+				expanded_arg = ft_strjoin(env_list->value, &string[len + 1]);
 			else
 				expanded_arg = ft_strdup(env_list->value);
 			if (!expanded_arg)

@@ -33,9 +33,9 @@ static bool	is_all_numric(char *str)
 void	free_all_exit(t_tools *tools)
 {
 	free_env_list(&tools->env_list);
-	if (tools->pwd != NULL || tools->pwd != '\0')
+	if (tools->pwd != NULL || tools->pwd[0] != '\0')
 		free(tools->pwd);
-	if (tools->old_pwd != NULL || tools->old_pwd != '\0')
+	if (tools->old_pwd != NULL || tools->old_pwd[0] != '\0')
 		free(tools->old_pwd);
 	free(tools);
 	exit(g_exit_status);
