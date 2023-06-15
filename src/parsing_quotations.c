@@ -57,8 +57,6 @@ char	*substring(t_token *node, int i)
 	free(node->cmd);
 	return (new_string);
 }
-// TODO: Fix issue where quotation marks are one right after the other. echo "$USER""$USER".
-// Has to do with the way I increment.
 char	*handle_quotations(char *string)
 {
 	char	*new_string;
@@ -85,16 +83,16 @@ char	*handle_quotations(char *string)
 			// printf("Entering Double Quote on %c, next one is %c at index %d\n", string[i], string[i + 1], i);
 			if (double_quote == TRUE)
 			{
-				new_string[j] = ' ';
-				j++;
+				// new_string[j] = ' ';
+				// j++;
 				while (string[i] == '"')
 					i++;
 				double_quote = FALSE;
 			}
 			else
 			{
-				new_string[j] = ' ';
-				j++;
+				// new_string[j] = ' ';
+				// j++;
 				i++;
 				double_quote = TRUE;
 			}
@@ -105,16 +103,16 @@ char	*handle_quotations(char *string)
 				i--;
 			if (single_quote == TRUE)
 			{
-				new_string[j] = ' ';
-				j++;
+				// new_string[j] = ' ';
+				// j++;
 				while (string[i] == '\'')
 					i++;
 				single_quote = FALSE;
 			}
 			else
 			{
-				new_string[j] = ' ';
-				j++;
+				// new_string[j] = ' ';
+				// j++;
 				i++;
 				single_quote = TRUE;
 			}
@@ -123,8 +121,8 @@ char	*handle_quotations(char *string)
 		{
 			if (single_inside_double == FALSE)
 			{
-				new_string[j] = ' ';
-				j++;
+				// new_string[j] = ' ';
+				// j++;
 				single_inside_double = TRUE;
 			}
 			else

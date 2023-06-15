@@ -77,7 +77,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 		exit(EXIT_FAILURE);
 	node_cmds->builtin = NULL; // temporary
 	node_cmds->redirections = NULL;
-	// printf("s_cmds: %d\n", s_cmds);
+	printf("s_cmds: %d\n", s_cmds);
 	while (start_node != target_node)
 	{
 		if (start_node->type == LITERAL)
@@ -86,7 +86,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 				redirection = FALSE;
 			else
 			{
-				// printf("Node %s is at index %d\n", start_node->cmd, i);
+				printf("Node %s is at index %d\n", start_node->cmd, i);
 				node_cmds->cmds[i] = start_node->cmd;
 				i++;
 			}
@@ -106,6 +106,22 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 	add_node_back((void **)cmd_head, node_cmds, CMDS_LIST);
 }
 
+
+int	get_lstsize(t_token *lst)
+{
+	int	i;
+
+	i = 1;
+	if (!lst)
+		return (0);
+	while (lst->next != NULL)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
 /*
 	Logic:
 		Loops through token list. If find redirection (>), sets redirection == TRUE.
@@ -121,42 +137,26 @@ void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 	t_token		*node_token;
 	t_token		*start_node;
 	int			s_cmds;
-	int			redirection;
 
-	s_cmds = 0;
+	s_cmds = (get_lstsize(*tokens_head) + 1);
 	start_node = *tokens_head;
 	node_token = *tokens_head;
-	redirection = FALSE;
 
 	if (!node_token)
 		return ;
 	while (node_token->next != NULL)
 	{
-		if (node_token->next->type != LITERAL && node_token->next->type != PIPE && redirection == FALSE)
-		{
-			redirection = TRUE;
-			s_cmds += 2;
-		}
-		if (redirection == FALSE)
-		{
-			s_cmds++;
-		}
 		if (node_token->type == PIPE)
 		{
 			// printf("Creating new command.\n");
 			// printf("Start Node: [%s] | Target Node: [%s], Number of commands: %d\n", start_node->cmd, node_token->cmd, s_cmds);
 			create_cmd(start_node, node_token, cmd_head, s_cmds);
 			start_node = node_token->next;
-			s_cmds = 0;
-			if (redirection == TRUE)
-				redirection = FALSE;
 		}
 		node_token = node_token->next;
 	}
 	if (node_token->type == LITERAL)
 	{
-		if (redirection == FALSE)
-			s_cmds += 2;
 		// printf("Creating Final Command\n");
 		// printf("Start Node: [%s] | Target Node: [%p]\n", start_node->cmd, node_token->next);
 		create_cmd(start_node, node_token->next, cmd_head, s_cmds);
