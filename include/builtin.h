@@ -16,7 +16,7 @@
 # include "minishell.h"
 # include <stdbool.h>
 
-int	(*execute_builtin(char *arg))(t_tools *tools, char **simple_cmd);
+int		run_builtin(char *arg, t_tools *tools, char **simple_cmd);
 /* PWD */
 int		mini_pwd(t_tools *tools, char **simple_cmd);
 /* echo */
@@ -26,7 +26,6 @@ int		mini_echo_cheker(char *str);
 char	*echo_home(char *str);
 
 /* export */
-
 int		mini_export(t_tools *tools, char **simple_cmd);
 t_env	*modify_env_value(t_env **env_list, char *simple_command);
 
