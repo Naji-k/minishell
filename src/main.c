@@ -75,10 +75,10 @@ int	main(int argc, char **argv, char **envp)
 		if (!tools->og_string)
 			exit(EXIT_FAILURE);
 		printf("\n");
-		parse_input(string, &tokens_head);
+		parse_input(string, &tokens_head, tools);
 		printf("--------PARSING---------------\n");
 		print_token_list(&tokens_head, FALSE);
-		expander(&tokens_head, tools);
+		// expander(&tokens_head, tools);
 		parse_cmds(&tokens_head, &cmds_head);
 		print_cmds_list(&cmds_head);
 		printf("--------EXECUTION-------------\n");

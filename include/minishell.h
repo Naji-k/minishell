@@ -112,7 +112,7 @@ typedef struct s_commands
 				/* Parsing Tokens */
 int		is_whitespace(char c);
 int		find_token_type(char c, char c_next);
-void	parse_input(char *string, t_token **tokens_head);
+void	parse_input(char *string, t_token **tokens_head, t_tools *tools);
 
 				/* Parsing Dollar Expander */
 void	handle_arg_then_dollar(char *new_string, char *string, int i, int j);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 //TODO: Fix $$.
 
@@ -61,7 +62,6 @@ int	skip_space_and_return(char *string, int start)
 	else
 		return (start);
 }
-
 
 char	*add_spaces_non_literal(char *string)
 {
@@ -120,44 +120,49 @@ int	is_next_non_literal(char *string, int i)
 	return (TRUE);
 }
 
-// TODO: Ex: $a (where a="")
-// TODO: Fix hey="ls             -l"
-// TODO: Fix hey="ls -l"
+/* TODO: Fix export.
+hey="ls             -l" should run as "ls -l" and print as "ls -l" when run echo "$hey".
+*/
+
 /*
 	Loops through string and creates t_token nodes delimited by a whitespace or the end of the string.
 */
-void	parse_input(char *_string, t_token **tokens_head)
+void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 {
 	int		i;
 	int		start;
 	int		len;
 	char	*string;
+	bool	quotes;
 	t_token *node;
 
-	printf("Original String: |%s|\n", _string);
-	printf("Handling quotations...\n");
-	string = handle_quotations(_string);
-	printf("String after handling quotations: |%s|\n", string);
 	printf("Adding spaces after non literals...\n");
-	string = add_spaces_non_literal(string);
-	printf("String after adding spaces for non literals: |%s|\n", string);
-	printf("Separating dollars...\n");
-	string = sep_dollars(string);
-	printf("Final string after seperating dollars: |%s|\n", string);
+	string = add_spaces_non_literal(_string);
+	// printf("Separating dollars...\n");
+	// string = sep_dollars(string);
+	printf("String before starting parsing: |%s|\n", string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
 	start = i;
+	quotes = false;
 
 	while (string[i] != '\0')
 	{
+		if (string[i] == '"' || string[i] == '\'')
+			quotes = !quotes;
 		if ((is_whitespace(string[i]) == TRUE \
-			&& is_whitespace(string[i - 1]) == FALSE) \
+			&& is_whitespace(string[i - 1]) == FALSE && quotes == false) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE))
 		{
 			if (((string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE)))
 				len++;
 			// printf("Creating token node starting from %d for a length of %d.\n", start, len);
 			node = create_node(tokens_head, string, start, len);
+			printf("String after creating node: |%s|\n", node->cmd);
+			node->cmd = expand_heredoc(node->cmd, tools);
+			printf("String after expansion: |%s|\n", node->cmd);
+			node->cmd = handle_quotations(node->cmd);
+			printf("String after handling quotations: |%s|\n", node->cmd);
 			start = i + 1;
 		}
 		start = skip_space_and_return(string, start);

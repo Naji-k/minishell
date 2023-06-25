@@ -71,6 +71,12 @@ char	*handle_quotations(char *string)
 	double_quote = FALSE;
 	single_quote = FALSE;
 	single_inside_double = FALSE;
+	if ((string[0] == '"' && string[1] == '"')
+		|| (string[0] == '\'' && string[1] == '\''))
+	{
+		string[0] = '\0';
+		return (string);
+	}
 	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
 	if (!new_string)
 		exit(EXIT_FAILURE);
@@ -94,13 +100,15 @@ char	*handle_quotations(char *string)
 				// new_string[j] = ' ';
 				// j++;
 				i++;
+				while (string[i] == '"')
+					i++;
 				double_quote = TRUE;
 			}
 		}
 		if (string[i] == '\'' && double_quote == FALSE)
 		{
-			if (string[i + 1] == '$')
-				i--;
+			// if (string[i + 1] == '$')
+			// 	i--;
 			if (single_quote == TRUE)
 			{
 				// new_string[j] = ' ';
@@ -114,6 +122,8 @@ char	*handle_quotations(char *string)
 				// new_string[j] = ' ';
 				// j++;
 				i++;
+				while (string[i] == '\'')
+					i++;
 				single_quote = TRUE;
 			}
 		}
