@@ -45,6 +45,7 @@ void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 	}
 	else
 		return ;
+		g_exit_status = 258;
 }
 
 
