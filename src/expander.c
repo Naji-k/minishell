@@ -27,6 +27,7 @@ char	*expand_arg(char *string, t_tools *tools)
 	int		len;
 	int		found_equal_sign;
 
+	printf("Trying to expand: %s\n", string);
 	env_list = tools->env_list;
 	found_equal_sign = FALSE;
 	expanded_arg = ft_strchr(string, '=');
@@ -40,6 +41,8 @@ char	*expand_arg(char *string, t_tools *tools)
 	}
 	while (env_list)
 	{
+		if (ft_strncmp(string, "$?", 2) == 0)
+			return (ft_itoa(g_exit_status));
 		if (ft_strncmp((string + 1), env_list->key, len) == 0
 			&& ft_strlen(env_list->key) >= len && env_list->key[len] == '=')
 		{

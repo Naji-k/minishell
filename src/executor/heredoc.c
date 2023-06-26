@@ -53,9 +53,47 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i)
 	}
 	str_to_be_expanded[j] = '\0';
 	expanded_string = expand_arg(str_to_be_expanded, tools);
+	if (!expanded_string)
+		exit(EXIT_FAILURE);
 	// printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
 	free(str_to_be_expanded);
 	return (expanded_string);
+}
+
+int	inside_single_quote_only(char *string, char c)
+{
+	int		i;
+	bool	single_quote;
+	int		single_pos;
+	bool	double_quote;
+	int		double_pos;
+
+	i = 0;
+	single_quote = false;
+	double_quote = false;
+	while (string[i])
+	{
+		if (string[i] == '"')
+		{
+			double_quote = !double_quote;
+			double_pos = i;
+		}
+		if (string[i] == '\'')
+		{
+			single_quote = !single_quote;
+			single_pos = i;
+		}
+		if (string[i] == c)
+		{
+			if (single_quote == true && (double_quote == false
+					|| (double_quote == true && single_pos < double_pos)))
+				return (true);
+			else
+				return (false);
+		}
+		i++;
+	}
+	return (false);
 }
 
 char	*expand_heredoc(char *line, t_tools *tools)
@@ -73,7 +111,8 @@ char	*expand_heredoc(char *line, t_tools *tools)
 	while (line[i] != '\0')
 	{
 		final_string[j] = line[i];
-		if (line[i] == '$' && line[i + 1] != '\0')
+		if (line[i] == '$' && line[i + 1] != '\0'
+			&& inside_single_quote_only(line, line[i]) == false)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i);
 			while (expanded_string && expanded_string[x])
