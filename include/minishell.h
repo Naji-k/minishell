@@ -130,7 +130,6 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 			t_commands **cmd_head, int num_nodes);
 int		is_builtin(char *string);
 
-
 				/* Init Tools */
 char	**ft_arrdup(char **arr);
 char	**find_path(char **envp);
@@ -148,6 +147,11 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
 				/* Expander ($ARG) */
 void	expander(t_token **lst_tokens, t_tools *tools);
 char	*expand_arg(char *string, t_tools *tools);
+void	expansion_into_token_list(t_token **lst_tokens, t_token *node,
+			char *expanded_arg, int single_quote);
+t_token	*handle_expansion(t_token **lst_tokens, t_token *node,
+			t_tools *tools, int single_quote);
+
 
 				/* Printing (DEBUGGING) */
 void	print_token_list(t_token **lst_head, int print_redirection);

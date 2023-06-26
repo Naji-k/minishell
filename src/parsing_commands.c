@@ -86,7 +86,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 				redirection = FALSE;
 			else
 			{
-				printf("Node %s is at index %d\n", start_node->cmd, i);
+				// printf("Node %s is at index %d\n", start_node->cmd, i);
 				node_cmds->cmds[i] = start_node->cmd;
 				i++;
 			}

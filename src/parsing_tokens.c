@@ -120,12 +120,62 @@ int	is_next_non_literal(char *string, int i)
 	return (TRUE);
 }
 
+
+void	handle_quotations_expansion(t_token **token_head, t_token *node)
+{
+	char	**split_string;
+	int		i;
+	int		j;
+
+	i = 1;
+	j = 0;
+	while (node->cmd[j])
+	{
+		if (node->cmd[j] == '"')
+			return ;
+		j++;
+	}
+	split_string = ft_split(node->cmd, ' ');
+	if (!split_string)
+		exit(EXIT_FAILURE);
+	if (split_string[0] == NULL)
+	{
+		free(split_string);
+		return ;
+	}
+	// printf("Split 1: %s, Split 2: %s\n", split_string[0], split_string[1]);
+	free(node->cmd);
+	node->cmd = ft_strdup(split_string[0]);
+	while (*split_string && split_string[i] != NULL)
+	{
+		if (split_string[i][0] == '\0')
+			;
+		else
+			create_node(token_head, split_string[i], 0, ft_strlen(split_string[i]));
+		i++;
+	}
+	free_2d_arr(split_string);
+}
+
+
 /* TODO: Fix export.
 hey="ls             -l" should run as "ls -l" and print as "ls -l" when run echo "$hey".
 */
 
+
+/*
+	If "$ARG" then expand normal string.
+	If $ARG without quotation, then command needs to be split by white spaces.
+	But $ARG in environment should not change, only what is given to executor as a command.
+
+	handle error when token head is not empty but cmds head is empty. = syntax error (<><>)
+	fix $unknown - DONE
+	fix $$ - check w/ Ruben
+*/
+
 /*
 	Loops through string and creates t_token nodes delimited by a whitespace or the end of the string.
+	readline history
 */
 void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 {
@@ -134,7 +184,7 @@ void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 	int		len;
 	char	*string;
 	bool	quotes;
-	t_token *node;
+	t_token	*node;
 
 	printf("Adding spaces after non literals...\n");
 	string = add_spaces_non_literal(_string);
@@ -161,6 +211,7 @@ void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 			printf("String after creating node: |%s|\n", node->cmd);
 			node->cmd = expand_heredoc(node->cmd, tools);
 			printf("String after expansion: |%s|\n", node->cmd);
+			handle_quotations_expansion(tokens_head, node);
 			node->cmd = handle_quotations(node->cmd);
 			printf("String after handling quotations: |%s|\n", node->cmd);
 			start = i + 1;
