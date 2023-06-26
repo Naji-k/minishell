@@ -54,8 +54,11 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i)
 	str_to_be_expanded[j] = '\0';
 	expanded_string = expand_arg(str_to_be_expanded, tools);
 	if (!expanded_string)
-		exit(EXIT_FAILURE);
-	// printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
+	{
+		str_to_be_expanded[0] = '\0';
+		return (str_to_be_expanded);
+	}
+	printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
 	free(str_to_be_expanded);
 	return (expanded_string);
 }
