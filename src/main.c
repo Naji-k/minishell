@@ -48,6 +48,36 @@ void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 		g_exit_status = 258;
 }
 
+void	add_to_history(char *string, t_tools *tools)
+{
+	t_token		*node;
+	static int	i = 1;
+
+	node = malloc(sizeof(t_token) * 1);
+	if (!node)
+		exit(EXIT_FAILURE);
+	node->cmd = ft_strdup(string);
+	if (!node->cmd)
+		exit(EXIT_FAILURE);
+	node->type = 0;
+	node->index = i;
+	node->next = NULL;
+	i++;
+	add_node_back((void **)(&(tools->history)), node, TOKEN_LIST);
+}
+
+void	print_history(t_tools *tools)
+{
+	t_token	*head_history;
+
+	head_history = tools->history;
+	while (head_history)
+	{
+		printf("   %d  %s\n", head_history->index, head_history->cmd);
+		head_history = head_history->next;
+	}
+}
+
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -85,9 +115,13 @@ int	main(int argc, char **argv, char **envp)
 		if (cmds_head)
 			free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
+		printf("--------HISTORY-------------\n");
+		add_to_history(tools->og_string, tools);
+		// print_history(tools);
 	}
 	// free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this
+	// free_token_list(&tools->history);
 	//do not have to free them when submit the project
 	/* 	free_env_list(&tools->env_list);
 	free(tools->pwd);

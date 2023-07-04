@@ -84,4 +84,5 @@ void	init_tools(t_tools *tools)
 	tools->loop = true;
 	tools->has_pipe = false;
 	tools->heredoc = 0;
+	tools->history = NULL;
 }

@@ -83,11 +83,11 @@ typedef struct s_token
 typedef struct s_tools
 {
 	// char					*args;
-	char					**paths; // needs to be deleted once Naji updates builtin functions.
-	char					**envp; // needs to be deleted once Naji updates builtin functions.
+	char					**paths;
+	char					**envp;
 	t_env					*env_list;
 	// struct s_simple_cmds	*simple_cmds;
-	// t_token					*lexer_list;
+	t_token					*history;
 	char					*pwd;
 	char					*old_pwd;
 	char					*og_string;
@@ -95,7 +95,7 @@ typedef struct s_tools
 	// int						*pid;
 	int						heredoc;
 	bool					loop;
-	bool					has_pipe;	//ask Youssef to make it true when there is two cmds
+	bool					has_pipe;
 }	t_tools;
 
 
