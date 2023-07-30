@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "minishell.h"
 
 int	is_heredoc(t_commands **cmd, t_tools *tools)
 {
@@ -50,8 +51,11 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i)
 		str_to_be_expanded[j] = line[*i];
 		*i += 1;
 		j++;
+		if (line[*i] == '$')
+			break ;
 	}
 	str_to_be_expanded[j] = '\0';
+	printf("String to be expanded: %s\n", str_to_be_expanded);
 	expanded_string = expand_arg(str_to_be_expanded, tools);
 	if (!expanded_string)
 	{
@@ -99,7 +103,7 @@ int	inside_single_quote_only(char *string, char c)
 	return (false);
 }
 
-char	*expand_heredoc(char *line, t_tools *tools)
+char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 {
 	char	*expanded_string;
 	char	*final_string;
@@ -115,7 +119,8 @@ char	*expand_heredoc(char *line, t_tools *tools)
 	{
 		final_string[j] = line[i];
 		if (line[i] == '$' && line[i + 1] != '\0'
-			&& inside_single_quote_only(line, line[i]) == false)
+			&& inside_single_quote_only(line, line[i]) == false
+			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i);
 			while (expanded_string && expanded_string[x])
@@ -189,8 +194,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 		while (1)
 		{
 			line = readline("> ");
-			if (ft_strncmp(line, redirection->cmd,
-					ft_strlen(redirection->cmd)) == 0)
+			if (ft_strncmp(line, redirection->cmd, ft_strlen(redirection->cmd)) == 0)
 				break ;
 			if (hd_has_quotations(tools->og_string) == TRUE)
 			{
@@ -200,7 +204,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 			}
 			else
 			{
-				line = expand_heredoc(line, tools);
+				line = expand_heredoc(*(tools->token_head), line, tools);
 				printf("Line after expansion: %s\n", line);
 				write(file, line, ft_strlen(line));
 				write(file, "\n", 1);

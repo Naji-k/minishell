@@ -13,6 +13,33 @@
 #include "minishell.h"
 
 /*
+	This function is mainly here to handle edge cases with HEREDOC.
+	It is used in conjuncture with expand_heredoc to make sure we $VAR is not expanded if it comes after << as that messes up EOF.
+	It also handles edge case where << $USER is written after opening the heredoc to write in another file, to make sure it does expand that.
+	So the only time it will block expansion is in the original command.
+*/
+t_token	*get_prev_node(t_token **token_head, t_token *node)
+{
+	t_token	*first_node;
+
+	first_node = *token_head;
+
+	if (!first_node || !node)
+		return (NULL);
+	if (first_node == node)
+	{
+		if (first_node->next == NULL)
+			return (first_node);
+		while (first_node->type == HEREDOC)
+			first_node = first_node->next;
+		return (first_node);
+	}
+	while (first_node->next != node)
+		first_node = first_node->next;
+	return (first_node);
+}
+
+/*
 	Returns the last node of a linked list.
 */
 void	*last_node(void *lst, t_lst_type type)
