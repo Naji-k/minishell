@@ -75,7 +75,7 @@ char	**get_paths2(t_env **env_list)
 	return (path_arr);
 }
 
-void	init_tools(t_tools *tools)
+void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head)
 {
 	// tools->envp = ft_arrdup(envp_arg);
 	// tools->paths = find_path(tools->envp);
@@ -85,4 +85,6 @@ void	init_tools(t_tools *tools)
 	tools->has_pipe = false;
 	tools->heredoc = 0;
 	tools->history = NULL;
+	tools->token_head = tokens_head;
+	tools->cmds_head = cmds_head;
 }

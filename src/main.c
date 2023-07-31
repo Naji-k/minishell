@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 	cmds_head = NULL;
 	tools = (t_tools *)malloc(sizeof(*tools));
 	init_tools_env(&tools->env_list, envp);
-	init_tools(tools); //keep this
+	init_tools(tools, &tokens_head, &cmds_head); //keep this
 	g_exit_status = 0;
 	while (tools->loop)
 	{
@@ -101,21 +101,20 @@ int	main(int argc, char **argv, char **envp)
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
 			exit(EXIT_FAILURE);
-		printf("\n");
 		parse_input(string, &tokens_head, tools);
-		printf("--------PARSING---------------\n");
+		printf("\n--------PARSING---------------\n");
 		print_token_list(&tokens_head, FALSE);
 		// expander(&tokens_head, tools);
 		parse_cmds(&tokens_head, &cmds_head);
 		print_cmds_list(&cmds_head);
-		printf("--------EXECUTION-------------\n");
+		printf("\n--------EXECUTION-------------\n");
 		handle_syntax_error(&tokens_head, &cmds_head);
 		executor(tools, &cmds_head);
 		free_token_list(&tokens_head);
 		if (cmds_head)
 			free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
-		printf("--------HISTORY-------------\n");
+		printf("\n--------HISTORY-------------\n");
 		add_to_history(tools->og_string, tools);
 		// print_history(tools);
 	}

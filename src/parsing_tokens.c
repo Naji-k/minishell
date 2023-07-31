@@ -63,45 +63,36 @@ int	skip_space_and_return(char *string, int start)
 		return (start);
 }
 
-char	*add_spaces_non_literal(char *string)
+char	*add_spaces_non_literal(char *str)
 {
 	int		i;
-	char	*new_string;
 	int		j;
+	int		in_quotes;
+	char	*result;
 
 	i = 0;
 	j = 0;
-	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
-	while (string[i] != '\0')
+	in_quotes = 0;
+	result = malloc(strlen(str) * 3);
+	while (str[i] != '\0')
 	{
-		if (find_token_type(string[i], string[i + 1]) != LITERAL)
+		if (str[i] == '\"' || str[i] == '\'')
+			in_quotes = !in_quotes;
+		if (!in_quotes && (str[i] == '>' || str[i] == '<' || str[i] == '|'))
 		{
-			new_string[j] = ' ';
-			if (find_token_type(string[i], string[i + 1]) == A_REDIRECTION
-				|| find_token_type(string[i], string[i + 1]) == HEREDOC)
-			{
-				new_string[j + 1] = string[i];
-				new_string[j + 2] = string[i + 1];
-				new_string[j + 3] = ' ';
-				i += 2;
-				j += 4;
-			}
-			else
-			{
-				new_string[j + 1] = string[i];
-				new_string[j + 2] = ' ';
-				j += 3;
-				i++;
-			}
+			if (i > 0 && str[i - 1] != ' ')
+				result[j++] = ' ';
+			result[j++] = str[i++];
+			if (str[i] == str[i - 1])
+				result[j++] = str[i++];
+			if (str[i] != ' ')
+				result[j++] = ' ';
 		}
-		new_string[j] = string[i];
-		i++;
-		j++;
+		else
+			result[j++] = str[i++];
 	}
-	new_string[j] = '\0';
-	free(string);
-	return (new_string);
-
+	result[j] = '\0';
+	return (result);
 }
 
 int	is_next_non_literal(char *string, int i)
@@ -131,7 +122,7 @@ void	handle_quotations_expansion(t_token **token_head, t_token *node)
 	j = 0;
 	while (node->cmd[j])
 	{
-		if (node->cmd[j] == '"')
+		if (node->cmd[j] == '"' || node->cmd[j] == '\'')
 			return ;
 		j++;
 	}
@@ -209,9 +200,10 @@ void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 			// printf("Creating token node starting from %d for a length of %d.\n", start, len);
 			node = create_node(tokens_head, string, start, len);
 			printf("String after creating node: |%s|\n", node->cmd);
-			node->cmd = expand_heredoc(node->cmd, tools);
+			node->cmd = expand_heredoc(node, node->cmd, tools);
 			printf("String after expansion: |%s|\n", node->cmd);
 			handle_quotations_expansion(tokens_head, node);
+			printf("String after handling quotations expansion: |%s|\n", node->cmd);
 			node->cmd = handle_quotations(node->cmd);
 			printf("String after handling quotations: |%s|\n", node->cmd);
 			start = i + 1;

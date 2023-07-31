@@ -79,6 +79,14 @@ typedef struct s_token
 	t_type			type;
 	struct s_token	*next;
 }				t_token;
+typedef struct s_commands
+{
+	char				**cmds;
+	char				*builtin; // needs to become function call
+	t_token				*redirections;
+	char				*hd_file_name; // not sure
+	struct s_commands	*next;
+}				t_commands;
 
 typedef struct s_tools
 {
@@ -91,6 +99,8 @@ typedef struct s_tools
 	char					*pwd;
 	char					*old_pwd;
 	char					*og_string;
+	t_token					**token_head;
+	t_commands				**cmds_head;
 	// int						pipes;
 	// int						*pid;
 	int						heredoc;
@@ -99,14 +109,6 @@ typedef struct s_tools
 }	t_tools;
 
 
-typedef struct s_commands
-{
-	char				**cmds;
-	char				*builtin; // needs to become function call
-	t_token				*redirections;
-	char				*hd_file_name; // not sure
-	struct s_commands	*next;
-}				t_commands;
 
 
 				/* Parsing Tokens */
@@ -134,12 +136,13 @@ int		is_builtin(char *string);
 char	**ft_arrdup(char **arr);
 char	**find_path(char **envp);
 void	add_bslash_path(char **paths);
-void	init_tools(t_tools *tools);
+void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head);
 
 				/* Linked_List Functions */
 void	*last_node(void *lst, t_lst_type type);
 void	add_node_back(void **lst_head, void *node, t_lst_type type);
 t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
+t_token *get_prev_node(t_token **tokens_head, t_token *node);
 
 				/* Execution of Commands */
 // void	execute(t_tools *tools, t_commands **cmd_head);

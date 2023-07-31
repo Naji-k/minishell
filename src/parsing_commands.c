@@ -82,6 +82,7 @@ void	create_cmd(t_token *start_node, t_token *target_node,
 	{
 		if (start_node->type == LITERAL)
 		{
+			// printf("String inside node: %s\n", start_node->cmd);
 			if (redirection == TRUE)
 				redirection = FALSE;
 			else
