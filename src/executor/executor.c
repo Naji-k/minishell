@@ -59,6 +59,11 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 				(*cmd_head)->cmds);
 		return ;
 	}
+	if ((*cmd_head)->cmds[0][0] == '\0')
+	{
+		e_cmd_not_found((*cmd_head)->cmds[0]);
+		return ;
+	}
 	if ((*cmd_head)->cmds[0])
 		execute_onc_cmd(tools, cmd_head);
 }
@@ -118,8 +123,7 @@ int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			if (redirection((*cmd_head)))
 				exit(EXIT_FAILURE);
 		if ((*cmd_head)->builtin)
-			exit (run_builtin((*cmd_head)->cmds[0], tools,
-					(*cmd_head)->cmds));
+			exit(run_builtin((*cmd_head)->cmds[0], tools, (*cmd_head)->cmds));
 		if ((*cmd_head)->cmds[0])
 			execve_cmd(tools, cmd_head);
 		else
