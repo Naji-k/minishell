@@ -64,9 +64,9 @@ static int	print_export_env(t_tools *tools)
 
 static void	error_export(char *simple_cmd)
 {
-	ft_putstr_fd("Minishell: export: ", STDERR_FILENO);
+	ft_putstr_fd("Minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd(simple_cmd, STDERR_FILENO);
-	ft_putstr_fd(": not a valid identifier\n", STDERR_FILENO);
+	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 	g_exit_status = 1;
 }
 
@@ -76,7 +76,7 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	t_env	*env_node;
 
 	env_node = NULL;
-	if (simple_cmd[1] == NULL || simple_cmd[1][0] == '\0')
+	if (simple_cmd[1] == NULL)
 		return (print_export_env(tools));
 	i = 1;
 	while (simple_cmd[i] != NULL)
