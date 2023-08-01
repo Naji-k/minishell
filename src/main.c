@@ -47,7 +47,7 @@ void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 		return ;
 		g_exit_status = 258;
 }
-
+//no need for this function we can use only (add_history) from the library
 void	add_to_history(char *string, t_tools *tools)
 {
 	t_token		*node;
@@ -101,6 +101,7 @@ int	main(int argc, char **argv, char **envp)
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
 			exit(EXIT_FAILURE);
+		add_history(string);
 		parse_input(string, &tokens_head, tools);
 		printf("\n--------PARSING---------------\n");
 		print_token_list(&tokens_head, FALSE);
@@ -114,9 +115,6 @@ int	main(int argc, char **argv, char **envp)
 		if (cmds_head)
 			free_token_list(&cmds_head->redirections);
 		free_cmd_list(&cmds_head);
-		printf("\n--------HISTORY-------------\n");
-		add_to_history(tools->og_string, tools);
-		// print_history(tools);
 	}
 	// free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this
