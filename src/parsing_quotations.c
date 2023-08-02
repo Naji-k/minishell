@@ -71,8 +71,8 @@ char	*handle_quotations(char *string)
 	double_quote = FALSE;
 	single_quote = FALSE;
 	single_inside_double = FALSE;
-	if ((string[0] == '"' && string[1] == '"')
-		|| (string[0] == '\'' && string[1] == '\''))
+	if ((string[0] == '"' && string[1] == '"' && string[2] == '\0')
+		|| (string[0] == '\'' && string[1] == '\'' && string[2] == '\0'))
 	{
 		string[0] = '\0';
 		return (string);
