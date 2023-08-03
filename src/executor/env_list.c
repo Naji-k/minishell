@@ -30,7 +30,7 @@ t_env	*env_new_node(char *env)
 		new_node->value = ft_substr(env, i + 1, ft_strlen(env) - i);
 		new_node->has_value = true;
 	}
-	if (!new_node->value) //this for empty value..
+	if (!new_node->value)
 	{
 		new_node->key = ft_substr(env, 0, i);
 		new_node->has_value = true;
