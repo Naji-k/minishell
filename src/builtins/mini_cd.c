@@ -32,7 +32,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		path = cd_home_dir(tools);
 	else if (simple_cmd[1][0] == '-')
 		path = mini_cd_oldpwd(tools);
-	else //cd src (going to child-directory)
+	else 
 		path = ft_strdup(simple_cmd[1]);
 	if (!path)
 		return (EXIT_FAILURE);
@@ -46,7 +46,6 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		return (EXIT_FAILURE);
 	}
 	update_pwd_env(tools, tmp_opwd);
-	debug_cd(tools, simple_cmd, path); //for testing
 	free(path);
 	return (0);
 }

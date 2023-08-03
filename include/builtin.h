@@ -22,7 +22,7 @@ int		mini_pwd(t_tools *tools, char **simple_cmd);
 /* echo */
 int		mini_echo(t_tools *tools, char **simple_cmd);
 int		mini_echo_option(char *str);
-int		mini_echo_cheker(char *str);
+int		mini_echo_checker(char *str, t_tools *tools);
 char	*echo_home(char *str);
 
 /* export */
