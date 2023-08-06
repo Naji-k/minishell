@@ -17,10 +17,13 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
 # include <unistd.h>
 # include <stdbool.h>
 # include "libft.h"
 # include <limits.h>
+# include <signal.h>
+# include <termios.h>
 
 # define FALSE 0
 # define TRUE 1
@@ -94,6 +97,8 @@ typedef struct s_tools
 	char					**paths;
 	char					**envp;
 	t_env					*env_list;
+	struct sigaction 		sigIntHandler;
+	struct sigaction 		sigQuitHandler;
 	// struct s_simple_cmds	*simple_cmds;
 	t_token					*history;
 	char					*pwd;
@@ -137,6 +142,8 @@ char	**ft_arrdup(char **arr);
 char	**find_path(char **envp);
 void	add_bslash_path(char **paths);
 void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head);
+void	handler_sigint(int s);
+void	handler_sigquit(int s);
 
 				/* Linked_List Functions */
 void	*last_node(void *lst, t_lst_type type);
