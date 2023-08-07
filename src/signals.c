@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/02 20:17:05 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/08/02 20:17:06 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   signals.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/08/02 20:17:05 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/08/02 20:17:06 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	handler_sigint(int s)
 
 void	handler_sigquit(int s)
 {
+	(void)s;
 	printf("Pressed on ctrl+\'");
 	exit(1);
 }
