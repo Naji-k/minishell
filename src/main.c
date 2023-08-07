@@ -78,6 +78,11 @@ void	print_history(t_tools *tools)
 	}
 }
 
+void	my_handler(int s)
+{
+	printf("Caught signal %d\n", s);
+	exit(1);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -95,6 +100,7 @@ int	main(int argc, char **argv, char **envp)
 	init_tools_env(&tools->env_list, envp);
 	init_tools(tools, &tokens_head, &cmds_head); //keep this
 	g_exit_status = 0;
+
 	while (tools->loop)
 	{
 		string = readline("Minishell: ");

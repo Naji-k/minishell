@@ -1,28 +1,29 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
-#    Makefile                                           :+:    :+:             #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                      +:+                     #
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/05/31 14:04:13 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/07/02 12:02:32 by ysrondy       ########   odam.nl          #
+#    Updated: 2023/08/05 00:43:47 by ysrondy          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror#-g -fsanitize=address,undefined
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a
+LIB_READLINE = /opt/homebrew/Cellar/readline/8.2.1/lib/libreadline.a
 
 #Directories
 LIBFT_DIR = ./lib/libft
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) 
 SRCS	:= $(shell find ./src -iname "*.c")
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
