@@ -115,3 +115,15 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	add_node_back((void **)tokens_head, node, TOKEN_LIST);
 	return (node);
 }
+
+void	free_redirections(t_commands **cmds_head)
+{
+	t_commands *first;
+
+	first = *cmds_head;
+	while (first)
+	{
+		free_token_list(&first->redirections);
+		first = first->next;
+	}
+}

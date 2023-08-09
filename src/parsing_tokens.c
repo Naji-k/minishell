@@ -92,6 +92,7 @@ char	*add_spaces_non_literal(char *str)
 			result[j++] = str[i++];
 	}
 	result[j] = '\0';
+	free(str);
 	return (result);
 }
 

@@ -37,7 +37,9 @@ void	free_all_exit(t_tools *tools)
 		free(tools->pwd);
 	if (tools->old_pwd != NULL)
 		free(tools->old_pwd);
+	free(tools->og_string);
 	free(tools);
+	clear_history();
 	exit(g_exit_status);
 }
 

@@ -18,13 +18,14 @@
 /* Variable defined here */
 int	g_exit_status = 0;
 
-void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
+void	andle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 {
 	t_token		*token;
 	t_commands	*cmds;
 
 	token = *tokens_head;
 	cmds = *cmds_head;
+	g_exit_status = 258;
 	if (token && token->next && token->next->next && token->next->next->next && cmds == NULL)
 		printf("Minishell: syntax error near unexpected token `%c%c'\n", token->next->next->cmd[0], token->next->next->next->cmd[0]);
 	else if (token && token->next && token->next->next && cmds == NULL)
@@ -44,8 +45,11 @@ void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 			printf("Minishell: syntax error near unexpected token `newline'\n");
 	}
 	else
+	{
+		// need to change this
+		g_exit_status = 0;
 		return ;
-		g_exit_status = 258;
+	}
 }
 //no need for this function we can use only (add_history) from the library
 void	add_to_history(char *string, t_tools *tools)
@@ -91,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	// atexit(check_leaks);
+		//atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -110,7 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(string);
 		parse_input(string, &tokens_head, tools);
 		printf("\n--------PARSING---------------\n");
-		print_token_list(&tokens_head, FALSE);
+		//print_token_list(&tokens_head, FALSE);
 		// expander(&tokens_head, tools);
 		parse_cmds(&tokens_head, &cmds_head);
 		print_cmds_list(&cmds_head);
@@ -119,8 +123,12 @@ int	main(int argc, char **argv, char **envp)
 		executor(tools, &cmds_head);
 		free_token_list(&tokens_head);
 		if (cmds_head)
-			free_token_list(&cmds_head->redirections);
+		{
+			// need to free all of them, not just the redirections of the first one.
+			free_redirection(&cmds_head);
+		}
 		free_cmd_list(&cmds_head);
+		free(tools->og_string);
 	}
 	// free_2d_arr(tools->envp);	//keep this
 	// free_2d_arr(tools->paths);	//keep this

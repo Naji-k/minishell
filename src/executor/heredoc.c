@@ -138,6 +138,7 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 		}
 	}
 	final_string[j] = '\0';
+	free(line);
 	return (final_string);
 }
 

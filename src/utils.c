@@ -84,6 +84,7 @@ void	free_cmd_list(t_commands **lst_head)
 	while (tmp != NULL)
 	{
 		tmp = tmp->next;
+		free(first->redirections);
 		free(first->cmds);
 		free(first);
 		first = tmp;
