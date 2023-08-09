@@ -18,7 +18,7 @@
 /* Variable defined here */
 int	g_exit_status = 0;
 
-void	andle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
+void	handle_syntax_error(t_token **tokens_head, t_commands **cmds_head)
 {
 	t_token		*token;
 	t_commands	*cmds;

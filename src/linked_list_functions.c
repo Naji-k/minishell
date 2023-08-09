@@ -116,7 +116,7 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	return (node);
 }
 
-void	free_redirections(t_commands **cmds_head)
+void	free_redirection(t_commands **cmds_head)
 {
 	t_commands *first;
 

@@ -150,7 +150,7 @@ void	*last_node(void *lst, t_lst_type type);
 void	add_node_back(void **lst_head, void *node, t_lst_type type);
 t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
 t_token *get_prev_node(t_token **tokens_head, t_token *node);
-void	free_redirections(t_commands **cmds_head);
+void	free_redirection(t_commands **cmds_head);
 
 				/* Execution of Commands */
 // void	execute(t_tools *tools, t_commands **cmd_head);

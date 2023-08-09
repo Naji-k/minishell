@@ -18,9 +18,9 @@ void	handler_sigint(int s)
 	// 	printf("User clicked on Ctrl+c in heredoc.\n");
 	(void)(s);
 	printf("Pressed on ctrl+c\n");
-	// rl_replace_line("Minishell:", 0);
-	// rl_on_new_line();
-	// rl_redisplay();
+	rl_replace_line("Minishell:", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 // Ctrl+D should only work if empty line.
