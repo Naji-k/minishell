@@ -24,6 +24,7 @@
 # include <limits.h>
 # include <signal.h>
 # include <termios.h>
+# include <sys/ioctl.h>
 
 # define FALSE 0
 # define TRUE 1
@@ -109,6 +110,7 @@ typedef struct s_tools
 	// int						pipes;
 	// int						*pid;
 	int						heredoc;
+	int						hd_pid;
 	bool					loop;
 	bool					has_pipe;
 }	t_tools;

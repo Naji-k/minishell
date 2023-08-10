@@ -139,6 +139,7 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 	}
 	final_string[j] = '\0';
 	free(line);
+	// free(expanded_string);
 	return (final_string);
 }
 
@@ -171,6 +172,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	int		file;
 	char	*line;
 	char	*path;
+	char	*path_hd;
 	pid_t	pid;
 
 	file = 0;
@@ -180,12 +182,14 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 			redirection->cmd, redirection->index);
 	if (!path)
 		return (-1);
+	free(path);
 	pid = fork();
 	if (pid == ERROR)
 		return (ERROR);
 	if (pid == 0)
 	{
-		path = ft_strjoin("/tmp/", ft_itoa(tools->heredoc));
+		path_hd = ft_itoa(tools->heredoc);
+		path = ft_strjoin("/tmp/", path_hd);
 		printf("path=%s\n", path);
 		file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (file < 0)

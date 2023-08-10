@@ -38,6 +38,7 @@ static int	redirect_input(t_token *redirection)
 {
 	int		file;
 	char	*path;
+	char	*path_redirection;
 
 	path = NULL;
 	if (redirection->type == IN_FILE)
@@ -49,10 +50,12 @@ static int	redirect_input(t_token *redirection)
 	}
 	else if (redirection->type == HEREDOC)
 	{
-		path = ft_strjoin("/tmp/", ft_itoa(redirection->index));
+		path_redirection = ft_itoa(redirection->index);
+		path = ft_strjoin("/tmp/", path_redirection);
 		file = open(path, O_RDONLY, 0644);
 		unlink(path);
 		free(path);
+		free(path_redirection);
 		if (file < 0)
 			return (error_file_handling(redirection->cmd));
 		ft_dup2_check(file, STDIN_FILENO);
