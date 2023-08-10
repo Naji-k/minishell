@@ -13,18 +13,20 @@
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror#-g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror #-fsanitize=address,undefined
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a
-LIB_READLINE = /opt/homebrew/Cellar/readline/8.2.1/lib/libreadline.a
+# LIB_READLINE = /opt/homebrew/Cellar/readline/8.2.1/lib/libreadline.a
 
 #Directories
 LIBFT_DIR = ./lib/libft
+
+# READLINE_DIR= ./lib/readline
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) 
-SRCS	:= $(shell find ./src -iname "*.c")
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(HOME)/.brew/opt/readline/include
+SRCS	:= $(shell find ./src -iname "*.c") # you're not allowed to do this (shell) explicitly state source files.
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 all :	$(NAME)
@@ -34,7 +36,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) $(OBJS) $(LIB_LIBFT) -o $(NAME) -lreadline
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L$(HOME)/.brew/opt/readline/lib
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 

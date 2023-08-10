@@ -21,6 +21,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 
 # define ERROR -1
 # define SUCCESS 0
