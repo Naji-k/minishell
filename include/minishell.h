@@ -99,6 +99,7 @@ typedef struct s_tools
 	char					**envp;
 	t_env					*env_list;
 	struct sigaction 		sigIntHandler;
+	struct sigaction 		sigHdHandler;
 	struct sigaction 		sigQuitHandler;
 	// struct s_simple_cmds	*simple_cmds;
 	t_token					*history;
@@ -146,6 +147,7 @@ void	add_bslash_path(char **paths);
 void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head);
 void	handler_sigint(int s);
 void	handler_sigquit(int s);
+void	handler_hd_sigint(int s);
 
 				/* Linked_List Functions */
 void	*last_node(void *lst, t_lst_type type);

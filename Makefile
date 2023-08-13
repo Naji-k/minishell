@@ -40,7 +40,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L$(HOME)/$(CODAM_READLINE_LIB)
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L$(CODAM_READLINE_LIB)
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 

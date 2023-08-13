@@ -16,19 +16,19 @@
 void	handler_sigint(int s)
 {
 	(void)(s);
+	// printf("Pressed CTRL+C OUTSIDE OF HEREDOC.\n");
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	g_exit_status = 1;
 }
 
-// Ctrl+D should only work if empty line.
-
 void	handler_hd_sigint(int s)
 {
 	(void)(s);
+	// printf("Pressed CTRL+C INSIDE OF HEREDOC.\n");
+	kill(getpid(), SIGTERM);
 }
-
 
 void	handler_sigquit(int s)
 {

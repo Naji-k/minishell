@@ -88,12 +88,6 @@ void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head)
 	tools->token_head = tokens_head;
 	tools->cmds_head = cmds_head;
 	tools->hd_pid = 0;
-	tools->sigIntHandler.sa_handler = handler_sigint;
-	tools->sigQuitHandler.sa_handler = handler_sigquit;
-	sigemptyset(&tools->sigIntHandler.sa_mask);
-	sigemptyset(&tools->sigQuitHandler.sa_mask);
-	tools->sigIntHandler.sa_flags = 0;
-	tools->sigQuitHandler.sa_flags = 0;
-	sigaction(SIGINT, &tools->sigIntHandler, NULL);
-	sigaction(SIGQUIT, &tools->sigQuitHandler, NULL);
+	signal(SIGINT, &handler_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }
