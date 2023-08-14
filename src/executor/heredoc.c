@@ -124,6 +124,8 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i);
+			if (expanded_string[0] == '\0')
+				tools->indexes[node->index] = 1;
 			while (expanded_string && expanded_string[x])
 			{
 				final_string[j] = expanded_string[x];

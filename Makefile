@@ -13,7 +13,7 @@
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror -g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a
@@ -29,7 +29,7 @@ LIBFT_DIR = ./lib/libft
 
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(HOME)/$(CODAM_READLINE_INCLUDE) #$(YOUSSEF_READLINE_INCLUDE)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(CODAM_READLINE_INCLUDE)
 SRCS	:= $(shell find ./src -iname "*.c") # you're not allowed to do this (shell) explicitly state source files.
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 

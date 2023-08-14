@@ -33,6 +33,9 @@
 # define ADD_QUOTATION_END 3
 # define NO_QUOTATION 0
 # define SKIP 666
+# define SYN_ERROR "Minishell: syntax error near unexpected token"
+# define DOT_ERROR "Minishell: .: filename argument required\n\
+.: usage: . filename [arguments]\n"
 
 /*
 	Global variable
@@ -98,11 +101,9 @@ typedef struct s_tools
 	char					**paths;
 	char					**envp;
 	t_env					*env_list;
-	struct sigaction 		sigIntHandler;
-	struct sigaction 		sigHdHandler;
-	struct sigaction 		sigQuitHandler;
 	// struct s_simple_cmds	*simple_cmds;
 	t_token					*history;
+	int						indexes[INT_MAX];
 	char					*pwd;
 	char					*old_pwd;
 	char					*og_string;
@@ -178,5 +179,6 @@ void	check_leaks(void);
 void	free_token_list(t_token **lst_head);
 void	free_cmd_list(t_commands **lst_head);
 void	free_2d_arr(char **arr);
+int		handle_syntax_error(t_token **tokens_head, t_tools *tools);
 
 #endif
