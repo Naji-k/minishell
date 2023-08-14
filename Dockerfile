@@ -29,7 +29,7 @@ RUN apt-get -y update \
 #	docker build ./ -f Dockerfile
 #
 #	to find image_ID:
-#	docker image list
+#	docker image list [Youssef: c7b744933c14]
 #
 #	to run docker container:
 #	docker run -it --rm -v $PWD:/pwd [image_tag/image_ID]

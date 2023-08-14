@@ -67,10 +67,8 @@ void	print_cmds_list(t_commands **lst_head)
 
 	i = 0;
 	node = *lst_head;
-	printf("\n");
 	while (node)
 	{
-		printf("Printing Node:\n");
 		while (node->cmds[i] != NULL)
 		{
 			printf("Cmds: {%s}\n", node->cmds[i]);

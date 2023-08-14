@@ -40,6 +40,7 @@ char	*cd_sub_dir(char *simple_cmd);
 int		mini_unset(t_tools *tools, char **simple_cmd);
 /* exit */
 int		mini_exit(t_tools *tools, char **simple_cmd);
+void	free_all_exit(t_tools *tools);
 /* env */
 int		mini_env(t_tools *tools, char **simple_cmd);
 //env_list_func

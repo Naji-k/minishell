@@ -115,6 +115,7 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 	j = 0;
 	x = 0;
 	final_string = malloc(sizeof(char) * ft_strlen(line) * 10);
+	expanded_string = NULL;
 	while (line[i] != '\0')
 	{
 		final_string[j] = line[i];
@@ -123,6 +124,8 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i);
+			if (expanded_string[0] == '\0')
+				tools->indexes[node->index] = 1;
 			while (expanded_string && expanded_string[x])
 			{
 				final_string[j] = expanded_string[x];
@@ -139,6 +142,7 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 	}
 	final_string[j] = '\0';
 	free(line);
+	free(expanded_string);
 	return (final_string);
 }
 
@@ -171,21 +175,25 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	int		file;
 	char	*line;
 	char	*path;
+	char	*path_hd;
 	pid_t	pid;
 
 	file = 0;
 	line = NULL;
-	path = ft_calloc(15, sizeof(char));
+	path = ft_calloc(15, sizeof(char)); // Why?
 	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s index=%d\n", cmd->cmds[0],
-			redirection->cmd, redirection->index);
+		redirection->cmd, redirection->index);
 	if (!path)
 		return (-1);
+	free(path); // youssef added this otherwise leak because strjoin below.
 	pid = fork();
 	if (pid == ERROR)
 		return (ERROR);
 	if (pid == 0)
 	{
-		path = ft_strjoin("/tmp/", ft_itoa(tools->heredoc));
+		signal(SIGINT, &handler_hd_sigint);
+		path_hd = ft_itoa(tools->heredoc);
+		path = ft_strjoin("/tmp/", path_hd);
 		printf("path=%s\n", path);
 		file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (file < 0)
@@ -199,7 +207,6 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 				break ;
 			if (hd_has_quotations(tools->og_string) == TRUE)
 			{
-				// printf("Hd has quotations, literally copy paste.\n");
 				write(file, line, ft_strlen(line));
 				write(file, "\n", 1);
 			}
@@ -214,6 +221,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 		close(file);
 		_exit(0);
 	}
+	signal(SIGINT, &handler_sigint);
 	redirection->index = tools->heredoc;
 	tools->heredoc += 1; //check if status id ok
 	wait(&pid);

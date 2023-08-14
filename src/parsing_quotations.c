@@ -64,13 +64,11 @@ char	*handle_quotations(char *string)
 	int		j;
 	int		double_quote;
 	int		single_quote;
-	int		single_inside_double;
 
 	i = 0;
 	j = 0;
 	double_quote = FALSE;
 	single_quote = FALSE;
-	single_inside_double = FALSE;
 	if ((string[0] == '"' && string[1] == '"' && string[2] == '\0')
 		|| (string[0] == '\'' && string[1] == '\'' && string[2] == '\0'))
 	{
@@ -86,19 +84,14 @@ char	*handle_quotations(char *string)
 			i++;
 		if (string[i] == '"' && single_quote == FALSE)
 		{
-			// printf("Entering Double Quote on %c, next one is %c at index %d\n", string[i], string[i + 1], i);
 			if (double_quote == TRUE)
 			{
-				// new_string[j] = ' ';
-				// j++;
 				while (string[i] == '"')
 					i++;
 				double_quote = FALSE;
 			}
 			else
 			{
-				// new_string[j] = ' ';
-				// j++;
 				i++;
 				while (string[i] == '"')
 					i++;
@@ -107,42 +100,26 @@ char	*handle_quotations(char *string)
 		}
 		if (string[i] == '\'' && double_quote == FALSE)
 		{
-			// if (string[i + 1] == '$')
-			// 	i--;
 			if (single_quote == TRUE)
 			{
-				// new_string[j] = ' ';
-				// j++;
 				while (string[i] == '\'')
 					i++;
 				single_quote = FALSE;
 			}
 			else
 			{
-				// new_string[j] = ' ';
-				// j++;
 				i++;
 				while (string[i] == '\'')
 					i++;
 				single_quote = TRUE;
 			}
 		}
-		if (string[i] == '\'' && double_quote == TRUE)
-		{
-			if (single_inside_double == FALSE)
-			{
-				// new_string[j] = ' ';
-				// j++;
-				single_inside_double = TRUE;
-			}
-			else
-			{
-				single_inside_double = FALSE;
-			}
-		}
 		new_string[j] = string[i];
-		i++;
-		j++;
+		if (new_string[j] != '\0')
+		{
+			i++;
+			j++;
+		}
 	}
 	new_string[j] = '\0';
 	free(string);

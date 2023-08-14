@@ -67,6 +67,7 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 			exit(e_cmd_not_found(node->cmds[0]));
 	}
 	waitpid(pid, &status, 0);
+	free(cmd_path);
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
 }

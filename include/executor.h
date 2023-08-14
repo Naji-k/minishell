@@ -56,6 +56,8 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools);
 //error_handling
 int		error_file_handling(char *str);
 int		e_cmd_not_found(char *s_cmd);
+
+
 //builtins
 int		bn_echo(t_commands **cmd_head);
 void	bn_pwd(void);
