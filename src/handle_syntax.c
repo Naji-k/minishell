@@ -64,10 +64,13 @@ int	syntax_dot(t_token *token)
 
 int	ambiguous_redirect(t_token *token, t_tools *tools)
 {
+	(void) tools;
 	if (token->type == REDIRECTION || token->type == A_REDIRECTION
 		|| token->type == IN_FILE)
 	{
-		if (tools->indexes[token->next->index] == 1)
+		printf("token.next.valid=%d\n", token->next->valid);
+		// if (tools->indexes[token->next->index] == 1)
+		if (token->next->valid == false)
 		{
 			g_exit_status = 1;
 			printf("Minishell: %s: ambiguous redirect.\n", token->next->cmd);

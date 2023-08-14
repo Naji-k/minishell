@@ -59,8 +59,11 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	expanded_string = expand_arg(str_to_be_expanded, tools);
 	if (!expanded_string)
 	{
+		node->valid = false;
+		// printf("node=%s node.valid=%d\n", node->cmd, node->valid);
 		if (get_prev_node(tools->token_head, node)->type != LITERAL && get_prev_node(tools->token_head, node)->type != PIPE)
 		{
+			// tools->indexes[node->index] = 1;
 			return (str_to_be_expanded);
 		}
 		str_to_be_expanded[0] = '\0';
@@ -128,8 +131,9 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i, node);
-			if (expanded_string[0] == '\0' || expanded_string[0] == '$')
-				tools->indexes[node->index] = 1;
+			// i think dont have to this one
+			// if (expanded_string[0] == '\0' || expanded_string[0] == '$') 
+			// 	tools->indexes[node->index] = 1;
 			while (expanded_string && expanded_string[x])
 			{
 				final_string[j] = expanded_string[x];

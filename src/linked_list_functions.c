@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_commands.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/12 08:42:20 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/12 08:42:21 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   linked_list_functions.c                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/12 08:42:20 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/04/12 08:42:21 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,9 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 		exit(EXIT_FAILURE);
 	// printf("Start Pos: %d, Len %d\n", start, (len - start));
 	node->cmd = ft_substr(string, start, (len - start));
-	// printf("Created: %s\n", node->cmd);
+	// printf("Created: %s value= %d\n", node->cmd, node->valid);
 	node->type = find_token_type(string[start], string[start + 1]);
+	node->valid = true;	//by default all tokens valid
 	node->index = i;
 	i++;
 	node->next = NULL;

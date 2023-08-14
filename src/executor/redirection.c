@@ -67,13 +67,16 @@ int	redirection(t_commands *cmd)
 {
 	t_token	*redirection;
 	int		return_val;
-
+	
 	return_val = SUCCESS;
 	redirection = cmd->redirections;
 	while (redirection)
 	{
-		if (redirection->cmd[0] == '$')
+		if (redirection->valid == false)
+		{
+			dprintf(2,"valid= %d\n", redirection->valid);
 			return(ERROR);
+		}
 		if (redirection->type == REDIRECTION
 			|| redirection->type == A_REDIRECTION)
 			return_val = redirect_output(redirection);
