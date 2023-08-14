@@ -32,7 +32,7 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 	}
 	if ((*cmd_head)->cmds[0][0] == '\0')
 	{
-		e_cmd_not_found((*cmd_head)->cmds[0]);
+		// e_cmd_not_found((*cmd_head)->cmds[0]);
 		return ;
 	}
 	if ((*cmd_head)->cmds[0])

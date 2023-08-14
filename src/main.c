@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 
 	while (tools->loop)
 	{
-		printf("\n--------NEW COMMAND---------------\n");
+		printf("--------NEW COMMAND---------------\n");
 		string = readline("Minishell: ");
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)

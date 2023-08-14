@@ -50,7 +50,7 @@ int		redirection(t_commands *cmd);
 void	ft_dup2_check(int old, int new);
 int		create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools);
 int		is_heredoc(t_commands **cmd, t_tools *tools);
-char	*get_expanded_arg(char *line, t_tools *tools, int *i);
+char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node);
 char	*expand_heredoc(t_token *node, char *line, t_tools *tools);
 
 //error_handling

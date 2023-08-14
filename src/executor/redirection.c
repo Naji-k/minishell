@@ -72,6 +72,8 @@ int	redirection(t_commands *cmd)
 	redirection = cmd->redirections;
 	while (redirection)
 	{
+		if (redirection->cmd[0] == '$')
+			return(ERROR);
 		if (redirection->type == REDIRECTION
 			|| redirection->type == A_REDIRECTION)
 			return_val = redirect_output(redirection);
@@ -82,6 +84,8 @@ int	redirection(t_commands *cmd)
 		redirection = redirection->next;
 	}
 	// close(file); // need to close previous files otherwise file leak.
+	if (cmd->cmds[0] == NULL)
+		return_val = 1;
 	return (return_val);
 }
 
