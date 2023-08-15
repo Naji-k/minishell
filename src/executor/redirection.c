@@ -98,5 +98,6 @@ void	ft_dup2_check(int old, int new)
 	{
 		if (dup2(old, new) == -1)
 			ft_putstr_fd("dup2 check = - 1\n", 2);
+		close(old);
 	}
 }

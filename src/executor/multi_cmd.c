@@ -104,7 +104,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 			exit(run_builtin((*last_cmd)->cmds[0], tools, (*last_cmd)->cmds));
 		execve_cmd(tools, last_cmd);
 	}
-	close(old_fd);
+	// close(old_fd);
 	return (pid);
 }
 
