@@ -56,12 +56,12 @@ int	main(int argc, char **argv, char **envp)
 			exit(EXIT_FAILURE);
 		add_history(string);
 		parse_input(string, &tokens_head, tools);
-		printf("\n--------LEXER---------------\n");
-		print_token_list(&tokens_head, FALSE);
+		// printf("\n--------LEXER---------------\n");
+		// print_token_list(&tokens_head, FALSE);
 		parse_cmds(&tokens_head, &cmds_head);
-		printf("\n--------COMMANDS---------------\n");
-		print_cmds_list(&cmds_head);
-		printf("\n--------EXECUTION-------------\n");
+		// printf("\n--------COMMANDS---------------\n");
+		// print_cmds_list(&cmds_head);
+		// printf("\n--------EXECUTION-------------\n");
 		if (handle_syntax_error(&tokens_head, tools) != 1)
 			executor(tools, &cmds_head);
 		free_token_list(&tokens_head);

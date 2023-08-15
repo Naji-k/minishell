@@ -20,6 +20,8 @@ LIB_LIBFT = ./lib/libft/libft.a
 
 #Readline
 YOUSSEF_READLINE_LIB = /opt/homebrew/opt/readline/lib
+CODAM_READLINE_LIB = $(HOME)/.brew/opt/readline/lib
+CODAM_READLINE_INCLUDE = $(HOME)/.brew/opt/readline/include
 YOUSSEF_READLINE_INCLUDE = /opt/homebrew/opt/readline/include
 CODAM_READLINE_LIB = $(HOME)/.brew/opt/readline/lib
 CODAM_READLINE_INCLUDE = $(HOME)/.brew/opt/readline/include

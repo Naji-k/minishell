@@ -185,6 +185,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	char	*path;
 	char	*path_hd;
 	pid_t	pid;
+	int		status;
 
 	file = 0;
 	line = NULL;
@@ -192,12 +193,16 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	path = NULL;
 	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s index=%d\n", cmd->cmds[0],
 		redirection->cmd, redirection->index);
+	if (!path)
+		return (-1);
+	free(path); // youssef added this otherwise leak because strjoin below.
+	signal(SIGINT, &handler_hd_sigint);
 	pid = fork();
 	if (pid == ERROR)
 		return (ERROR);
 	if (pid == 0)
 	{
-		signal(SIGINT, &handler_hd_sigint);
+		signal(SIGINT, SIG_DFL);
 		path_hd = ft_itoa(tools->heredoc);
 		path = ft_strjoin("/tmp/", path_hd);
 		printf("path=%s\n", path);
@@ -231,11 +236,11 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 		close(file);
 		_exit(0);
 	}
-	signal(SIGINT, &handler_sigint);
 	redirection->index = tools->heredoc;
 	tools->heredoc += 1; //check if status id ok
-	wait(&pid);
-	free(path_hd);
-	free(path);
+	waitpid(pid, &status, 0);
+	signal(SIGINT, &handler_sigint);
+	if (WIFSIGNALED(status))
+		return (ERROR);
 	return (SUCCESS);
 }
