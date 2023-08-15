@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   handle_syntax.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/14 09:02:18 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/08/14 09:02:19 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   handle_syntax.c                                    :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/08/14 09:02:18 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/08/14 09:02:19 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,16 @@ int	syntax_dot(t_token *token)
 
 int	ambiguous_redirect(t_token *token, t_tools *tools)
 {
+	(void) tools;
 	if (token->type == REDIRECTION || token->type == A_REDIRECTION
 		|| token->type == IN_FILE)
 	{
-		if (tools->indexes[token->next->index] == 1)
+		printf("token.next.valid=%d\n", token->next->valid);
+		// if (tools->indexes[token->next->index] == 1)
+		if (token->next->valid == false)
 		{
 			g_exit_status = 1;
-			printf("Minishell: [$VAR]: ambiguous redirect.\n");
+			printf("Minishell: %s: ambiguous redirect.\n", token->next->cmd);
 			return (1);
 		}
 	}
@@ -83,7 +86,6 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 	t_token		*token;
 
 	token = *tokens_head;
-
 	if (syntax_dot(token) == 1)
 		return (1);
 
@@ -94,7 +96,7 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 		if (syntax_pipe(token) == 1)
 			return (1);
 		if (ambiguous_redirect(token, tools) == 1)
-			return (1);
+			return (0);
 		token = token->next;
 	}
 	return (0);

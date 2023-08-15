@@ -32,7 +32,7 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 	}
 	if ((*cmd_head)->cmds[0][0] == '\0')
 	{
-		e_cmd_not_found((*cmd_head)->cmds[0]);
+		// e_cmd_not_found((*cmd_head)->cmds[0]);
 		return ;
 	}
 	if ((*cmd_head)->cmds[0])
@@ -67,7 +67,8 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 			exit(e_cmd_not_found(node->cmds[0]));
 	}
 	waitpid(pid, &status, 0);
-	free(cmd_path);
+	if (cmd_path) //shoul check otherwise segfault ex: '$USER'
+		free(cmd_path);
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
 }
