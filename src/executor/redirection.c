@@ -67,11 +67,16 @@ int	redirection(t_commands *cmd)
 {
 	t_token	*redirection;
 	int		return_val;
-
+	
 	return_val = SUCCESS;
 	redirection = cmd->redirections;
 	while (redirection)
 	{
+		if (redirection->valid == false)
+		{
+			dprintf(2,"valid= %d\n", redirection->valid);
+			return(ERROR);
+		}
 		if (redirection->type == REDIRECTION
 			|| redirection->type == A_REDIRECTION)
 			return_val = redirect_output(redirection);
@@ -82,6 +87,8 @@ int	redirection(t_commands *cmd)
 		redirection = redirection->next;
 	}
 	// close(file); // need to close previous files otherwise file leak.
+	if (cmd->cmds[0] == NULL)
+		return_val = 1;
 	return (return_val);
 }
 
@@ -91,5 +98,6 @@ void	ft_dup2_check(int old, int new)
 	{
 		if (dup2(old, new) == -1)
 			ft_putstr_fd("dup2 check = - 1\n", 2);
+		close(old);
 	}
 }

@@ -1,28 +1,30 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
-#    Makefile                                           :+:      :+:    :+:    #
+#    Makefile                                           :+:    :+:             #
 #                                                      +:+                     #
 #    By: nakanoun <nakanoun@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/05/31 14:04:13 by nakanoun      #+#    #+#                  #
-#    Updated: 2023/08/05 00:43:47 by ysrondy          ###   ########.fr        #
+#    Updated: 2023/08/05 00:43:47 by ysrondy       ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror -g #-fsanitize=address,undefined
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a
 
 #Readline
 YOUSSEF_READLINE_LIB = /opt/homebrew/opt/readline/lib
-CODAM_READLINE_LIB = .brew/opt/readline/lib
-CODAM_READLINE_INCLUDE = .brew/opt/readline/include
 YOUSSEF_READLINE_INCLUDE = /opt/homebrew/opt/readline/include
+CODAM_READLINE_LIB = $(HOME)/.brew/opt/readline/lib
+CODAM_READLINE_INCLUDE = $(HOME)/.brew/opt/readline/include
+NAJI_RL_LIB = /usr/local/opt/readline/lib
+NAJI_RL_INC = /usr/local/opt/readline/include
 
 #Directories
 LIBFT_DIR = ./lib/libft

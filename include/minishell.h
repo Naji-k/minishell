@@ -83,6 +83,7 @@ typedef struct s_token
 {
 	char			*cmd;
 	int				index;
+	bool			valid;
 	t_type			type;
 	struct s_token	*next;
 }				t_token;

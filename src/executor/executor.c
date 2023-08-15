@@ -45,6 +45,8 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		multi_commands_handler(tools, cmd_head);
 	dup2(fd_i, STDIN_FILENO);
 	dup2(fd_o, STDOUT_FILENO);
+	close(fd_i);
+	close(fd_o);
 }
 
 void	execve_cmd(t_tools *tools, t_commands **cmd_head)
@@ -57,6 +59,7 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 	tools->envp = env_list_to_array(&tools->env_list);
 	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 		e_cmd_not_found((*cmd_head)->cmds[0]);
+	free(cmd_path);
 }
 
 /*

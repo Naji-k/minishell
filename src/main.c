@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	//atexit(check_leaks);
+	atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 
 	while (tools->loop)
 	{
-		printf("\n--------NEW COMMAND---------------\n");
+		printf("--------NEW COMMAND---------------\n");
 		string = readline("Minishell: ");
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)

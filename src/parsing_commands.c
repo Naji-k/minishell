@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_commands.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/18 08:09:20 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/18 08:09:21 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   parsing_commands.c                                 :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/18 08:09:20 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/04/18 08:09:21 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node)
 		if (node_cmds->redirections->cmd == NULL)
 			exit(EXIT_FAILURE);
 		node_cmds->redirections->type = start_node->type;
+		node_cmds->redirections->valid = start_node->next->valid;
 		node_cmds->redirections->next = NULL;
 	}
 	else
@@ -55,6 +56,7 @@ void	handle_redirection(t_commands *node_cmds, t_token *start_node)
 		if (l_node->cmd == NULL)
 			exit(EXIT_FAILURE);
 		l_node->type = start_node->type;
+		l_node->valid = start_node->next->valid;
 		l_node->next = NULL;
 		add_node_back((void **)&node_cmds->redirections, l_node, TOKEN_LIST);
 	}

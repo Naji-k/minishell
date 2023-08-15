@@ -37,7 +37,7 @@ int	is_heredoc(t_commands **cmd, t_tools *tools)
 	return (SUCCESS);
 }
 
-char	*get_expanded_arg(char *line, t_tools *tools, int *i)
+char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 {
 	char	*str_to_be_expanded;
 	char	*expanded_string;
@@ -59,6 +59,13 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i)
 	expanded_string = expand_arg(str_to_be_expanded, tools);
 	if (!expanded_string)
 	{
+		node->valid = false;
+		// printf("node=%s node.valid=%d\n", node->cmd, node->valid);
+		if (get_prev_node(tools->token_head, node)->type != LITERAL && get_prev_node(tools->token_head, node)->type != PIPE)
+		{
+			// tools->indexes[node->index] = 1;
+			return (str_to_be_expanded);
+		}
 		str_to_be_expanded[0] = '\0';
 		return (str_to_be_expanded);
 	}
@@ -123,9 +130,10 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 			&& inside_single_quote_only(line, line[i]) == false
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
-			expanded_string = get_expanded_arg(line, tools, &i);
-			if (expanded_string[0] == '\0')
-				tools->indexes[node->index] = 1;
+			expanded_string = get_expanded_arg(line, tools, &i, node);
+			// i think dont have to this one
+			// if (expanded_string[0] == '\0' || expanded_string[0] == '$') 
+			// 	tools->indexes[node->index] = 1;
 			while (expanded_string && expanded_string[x])
 			{
 				final_string[j] = expanded_string[x];
@@ -180,12 +188,10 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 
 	file = 0;
 	line = NULL;
-	path = ft_calloc(15, sizeof(char)); // Why?
+	path_hd = NULL;
+	path = NULL;
 	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s index=%d\n", cmd->cmds[0],
 		redirection->cmd, redirection->index);
-	if (!path)
-		return (-1);
-	free(path); // youssef added this otherwise leak because strjoin below.
 	pid = fork();
 	if (pid == ERROR)
 		return (ERROR);
@@ -197,7 +203,11 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 		printf("path=%s\n", path);
 		file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (file < 0)
+		{
+			free(path_hd);
+			free(path);
 			return (error_file_handling(redirection->cmd));
+		}
 		dprintf(2, "index=%d  tools index=%d\n", redirection->index,
 				tools->heredoc);
 		while (1)
@@ -225,5 +235,7 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	redirection->index = tools->heredoc;
 	tools->heredoc += 1; //check if status id ok
 	wait(&pid);
+	free(path_hd);
+	free(path);
 	return (SUCCESS);
 }

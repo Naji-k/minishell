@@ -9,6 +9,7 @@
 /*   Updated: 2022/10/23 16:50:52 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <unistd.h>
 
 void	ft_putstr_fd(char *s, int fd)
@@ -16,6 +17,8 @@ void	ft_putstr_fd(char *s, int fd)
 	int	i;
 
 	i = 0;
+	if (!*s)
+		return ;
 	while (s[i] != '\0')
 	{
 		write(fd, &s[i], 1);
