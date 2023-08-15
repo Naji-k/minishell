@@ -110,6 +110,24 @@ int	inside_single_quote_only(char *string, char c)
 	return (false);
 }
 
+char	*ft_str_add_char(char *str, char c)
+{
+	char	*new_string;
+	int		i;
+
+	new_string = malloc(sizeof(char) * (ft_strlen(str) + 2));
+	i = 0;
+	while (str[i])
+	{
+		new_string[i] = str[i];
+		i++;
+	}
+	new_string[i] = c;
+	new_string[i + 1] = '\0';
+	free(str);
+	return (new_string);
+}
+
 char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 {
 	char	*expanded_string;
@@ -121,34 +139,25 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 	i = 0;
 	j = 0;
 	x = 0;
-	final_string = malloc(sizeof(char) * ft_strlen(line) * 10);
+	final_string = calloc((ft_strlen(line) + 1), sizeof(char));
 	expanded_string = NULL;
 	while (line[i] != '\0')
 	{
-		final_string[j] = line[i];
-		if (line[i] == '$' && line[i + 1] != '\0'
+		if (((line[i] == '$' && line[i + 1] != '\0') || (line[i] == '~'))
 			&& inside_single_quote_only(line, line[i]) == false
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i, node);
-			// i think dont have to this one
-			// if (expanded_string[0] == '\0' || expanded_string[0] == '$') 
-			// 	tools->indexes[node->index] = 1;
-			while (expanded_string && expanded_string[x])
-			{
-				final_string[j] = expanded_string[x];
-				x++;
-				j++;
-			}
-			x = 0;
+			final_string = ft_strjoin(final_string, expanded_string);
+			// NEED TO FIX LEAK ABOVE ^
+			// ALSO NEED TO CHECK FOR HANDLING '~' in other cases, for example ~~.
 		}
 		else
 		{
+			final_string = ft_str_add_char(final_string, line[i]);
 			i++;
-			j++;
 		}
 	}
-	final_string[j] = '\0';
 	free(line);
 	free(expanded_string);
 	return (final_string);
