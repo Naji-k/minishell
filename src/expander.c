@@ -41,6 +41,8 @@ char	*expand_arg(char *string, t_tools *tools)
 	}
 	while (env_list)
 	{
+		if (ft_strncmp(string, "~", 1) == 0)
+			return ft_strdup(getenv("HOME"));
 		if (ft_strncmp(string, "$?", 2) == 0)
 			return (ft_itoa(g_exit_status));
 		if (ft_strncmp((string + 1), env_list->key, len) == 0
