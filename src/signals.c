@@ -16,7 +16,6 @@
 void	handler_sigint(int s)
 {
 	(void)(s);
-	// printf("Pressed CTRL+C OUTSIDE OF HEREDOC.\n");
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -26,8 +25,7 @@ void	handler_sigint(int s)
 void	handler_hd_sigint(int s)
 {
 	(void)(s);
-	// printf("Pressed CTRL+C INSIDE OF HEREDOC.\n");
-	kill(getpid(), SIGTERM);
+	printf("\n");
 }
 
 void	handler_sigquit(int s)
@@ -37,3 +35,9 @@ void	handler_sigquit(int s)
 	// rl_on_new_line();
 	exit(0);
 }
+
+/*
+Fix export +=, a in env list, a= in both env list and export
+Fix ./minishell ./minishell ./minishell
+
+*/

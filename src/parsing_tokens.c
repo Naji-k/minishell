@@ -178,11 +178,11 @@ void	parse_input(char *_string, t_token **tokens_head, t_tools *tools)
 	bool	quotes;
 	t_token	*node;
 
-	printf("Adding spaces after non literals...\n");
+	// printf("Adding spaces after non literals...\n");
 	string = add_spaces_non_literal(_string);
 	// printf("Separating dollars...\n");
 	// string = sep_dollars(string);
-	printf("String before starting parsing: |%s|\n", string);
+	// printf("String before starting parsing: |%s|\n", string);
 	i = skip_whitespaces(string);
 	len = skip_whitespaces(string);
 	start = i;
