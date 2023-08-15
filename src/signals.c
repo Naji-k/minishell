@@ -37,6 +37,7 @@ void	handler_sigquit(int s)
 }
 
 /*
+fix export abc (then print env)
 Fix export +=, a in env list, a= in both env list and export
 Fix ./minishell ./minishell ./minishell
 

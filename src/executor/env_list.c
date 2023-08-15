@@ -22,6 +22,7 @@ t_env	*env_new_node(char *env)
 	if (!new_node)
 		return (NULL);
 	new_node->value = NULL;
+	new_node->has_value = false;
 	while (env[i] != '\0' && env[i] != '=')
 		i++;
 	if (env[i] == '=')
@@ -33,7 +34,6 @@ t_env	*env_new_node(char *env)
 	if (!new_node->value)
 	{
 		new_node->key = ft_substr(env, 0, i);
-		new_node->has_value = true;
 	}
 	new_node->next = NULL;
 	return (new_node);
