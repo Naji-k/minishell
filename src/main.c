@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	atexit(check_leaks);
+	// atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -55,7 +55,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!tools->og_string)
 			exit(EXIT_FAILURE);
 		add_history(string);
-		parse_input(string, &tokens_head, tools);
+		start_parsing(string, tools);
 		printf("\n--------LEXER---------------\n");
 		print_token_list(&tokens_head, FALSE);
 		parse_cmds(&tokens_head, &cmds_head);

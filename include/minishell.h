@@ -121,12 +121,13 @@ typedef struct s_tools
 }	t_tools;
 
 
-
-
 				/* Parsing Tokens */
 int		is_whitespace(char c);
 int		find_token_type(char c, char c_next);
-void	parse_input(char *string, t_token **tokens_head, t_tools *tools);
+void	start_parsing(char *string, t_tools *tools);
+int		skip_whitespaces(char *string);
+int		skip_space_and_return(char *string, int start);
+char	*add_spaces_non_literal(char *str);
 
 				/* Parsing Dollar Expander */
 void	handle_arg_then_dollar(char *new_string, char *string, int i, int j);
@@ -135,8 +136,10 @@ char	*sep_dollars(char *string);
 
 				/* Parsing Quotations */
 char	*handle_quotations(char *string);
-char	*substring(t_token *node, int i);
-char	*add_single_quote(char *string, int location);
+void	handle_quotations_expansion(t_token **token_head, t_token *node);
+int		check_quotations(t_token *node);
+void	increment_if_not_skipped(char *new_string, int *i, int *j);
+int		is_inside_quote(char *string, int pos_char);
 
 				/* Parsing Commands */
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
@@ -157,7 +160,7 @@ void	handler_hd_sigint(int s);
 void	*last_node(void *lst, t_lst_type type);
 void	add_node_back(void **lst_head, void *node, t_lst_type type);
 t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
-t_token *get_prev_node(t_token **tokens_head, t_token *node);
+t_token	*get_prev_node(t_token **tokens_head, t_token *node);
 void	free_redirection(t_commands **cmds_head);
 
 				/* Execution of Commands */

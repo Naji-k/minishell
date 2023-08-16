@@ -12,63 +12,68 @@
 
 #include "minishell.h"
 
-char	*add_single_quote(char *string, int location)
+void	handle_quotations_expansion(t_token **token_head, t_token *node)
 {
-	char	*new_string;
+	char	**split_string;
 	int		i;
-	int		j;
 
-	i = 0;
-	j = 1;
-	new_string = malloc(ft_strlen(string) + 2);
-	if (location == ADD_QUOTATION_BEGIN)
-		new_string[0] = '\'';
-	else
-	{
-		new_string[ft_strlen(string)] = '\'';
-		j = 0;
-	}
-	while (string[i])
-	{
-		new_string[j] = string[i];
-		i++;
-		j++;
-	}
-	new_string[ft_strlen(string) + 1] = '\0';
-	free(string);
-	return (new_string);
-}
-
-/*
-	If i = 1 -> We are removing first quotation mark from string.
-	If i = 2 -> We are removing first and last quotation mark.
-*/
-char	*substring(t_token *node, int i)
-{
-	char	*new_string;
-
-	new_string = NULL;
-	if (i == 1)
-		new_string = ft_substr(node->cmd, 1, ft_strlen(node->cmd));
-	else if (i == 2)
-		new_string = ft_substr(node->cmd, 1, (ft_strlen(node->cmd) - 2));
-	if (!new_string)
+	i = 1;
+	if (check_quotations(node) == true)
+		return ;
+	split_string = ft_split(node->cmd, ' ');
+	if (!split_string)
 		exit(EXIT_FAILURE);
+	if (split_string[0] == NULL)
+		return (free(split_string));
 	free(node->cmd);
-	return (new_string);
+	node->cmd = ft_strdup(split_string[0]);
+	while (*split_string && split_string[i] != NULL)
+	{
+		if (split_string[i][0] == '\0')
+			;
+		else
+			create_node(token_head, split_string[i],
+				0, ft_strlen(split_string[i]));
+		i++;
+	}
+	free_2d_arr(split_string);
 }
-char	*handle_quotations(char *string)
+
+
+int	handle_dbl_quotes(char *string, int *i)
+{
+	if (string[*i] == '"')
+	{
+		if (is_inside_quote(string, *i) == SINGLE_QUOTE)
+			return (false);
+		else
+		{
+			(*i) += 1;
+			return (true);
+		}
+	}
+	return (false);
+}
+
+int	handle_sgl_quotes(char *string, int *i)
+{
+	if (string[*i] == '\'')
+	{
+		if (is_inside_quote(string, *i) == DOUBLE_QUOTE)
+			return (false);
+		else
+		{
+			(*i) += 1;
+			return (true);
+		}
+	}
+	return (false);
+}
+
+char	*get_string_quotation(char *string)
 {
 	char	*new_string;
-	int		i;
-	int		j;
-	int		double_quote;
-	int		single_quote;
 
-	i = 0;
-	j = 0;
-	double_quote = FALSE;
-	single_quote = FALSE;
 	if ((string[0] == '"' && string[1] == '"' && string[2] == '\0')
 		|| (string[0] == '\'' && string[1] == '\'' && string[2] == '\0'))
 	{
@@ -78,48 +83,33 @@ char	*handle_quotations(char *string)
 	new_string = malloc(sizeof(char) * (ft_strlen(string) * 2));
 	if (!new_string)
 		exit(EXIT_FAILURE);
+	return (new_string);
+}
+
+char	*handle_quotations(char *string)
+{
+	char	*new_string;
+	int		i;
+	int		j;
+	int		skipped_dbl;
+	int		skipped_sgl;
+
+	i = 0;
+	j = 0;
+	skipped_dbl = false;
+	skipped_sgl = false;
+	new_string = get_string_quotation(string);
+	if (new_string == string)
+		return (string);
 	while (string[i])
 	{
-		if (string[i] == '$' && (string[i + 1] == '\'' || string[i + 1] == '"'))
-			i++;
-		if (string[i] == '"' && single_quote == FALSE)
-		{
-			if (double_quote == TRUE)
-			{
-				while (string[i] == '"')
-					i++;
-				double_quote = FALSE;
-			}
-			else
-			{
-				i++;
-				while (string[i] == '"')
-					i++;
-				double_quote = TRUE;
-			}
-		}
-		if (string[i] == '\'' && double_quote == FALSE)
-		{
-			if (single_quote == TRUE)
-			{
-				while (string[i] == '\'')
-					i++;
-				single_quote = FALSE;
-			}
-			else
-			{
-				i++;
-				while (string[i] == '\'')
-					i++;
-				single_quote = TRUE;
-			}
-		}
+		// if (string[i] == '$' && (string[i + 1] == '\'' || string[i + 1] == '"'))
+		// 	i++;
+		skipped_dbl = handle_dbl_quotes(string, &i);
+		skipped_sgl = handle_sgl_quotes(string, &i);
 		new_string[j] = string[i];
-		if (new_string[j] != '\0')
-		{
-			i++;
-			j++;
-		}
+		if (skipped_dbl == false && skipped_sgl == false)
+			increment_if_not_skipped(new_string, &i, &j);
 	}
 	new_string[j] = '\0';
 	free(string);
