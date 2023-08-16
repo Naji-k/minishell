@@ -33,6 +33,7 @@ t_env	*env_new_node(char *env)
 	}
 	if (!new_node->value)
 	{
+		// free(new_node->key); // Added this because the first ft_substr on line 30 will leak.
 		new_node->key = ft_substr(env, 0, i);
 	}
 	new_node->next = NULL;
@@ -77,7 +78,7 @@ void	env_add_back(t_env **list, t_env *new)
 	curr->next = new;
 }
 
-/* 
+/*
 	this function will search for specific env[key] and delete it
  */
 int	env_del_one(t_env **list, char *key)
@@ -107,7 +108,7 @@ int	env_del_one(t_env **list, char *key)
 	return (1);
 }
 
-/* 
+/*
 print env_list for debugging
  */
 void	prinft_env(t_env **list)

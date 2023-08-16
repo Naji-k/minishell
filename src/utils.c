@@ -14,8 +14,8 @@
 
 void	check_leaks(void)
 {
-	system("leaks -q minishell");
-	system("lsof -c minishell");
+	system("leaks -q --list minishell");
+	// system("lsof -c minishell");
 }
 
 
