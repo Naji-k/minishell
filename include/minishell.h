@@ -31,6 +31,8 @@
 # define ADD_QUOTATION 1
 # define ADD_QUOTATION_BEGIN 2
 # define ADD_QUOTATION_END 3
+# define DOUBLE_QUOTE 2
+# define SINGLE_QUOTE 1
 # define NO_QUOTATION 0
 # define SKIP 666
 # define SYN_ERROR "Minishell: syntax error near unexpected token"
@@ -162,12 +164,7 @@ void	free_redirection(t_commands **cmds_head);
 // void	execute(t_tools *tools, t_commands **cmd_head);
 
 				/* Expander ($ARG) */
-void	expander(t_token **lst_tokens, t_tools *tools);
 char	*expand_arg(char *string, t_tools *tools);
-void	expansion_into_token_list(t_token **lst_tokens, t_token *node,
-			char *expanded_arg, int single_quote);
-t_token	*handle_expansion(t_token **lst_tokens, t_token *node,
-			t_tools *tools, int single_quote);
 
 
 				/* Printing (DEBUGGING) */

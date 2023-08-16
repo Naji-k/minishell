@@ -13,7 +13,7 @@
 
 NAME := minishell
 
-CFLAGS := -Wall -Wextra -Werror -g -fsanitize=address,undefined
+CFLAGS := -Wall -Wextra -Werror #-g -fsanitize=address,undefined
 
 #Lib
 LIB_LIBFT = ./lib/libft/libft.a
@@ -33,7 +33,7 @@ LIBFT_DIR = ./lib/libft
 
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(CODAM_READLINE_INCLUDE)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(YOUSSEF_READLINE_INCLUDE)
 SRCS	:= $(shell find ./src -iname "*.c") # you're not allowed to do this (shell) explicitly state source files.
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
@@ -44,7 +44,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L$(CODAM_READLINE_LIB)
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L$(YOUSSEF_READLINE_LIB)
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 
