@@ -41,7 +41,7 @@ void	init_tools_env(t_env **env_list, char **envp)
 	if (cur)
 	{
 		cur->has_value = false;
-		cur->value = NULL;
+		// cur->value = NULL; // THIS IS CAUSING LEAK because OLDPWD already has ft_substr in env_new_node function and then you set it to null and the old malloced string is lost.
 	}
 }
 

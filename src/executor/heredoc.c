@@ -49,9 +49,14 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 		&& (line[*i] != '"' && line[*i] != '\''))
 	{
 		str_to_be_expanded[j] = line[*i];
+		if (line[*i] == '~')
+		{
+			j++;
+			break ;
+		}
 		*i += 1;
 		j++;
-		if (line[*i] == '$')
+		if (line[*i] == '$' || line[*i] == '-' || line[*i] == '~')
 			break ;
 	}
 	str_to_be_expanded[j] = '\0';
@@ -60,12 +65,8 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	if (!expanded_string)
 	{
 		node->valid = false;
-		// printf("node=%s node.valid=%d\n", node->cmd, node->valid);
 		if (get_prev_node(tools->token_head, node)->type != LITERAL && get_prev_node(tools->token_head, node)->type != PIPE)
-		{
-			// tools->indexes[node->index] = 1;
 			return (str_to_be_expanded);
-		}
 		str_to_be_expanded[0] = '\0';
 		return (str_to_be_expanded);
 	}
@@ -74,7 +75,7 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	return (expanded_string);
 }
 
-int	inside_single_quote_only(char *string, char c)
+int	is_inside_quote(char *string, char c)
 {
 	int		i;
 	bool	single_quote;
@@ -101,9 +102,12 @@ int	inside_single_quote_only(char *string, char c)
 		{
 			if (single_quote == true && (double_quote == false
 					|| (double_quote == true && single_pos < double_pos)))
-				return (true);
+				return (SINGLE_QUOTE);
+			else if (double_quote == true && (single_quote == false
+					|| (single_quote == true && double_pos < single_pos)))
+				return (DOUBLE_QUOTE);
 			else
-				return (false);
+				return (NO_QUOTATION);
 		}
 		i++;
 	}
@@ -133,24 +137,25 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 	char	*expanded_string;
 	char	*final_string;
 	int		i;
-	int		j;
-	int		x;
 
 	i = 0;
-	j = 0;
-	x = 0;
 	final_string = calloc((ft_strlen(line) + 1), sizeof(char));
 	expanded_string = NULL;
 	while (line[i] != '\0')
 	{
-		if (((line[i] == '$' && line[i + 1] != '\0') || (line[i] == '~'))
-			&& inside_single_quote_only(line, line[i]) == false
+		// printf("Top Line[i]: %c || %d\n", line[i], i);
+		if (((line[i] == '$' && line[i + 1] != '\0')
+				|| (i == 0 && line[i] == '~'
+					&& is_inside_quote(line, line[i + 1]) == NO_QUOTATION
+					&& (line[i + 1] == '\0' || line[i + 1] == '/')))
+			&& is_inside_quote(line, line[i]) != SINGLE_QUOTE
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i, node);
-			final_string = ft_strjoin(final_string, expanded_string);
-			// NEED TO FIX LEAK ABOVE ^
-			// ALSO NEED TO CHECK FOR HANDLING '~' in other cases, for example ~~.
+			final_string = ftp_strjoin(final_string, expanded_string);
+			free(expanded_string);
+			if (line[i] == '~' && i == 0)
+				i++;
 		}
 		else
 		{
@@ -159,7 +164,6 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 		}
 	}
 	free(line);
-	free(expanded_string);
 	return (final_string);
 }
 
