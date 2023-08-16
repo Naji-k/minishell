@@ -45,7 +45,7 @@ static int	print_export_env(t_tools *tools)
 {
 	t_env	*env;
 
-	env = tools->env_list;
+	env = *tools->env_list;
 	while (env)
 	{
 		// if (env->has_value == TRUE)
@@ -105,16 +105,16 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 			{
 				tmp = plus_equal(simple_cmd[i]);
 				printf("returned tmp=%s\n", tmp);
-				env_node = modify_env_value(&tools->env_list, tmp, true);
+				env_node = modify_env_value(tools->env_list, tmp, true);
 				free(tmp);
 			}
 			else
 			{
-				env_node = modify_env_value(&tools->env_list, simple_cmd[i],
+				env_node = modify_env_value(tools->env_list, simple_cmd[i],
 						false);
 			}
 			printf("key:%s\tvalue:%s\n", env_node->key, env_node->value);
-			env_add_back(&tools->env_list, env_node);
+			env_add_back(tools->env_list, env_node, 1);
 			g_exit_status = 0;
 		}
 		else

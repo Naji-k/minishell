@@ -28,7 +28,7 @@ char	*expand_arg(char *string, t_tools *tools)
 	int		found_equal_sign;
 
 	printf("Trying to expand: %s\n", string);
-	env_list = tools->env_list;
+	env_list = *tools->env_list;
 	found_equal_sign = FALSE;
 	expanded_arg = ft_strchr(string, '=');
 	if (expanded_arg == NULL)

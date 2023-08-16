@@ -19,7 +19,6 @@ void	init_tools_env(t_env **env_list, char **envp)
 	t_env	*cur;
 
 	cur = NULL;
-	*env_list = NULL;
 	i = 0;
 	if (!envp)
 	{
@@ -31,17 +30,28 @@ void	init_tools_env(t_env **env_list, char **envp)
 		cur = env_new_node(envp[i]);
 		if (!cur)
 		{
+			free_env_list(env_list);
 			printf("fail in envp[i]\n");
 			return ;
 		}
-		env_add_back(env_list, cur);
+		env_add_back(env_list, cur, i);
 		i++;
 	}
-	cur = find_env_by_key(env_list, "OLDPWD");
-	if (cur)
+	init_oldpwd(env_list);
+}
+
+void init_oldpwd(t_env **env_list)
+{
+	t_env *tmp;
+	
+	tmp = find_env_by_key(env_list, "OLDPWD");
+	if (tmp)
 	{
-		cur->has_value = false;
-		// cur->value = NULL; // THIS IS CAUSING LEAK because OLDPWD already has ft_substr in env_new_node function and then you set it to null and the old malloced string is lost.
+		free(tmp->key);
+		free(tmp->value);
+		tmp->key = ft_strdup("OLDPWD");
+		tmp->value = NULL;
+		tmp->has_value = false;
 	}
 }
 

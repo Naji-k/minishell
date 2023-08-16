@@ -56,10 +56,10 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
 	if (!cmd_path)
 		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
-	tools->envp = env_list_to_array(&tools->env_list);
+	tools->envp = env_list_to_array(tools->env_list);
 	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
-		e_cmd_not_found((*cmd_head)->cmds[0]);
-	free(cmd_path);
+		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+	// free(cmd_path);
 }
 
 /*
@@ -84,10 +84,7 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 
 	// dprintf(2, "find_cmd[0]=%s\n", cmd);
 	cmd_path = NULL;
-	cmd_path = check_current_dir(cmd);
-	if (cmd_path)
-		return (cmd_path);
-	tools->paths = get_paths2(&tools->env_list);
+	tools->paths = get_paths2(tools->env_list);
 	if (tools->paths)
 	{
 		i = -1;
@@ -104,6 +101,9 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 		}
 	}
 	free_2d_arr(tools->paths);
+	cmd_path = check_current_dir(cmd);
+	if (cmd_path)
+		return (cmd_path);
 	return (NULL);
 }
 
