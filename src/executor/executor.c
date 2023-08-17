@@ -55,11 +55,10 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
 	if (!cmd_path)
-		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
 	tools->envp = env_list_to_array(tools->env_list);
 	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
-	// free(cmd_path);
 }
 
 /*
@@ -68,9 +67,13 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 char	*check_current_dir(char *cmd)
 {
-	if (access(cmd, F_OK) == -1)
-		return (NULL);
-	return (cmd);
+	if ((cmd[0] == '.' && cmd[1] == '/') || cmd[ft_strlen(cmd) - 1] == '/')
+	{
+		if (access(cmd, F_OK) == -1)
+			return (NULL);
+		return (cmd);
+	}
+	return (NULL);
 }
 
 /*
@@ -82,8 +85,9 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 	char	*tmp;
 	int		i;
 
-	// dprintf(2, "find_cmd[0]=%s\n", cmd);
-	cmd_path = NULL;
+	cmd_path = check_current_dir(cmd);
+	if (cmd_path)
+		return (cmd_path);
 	tools->paths = get_paths2(tools->env_list);
 	if (tools->paths)
 	{
@@ -101,9 +105,6 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 		}
 	}
 	free_2d_arr(tools->paths);
-	cmd_path = check_current_dir(cmd);
-	if (cmd_path)
-		return (cmd_path);
 	return (NULL);
 }
 

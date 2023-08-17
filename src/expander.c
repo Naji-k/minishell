@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "builtin.h"
+#include "executor.h"
 
 char	*search_value_expansion(char *string, int *len,
 			t_tools *tools, int found_equal_sign)

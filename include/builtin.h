@@ -50,7 +50,6 @@ t_env	*env_last(t_env *node);
 int		env_size(t_env *node);
 void	env_add_back(t_env **list, t_env *new, int index);
 int		env_del_one(t_env **list, char *key);
-char	**get_paths(t_env **env_list);
 char	**get_paths2(t_env **env_list);
 void	init_tools_env(t_env **env_list, char **envp);
 void	prinft_env(t_env **list);
@@ -58,5 +57,6 @@ char	**env_list_to_array(t_env **env_list);
 void	free_env_list(t_env **env_list);
 t_env	*find_env_by_key(t_env **env_list, char *key);
 void	init_oldpwd(t_env **env_list);
+void	env_update_key_value(t_env *env_node, char *key, char *value);
 
 #endif

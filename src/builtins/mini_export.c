@@ -88,10 +88,9 @@ char	*plus_equal(char *simple_cmd)
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int		i;
-	t_env	*env_node;
 	char	*tmp;
 
-	env_node = NULL;
+
 	tmp = NULL;
 	if (simple_cmd[1] == NULL)
 		return (print_export_env(tools));
@@ -105,16 +104,13 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 			{
 				tmp = plus_equal(simple_cmd[i]);
 				printf("returned tmp=%s\n", tmp);
-				env_node = modify_env_value(tools->env_list, tmp, true);
+				modify_env_value(tools->env_list, tmp, true);
 				free(tmp);
 			}
 			else
 			{
-				env_node = modify_env_value(tools->env_list, simple_cmd[i],
-						false);
+				modify_env_value(tools->env_list, simple_cmd[i], false);
 			}
-			printf("key:%s\tvalue:%s\n", env_node->key, env_node->value);
-			env_add_back(tools->env_list, env_node, 1);
 			g_exit_status = 0;
 		}
 		else
@@ -135,29 +131,55 @@ t_env	*modify_env_value(t_env **env_list, char *simple_command,
 	env_node = NULL;
 	tmp = NULL;
 	key_value = ft_split(simple_command, '=');
-	printf("find node key=%s\t value=%s\n", key_value[0], key_value[1]);
+	key_value[0] = ftp_strjoin(key_value[0], "=");
 	exist_node = find_env_by_key(env_list, key_value[0]);
+	printf("searching for key=%s\t value=%s\n", key_value[0], key_value[1]);
 	if (exist_node)
 	{
 		if (!plus_equal) //replace the node
-		{
-			env_del_one(env_list,key_value[0]);
-			env_node = env_new_node(simple_command);
-		}
+			env_update_key_value(exist_node, key_value[0], key_value[1]);
 		else
 		{ //modify the value
-			tmp = ft_strdup(exist_node->key);
-			tmp = ftp_strjoin(tmp,exist_node->value);
-			tmp = ftp_strjoin(tmp,key_value[1]);
-			env_del_one(env_list,key_value[0]);
-			env_node = env_new_node(tmp);
-			free(tmp);
+			if (exist_node->value != NULL)
+			{
+				tmp = ft_strdup(exist_node->value);
+				tmp = ftp_strjoin(tmp, key_value[1]);
+				env_update_key_value(exist_node, key_value[0], tmp);
+				free(tmp);
+			}
+			else
+				env_update_key_value(exist_node, key_value[0], key_value[1]);
 		}
 	}
 	else
 	{
 		env_node = env_new_node(simple_command);
+		env_add_back(env_list, env_node, 1);
 	}
 	free_2d_arr(key_value);
 	return (env_node);
+}
+
+void	env_update_key_value(t_env *env_node, char *key, char *value)
+{
+	if (key)
+	{
+		if (env_node->key)
+			free(env_node->key);
+		env_node->key = ft_strdup(key);
+	}
+	if (value != NULL)
+	{
+		if (env_node->value)
+			free(env_node->value);
+		env_node->value = ft_strdup(value);
+		env_node->has_value = true;
+	}
+	else
+	{
+		if (env_node->value)
+			free(env_node->value);
+		env_node->value = NULL;
+		env_node->has_value = false;
+	}
 }

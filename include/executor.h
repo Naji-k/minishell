@@ -52,11 +52,12 @@ int		create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools);
 int		is_heredoc(t_commands **cmd, t_tools *tools);
 char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node);
 char	*expand_heredoc(t_token *node, char *line, t_tools *tools);
+char	*ft_str_add_char(char *str, char c);
+int		should_expand(char *line, t_tools *tools, t_token *node, int i);
 
 //error_handling
 int		error_file_handling(char *str);
 int		e_cmd_not_found(char *s_cmd);
-
 
 //builtins
 int		bn_echo(t_commands **cmd_head);

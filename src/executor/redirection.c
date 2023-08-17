@@ -67,16 +67,13 @@ int	redirection(t_commands *cmd)
 {
 	t_token	*redirection;
 	int		return_val;
-	
+
 	return_val = SUCCESS;
 	redirection = cmd->redirections;
 	while (redirection)
 	{
 		if (redirection->valid == false)
-		{
-			dprintf(2,"valid= %d\n", redirection->valid);
-			return(ERROR);
-		}
+			return (ERROR);
 		if (redirection->type == REDIRECTION
 			|| redirection->type == A_REDIRECTION)
 			return_val = redirect_output(redirection);
@@ -86,7 +83,6 @@ int	redirection(t_commands *cmd)
 			dprintf(2, "UNKNOW\n");
 		redirection = redirection->next;
 	}
-	// close(file); // need to close previous files otherwise file leak.
 	if (cmd->cmds[0] == NULL)
 		return_val = 1;
 	return (return_val);

@@ -34,7 +34,7 @@ t_env	*env_new_node(char *env)
 		i++;
 	}
 	if (new_node->has_value == false)
-	{ //ex: var(without '=')
+	{
 		new_node->key = ft_substr(env, 0, ft_strlen(env));
 		new_node->value = NULL;
 	}

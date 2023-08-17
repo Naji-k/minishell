@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strnstr.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/07 11:12:25 by ysrondy           #+#    #+#             */
+/*                                                        ::::::::            */
+/*   ft_strnstr.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/10/07 11:12:25 by ysrondy       #+#    #+#                 */
 /*   Updated: 2022/10/23 16:54:35 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <stdlib.h>
 
 char	*ft_strnstr(const char *big, const char *little, size_t len)
@@ -22,7 +23,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	if (little[i] == '\0')
 		return ((char *)big);
 	while (i < len && big[i] != '\0')
-	{	
+	{
 		c = i;
 		while (little[j] == big[i + j] && (i + j) < len)
 		{

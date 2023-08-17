@@ -15,8 +15,8 @@
 
 char	*ftp_strdup(char *s)
 {
-	char *str;
-	size_t len;
+	size_t	len;
+	char	*str;
 
 	if (!s || s[0] == '\0')
 		return (NULL);
