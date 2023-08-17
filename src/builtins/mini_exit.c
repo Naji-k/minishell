@@ -32,14 +32,16 @@ static bool	is_all_numric(char *str)
 
 void	free_all_exit(t_tools *tools)
 {
-	free_env_list(&tools->env_list);
+	free_env_list(tools->env_list);
+	free(tools->env_list);
 	if (tools->pwd != NULL)
 		free(tools->pwd);
 	if (tools->old_pwd != NULL)
 		free(tools->old_pwd);
-	free(tools->og_string);
+	if (tools->og_string)
+		free(tools->og_string);
+	rl_clear_history();
 	free(tools);
-	clear_history();
 	exit(g_exit_status);
 }
 

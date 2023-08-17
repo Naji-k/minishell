@@ -100,20 +100,14 @@ typedef struct s_commands
 
 typedef struct s_tools
 {
-	// char					*args;
 	char					**paths;
 	char					**envp;
-	t_env					*env_list;
-	// struct s_simple_cmds	*simple_cmds;
-	t_token					*history;
-	int						indexes[INT_MAX];
+	t_env					**env_list;
 	char					*pwd;
 	char					*old_pwd;
 	char					*og_string;
 	t_token					**token_head;
 	t_commands				**cmds_head;
-	// int						pipes;
-	// int						*pid;
 	int						heredoc;
 	int						hd_pid;
 	bool					loop;

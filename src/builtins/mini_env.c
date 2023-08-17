@@ -17,7 +17,7 @@ int	mini_env(t_tools *tools, char **simple_cmd)
 {
 	t_env	*env;
 
-	env = tools->env_list;
+	env = (*tools->env_list);
 	if (find_env_by_key(&env, "PATH"))
 	{
 		if (simple_cmd[1] == NULL)

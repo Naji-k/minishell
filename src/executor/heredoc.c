@@ -235,8 +235,6 @@ int	create_heredoc(t_token *redirection, t_commands *cmd, t_tools *tools)
 	path = NULL;
 	dprintf(2, "===>heredoc\tcmd=%s\tDelimiter=%s index=%d\n", cmd->cmds[0],
 		redirection->cmd, redirection->index);
-	if (!path)
-		return (-1);
 	signal(SIGINT, &handler_hd_sigint);
 	pid = fork();
 	if (pid == ERROR)

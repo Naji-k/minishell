@@ -35,10 +35,9 @@ void	add_bslash_path(char **paths)
 	}
 }
 
+// Looks for "PATH" inside env and ft_splits them based on ":".
 
-	// Looks for "PATH" inside env and ft_splits them based on ":".
-
- char	**find_path(char **envp)
+char	**find_path(char **envp)
 {
 	int		i;
 	char	**path_arr;
@@ -75,16 +74,21 @@ char	**get_paths2(t_env **env_list)
 	return (path_arr);
 }
 
-void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head)
+void	init_tools(t_tools *tools, t_token **tokens_head,
+		t_commands **cmds_head)
 {
-	// tools->envp = ft_arrdup(envp_arg);
-	// tools->paths = find_path(tools->envp);
+	tools->env_list = (t_env **)malloc(sizeof(t_env *));
+	if (!tools->env_list)
+	{
+		perror("malloc env_list");
+		free(tools); // Free the previously allocated memory for tools
+		exit (EXIT_FAILURE);
+	}
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));
 	tools->loop = true;
 	tools->has_pipe = false;
 	tools->heredoc = 0;
-	tools->history = NULL;
 	tools->token_head = tokens_head;
 	tools->cmds_head = cmds_head;
 	tools->hd_pid = 0;

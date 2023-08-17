@@ -31,10 +31,7 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 		return ;
 	}
 	if ((*cmd_head)->cmds[0][0] == '\0')
-	{
-		// e_cmd_not_found((*cmd_head)->cmds[0]);
 		return ;
-	}
 	if ((*cmd_head)->cmds[0])
 		execute_onc_cmd(tools, cmd_head);
 }
@@ -51,24 +48,19 @@ void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 	int			status;
 
 	node = *cmd_head;
-	cmd_path = find_cmd_path(tools, node->cmds[0]);
-	if (!cmd_path)
-	{
-		e_cmd_not_found(node->cmds[0]);
-		return ;
-	}
 	pid = fork();
 	if (pid == ERROR)
 		error_file_handling("fork");
 	if (pid == 0)
 	{
-		tools->envp = env_list_to_array(&tools->env_list);
+		cmd_path = find_cmd_path(tools, node->cmds[0]);
+		if (!cmd_path)
+			_exit(e_cmd_not_found(node->cmds[0]));
+		tools->envp = env_list_to_array(tools->env_list);
 		if (execve(cmd_path, node->cmds, tools->envp) == -1)
-			exit(e_cmd_not_found(node->cmds[0]));
+			_exit(e_cmd_not_found(node->cmds[0]));
 	}
 	waitpid(pid, &status, 0);
-	if (cmd_path) //shoul check otherwise segfault ex: '$USER'
-		free(cmd_path);
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
 }

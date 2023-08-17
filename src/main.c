@@ -10,25 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "builtin.h"
 #include "executor.h"
 #include "minishell.h"
 
 /* Variable defined here */
-int	g_exit_status = 0;
+int		g_exit_status = 0;
 
-void	print_history(t_tools *tools)
-{
-	t_token	*head_history;
 
-	head_history = tools->history;
-	while (head_history)
-	{
-		printf("   %d  %s\n", head_history->index, head_history->cmd);
-		head_history = head_history->next;
-	}
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -43,8 +32,13 @@ int	main(int argc, char **argv, char **envp)
 	tokens_head = NULL;
 	cmds_head = NULL;
 	tools = (t_tools *)malloc(sizeof(*tools));
-	init_tools_env(&tools->env_list, envp);
-	init_tools(tools, &tokens_head, &cmds_head); //keep this
+	 if (!tools)
+    {
+        perror("malloc");
+        return (EXIT_FAILURE);
+    }
+	init_tools(tools, &tokens_head, &cmds_head);
+	init_tools_env(tools->env_list, envp);
 	g_exit_status = 0;
 
 	while (tools->loop)
@@ -53,7 +47,7 @@ int	main(int argc, char **argv, char **envp)
 		string = readline("Minishell: ");
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
-			exit(EXIT_FAILURE);
+			free_all_exit(tools);
 		add_history(string);
 		start_parsing(string, tools);
 		printf("\n--------LEXER---------------\n");
@@ -70,14 +64,6 @@ int	main(int argc, char **argv, char **envp)
 		free_cmd_list(&cmds_head);
 		free(tools->og_string);
 	}
-	// free_2d_arr(tools->envp);	//keep this
-	// free_2d_arr(tools->paths);	//keep this
-	// free_token_list(&tools->history);
-	//do not have to free them when submit the project
-	/* 	free_env_list(&tools->env_list);
-	free(tools->pwd);
-	free(tools->old_pwd);
-	free(tools); */
 	(void)(argv);
 	return (0);
 }

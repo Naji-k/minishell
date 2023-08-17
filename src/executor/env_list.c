@@ -21,32 +21,24 @@ t_env	*env_new_node(char *env)
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
 		return (NULL);
-	new_node->value = NULL;
 	new_node->has_value = false;
-	while (env[i] != '\0' && env[i] != '=')
-		i++;
-	if (env[i] == '=')
-	{
-		new_node->key = ft_substr(env, 0, i + 1);
-		new_node->value = ft_substr(env, i + 1, ft_strlen(env) - i);
-		new_node->has_value = true;
-	}
-	if (!new_node->value)
-	{
-		// free(new_node->key); // Added this because the first ft_substr on line 30 will leak.
-		new_node->key = ft_substr(env, 0, i);
-	}
 	new_node->next = NULL;
+	while (env[i] != '\0')
+	{
+		if (env[i] == '=' && new_node->has_value == false)
+		{
+			new_node->key = ft_substr(env, 0, i + 1);
+			new_node->value = ft_substr(env, i + 1, ft_strlen(env) - i);
+			new_node->has_value = true;
+		}
+		i++;
+	}
+	if (new_node->has_value == false)
+	{ //ex: var(without '=')
+		new_node->key = ft_substr(env, 0, ft_strlen(env));
+		new_node->value = NULL;
+	}
 	return (new_node);
-}
-
-t_env	*env_last(t_env *node)
-{
-	if (!node)
-		return (NULL);
-	while (node->next != NULL)
-		node = node->next;
-	return (node);
 }
 
 int	env_size(t_env *node)
@@ -65,16 +57,18 @@ int	env_size(t_env *node)
 }
 
 /* add new env(key=value) to env_list */
-void	env_add_back(t_env **list, t_env *new)
+void	env_add_back(t_env **list, t_env *new, int index)
 {
 	t_env	*curr;
 
-	if (*list == NULL)
+	if (index == 0)
 	{
 		*list = new;
 		return ;
 	}
-	curr = env_last(*list);
+	curr = *list;
+	while (curr->next != NULL)
+		curr = curr->next;
 	curr->next = new;
 }
 

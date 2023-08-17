@@ -30,7 +30,7 @@ char	*expand_arg(char *string, t_tools *tools)
 	// printf("Trying to expand: %s\n", string);
 	if (string[0] == '$' && string[1] == '\0')
 		return (ft_strdup(string));
-	env_list = tools->env_list;
+	env_list = *tools->env_list;
 	found_equal_sign = FALSE;
 	expanded_arg = ft_strchr(string, '=');
 	if (expanded_arg == NULL)
