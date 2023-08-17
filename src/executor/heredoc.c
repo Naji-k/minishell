@@ -54,10 +54,18 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 			j++;
 			break ;
 		}
-		*i += 1;
+		(*i) += 1;
 		j++;
 		if (line[*i] == '$' || line[*i] == '-' || line[*i] == '~')
+		{
+			if (line[*i] == '$')
+			{
+				str_to_be_expanded[j] = line[*i];
+				(*i) += 1;
+				j++;
+			}
 			break ;
+		}
 	}
 	str_to_be_expanded[j] = '\0';
 	printf("String to be expanded: %s\n", str_to_be_expanded);
@@ -75,39 +83,57 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	return (expanded_string);
 }
 
-int	is_inside_quote(char *string, char c)
+int	is_inside_quote(char *string, int pos_char)
 {
 	int		i;
 	bool	single_quote;
-	int		single_pos;
 	bool	double_quote;
-	int		double_pos;
 
 	i = 0;
 	single_quote = false;
 	double_quote = false;
+	// printf("Line: %s\n", string);
 	while (string[i])
 	{
+		// printf("String[i]: %d || Pos_char: %d\n", i, pos_char);
 		if (string[i] == '"')
 		{
-			double_quote = !double_quote;
-			double_pos = i;
+			if (single_quote == true)
+				;
+			else
+			{
+				// printf("Found Double Quote!\n");
+				double_quote = !double_quote;
+			}
 		}
 		if (string[i] == '\'')
 		{
-			single_quote = !single_quote;
-			single_pos = i;
-		}
-		if (string[i] == c)
-		{
-			if (single_quote == true && (double_quote == false
-					|| (double_quote == true && single_pos < double_pos)))
-				return (SINGLE_QUOTE);
-			else if (double_quote == true && (single_quote == false
-					|| (single_quote == true && double_pos < single_pos)))
-				return (DOUBLE_QUOTE);
+			if (double_quote == true)
+				;
 			else
+			{
+				// printf("Found a single quote!\n");
+				single_quote = !single_quote;
+			}
+		}
+		if (i == pos_char)
+		{
+			// printf("Single Quote: %d, Double Quote: %d, Single Pos: %d, Double Pos: %d\n", single_quote, double_quote, single_pos, double_pos);
+			if (single_quote == true)
+			{
+				// printf("We are inside single quote.\n");
+				return (SINGLE_QUOTE);
+			}
+			else if (double_quote == true)
+			{
+				// printf("We are inside double quote.\n");
+				return (DOUBLE_QUOTE);
+			}
+			else
+			{
+				// printf("There are no quotes.\n");
 				return (NO_QUOTATION);
+			}
 		}
 		i++;
 	}
@@ -148,17 +174,20 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 				|| (i == 0 && line[i] == '~'
 					&& is_inside_quote(line, line[i + 1]) == NO_QUOTATION
 					&& (line[i + 1] == '\0' || line[i + 1] == '/')))
-			&& is_inside_quote(line, line[i]) != SINGLE_QUOTE
+			&& is_inside_quote(line, i) != SINGLE_QUOTE
 			&& get_prev_node(tools->token_head, node)->type != HEREDOC)
 		{
+			// printf("Going to expand.\n");
 			expanded_string = get_expanded_arg(line, tools, &i, node);
 			final_string = ftp_strjoin(final_string, expanded_string);
 			free(expanded_string);
 			if (line[i] == '~' && i == 0)
 				i++;
+			// printf("MID Line[i]: %c || %d\n", line[i], i);
 		}
 		else
 		{
+			// printf("Normal Line[i]: %c || %d\n", line[i], i);
 			final_string = ft_str_add_char(final_string, line[i]);
 			i++;
 		}
