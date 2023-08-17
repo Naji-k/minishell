@@ -12,6 +12,51 @@
 
 #include "minishell.h"
 
+void	set_bool_quotes(char *string, int i,
+	bool *double_quote, bool *single_quote)
+{
+	if (string[i] == '"')
+	{
+		if (*single_quote == true)
+			;
+		else
+			*double_quote = !(*double_quote);
+	}
+	if (string[i] == '\'')
+	{
+		if (*double_quote == true)
+			;
+		else
+			*single_quote = !(*single_quote);
+	}
+}
+
+int	is_inside_quote(char *string, int pos_char)
+{
+	int		i;
+	bool	single_quote;
+	bool	double_quote;
+
+	i = 0;
+	single_quote = false;
+	double_quote = false;
+	while (string[i])
+	{
+		set_bool_quotes(string, i, &double_quote, &single_quote);
+		if (i == pos_char)
+		{
+			if (single_quote == true)
+				return (SINGLE_QUOTE);
+			else if (double_quote == true)
+				return (DOUBLE_QUOTE);
+			else
+				return (NO_QUOTATION);
+		}
+		i++;
+	}
+	return (false);
+}
+
 /*
 	Returns the type of the character.
 */

@@ -27,7 +27,7 @@ void	create_token_helper(t_tools *tools, char *string, int start, int len)
 	printf("String after creating node: |%s|\n", node->cmd);
 	node->cmd = expand_heredoc(node, node->cmd, tools);
 	printf("String after expansion: |%s|\n", node->cmd);
-	handle_quotations_expansion(tools->token_head, node);
+	handle_spaces_expansion(tools->token_head, node);
 	printf("String after handling quotations expansion: |%s|\n", node->cmd);
 	node->cmd = handle_quotations(node->cmd);
 	printf("String after handling quotations: |%s|\n", node->cmd);
