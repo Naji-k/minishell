@@ -56,6 +56,8 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 {
 	t_env	*tmp;
 
+	if (tools->pwd || tools->pwd[0] != '\0')
+		free(tools->old_pwd);
 	tools->old_pwd = ftp_strdup(tmp_opwd);
 	if (tools->pwd || tools->pwd[0] != '\0')
 		free(tools->pwd);
@@ -66,16 +68,18 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 		ft_putstr_fd("getcwd: cannot access parent directories\n",
 			STDERR_FILENO);
 	}
-	tmp = find_env_by_key(&tools->env_list, "PWD");
+	tmp = find_env_by_key(tools->env_list, "PWD");
 	if (tmp && tools->pwd)
 	{
 		free(tmp->value);
 		tmp->value = ft_strdup(tools->pwd);
 	}
-	tmp = find_env_by_key(&tools->env_list, "OLDPWD");
+	tmp = find_env_by_key(tools->env_list, "OLDPWD");
 	if (tmp)
 	{
+		free(tmp->key);
 		free(tmp->value);
+		tmp->key = ft_strdup("OLDPWD=");
 		tmp->has_value = TRUE;
 		tmp->value = ft_strdup(tools->old_pwd);
 	}
