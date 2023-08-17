@@ -102,17 +102,25 @@ int	env_del_one(t_env **list, char *key)
 	return (1);
 }
 
-/*
-print env_list for debugging
- */
-void	prinft_env(t_env **list)
+void	create_env_back(t_env **env_list, char **key_value, char *env)
 {
-	t_env	*head;
+	char	*str;
+	t_env	*new_node;
 
-	head = (*list);
-	while (head)
+	new_node = NULL;
+	str = NULL;
+	if (env == NULL)
 	{
-		printf("%s%s\n", head->key, head->value);
-		head = head->next;
+		if (key_value[1] == NULL)
+			str = ft_strdup(key_value[0]);
+		else
+			str = ft_strjoin(key_value[0], key_value[1]);
+		new_node = env_new_node(str);
+		env_add_back(env_list, new_node, 1);
+	}
+	else
+	{
+		new_node = env_new_node(env);
+		env_add_back(env_list, new_node, 1);
 	}
 }
