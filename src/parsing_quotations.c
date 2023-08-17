@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_quotations_expansion(t_token **token_head, t_token *node)
+void	handle_spaces_expansion(t_token **token_head, t_token *node)
 {
 	char	**split_string;
 	int		i;
@@ -103,8 +103,6 @@ char	*handle_quotations(char *string)
 		return (string);
 	while (string[i])
 	{
-		// if (string[i] == '$' && (string[i + 1] == '\'' || string[i + 1] == '"'))
-		// 	i++;
 		skipped_dbl = handle_dbl_quotes(string, &i);
 		skipped_sgl = handle_sgl_quotes(string, &i);
 		new_string[j] = string[i];

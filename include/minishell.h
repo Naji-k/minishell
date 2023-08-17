@@ -130,7 +130,7 @@ char	*sep_dollars(char *string);
 
 				/* Parsing Quotations */
 char	*handle_quotations(char *string);
-void	handle_quotations_expansion(t_token **token_head, t_token *node);
+void	handle_spaces_expansion(t_token **token_head, t_token *node);
 int		check_quotations(t_token *node);
 void	increment_if_not_skipped(char *new_string, int *i, int *j);
 int		is_inside_quote(char *string, int pos_char);
@@ -145,7 +145,8 @@ int		is_builtin(char *string);
 char	**ft_arrdup(char **arr);
 char	**find_path(char **envp);
 void	add_bslash_path(char **paths);
-void	init_tools(t_tools *tools, t_token **tokens_head, t_commands **cmds_head);
+void	init_tools(t_tools *tools, t_token **tokens_head,
+			t_commands **cmds_head);
 void	handler_sigint(int s);
 void	handler_sigquit(int s);
 void	handler_hd_sigint(int s);

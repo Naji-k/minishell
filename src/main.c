@@ -26,17 +26,17 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	// atexit(check_leaks);
+	atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
 	cmds_head = NULL;
 	tools = (t_tools *)malloc(sizeof(*tools));
 	 if (!tools)
-    {
-        perror("malloc");
-        return (EXIT_FAILURE);
-    }
+	{
+		perror("malloc");
+		return (EXIT_FAILURE);
+	}
 	init_tools(tools, &tokens_head, &cmds_head);
 	init_tools_env(tools->env_list, envp);
 	g_exit_status = 0;
