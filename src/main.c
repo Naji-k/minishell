@@ -17,8 +17,6 @@
 /* Variable defined here */
 int		g_exit_status = 0;
 
-
-
 int	main(int argc, char **argv, char **envp)
 {
 	char		*string;
@@ -26,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	// atexit(check_leaks);
+	atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -40,7 +38,6 @@ int	main(int argc, char **argv, char **envp)
 	init_tools(tools, &tokens_head, &cmds_head);
 	init_tools_env(tools->env_list, envp);
 	g_exit_status = 0;
-
 	while (tools->loop)
 	{
 		printf("--------NEW COMMAND---------------\n");
@@ -51,7 +48,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(string);
 		start_parsing(string, tools);
 		printf("\n--------LEXER---------------\n");
-		print_token_list(&tokens_head, FALSE);
+		print_token_list(&tokens_head, false);
 		parse_cmds(&tokens_head, &cmds_head);
 		printf("\n--------COMMANDS---------------\n");
 		print_cmds_list(&cmds_head);

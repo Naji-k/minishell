@@ -23,7 +23,6 @@ t_token	*get_prev_node(t_token **token_head, t_token *node)
 	t_token	*first_node;
 
 	first_node = *token_head;
-
 	if (!first_node || !node)
 		return (NULL);
 	if (first_node == node)
@@ -105,11 +104,9 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	node = malloc(sizeof(t_token) * 1);
 	if (!node)
 		exit(EXIT_FAILURE);
-	// printf("Start Pos: %d, Len %d\n", start, (len - start));
 	node->cmd = ft_substr(string, start, (len - start));
-	// printf("Created: %s value= %d\n", node->cmd, node->valid);
 	node->type = find_token_type(string[start], string[start + 1]);
-	node->valid = true;	//by default all tokens valid
+	node->valid = true;
 	node->index = i;
 	i++;
 	node->next = NULL;
@@ -117,14 +114,17 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	return (node);
 }
 
-void	free_redirection(t_commands **cmds_head)
+int	get_lstsize(t_token *lst)
 {
-	t_commands *first;
+	int	i;
 
-	first = *cmds_head;
-	while (first)
+	i = 1;
+	if (!lst)
+		return (0);
+	while (lst->next != NULL)
 	{
-		free_token_list(&first->redirections);
-		first = first->next;
+		lst = lst->next;
+		i++;
 	}
+	return (i);
 }

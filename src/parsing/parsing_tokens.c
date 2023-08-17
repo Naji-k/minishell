@@ -13,12 +13,6 @@
 #include "minishell.h"
 #include "executor.h"
 
-
-/* TODO: Fix export.
-hey="ls             -l" should run as "ls -l" and print as "ls -l" when run echo "$hey".
-add $$ support
-*/
-
 void	create_token_helper(t_tools *tools, char *string, int start, int len)
 {
 	t_token	*node;
@@ -33,7 +27,6 @@ void	create_token_helper(t_tools *tools, char *string, int start, int len)
 	printf("String after handling quotations: |%s|\n", node->cmd);
 }
 
-
 void	create_token(char *string, int i, t_tools *tools, bool quotes)
 {
 	int		len;
@@ -45,11 +38,11 @@ void	create_token(char *string, int i, t_tools *tools, bool quotes)
 	{
 		if (string[i] == '"' || string[i] == '\'')
 			quotes = !quotes;
-		if ((is_whitespace(string[i]) == TRUE \
-			&& is_whitespace(string[i - 1]) == FALSE && quotes == false) \
-			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE))
+		if ((is_whitespace(string[i]) == true \
+			&& is_whitespace(string[i - 1]) == false && quotes == false) \
+			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == false))
 		{
-			if (string[i + 1] == '\0' && is_whitespace(string[i]) == FALSE)
+			if (string[i + 1] == '\0' && is_whitespace(string[i]) == false)
 				len++;
 			create_token_helper(tools, string, start, len);
 			start = i + 1;

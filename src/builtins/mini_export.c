@@ -48,7 +48,7 @@ static int	print_export_env(t_tools *tools)
 	env = *tools->env_list;
 	while (env)
 	{
-		// if (env->has_value == TRUE)
+		// if (env->has_value == TRUE) // [YOUSSEF] : should this be commented out?
 		{
 			ft_putstr_fd("declare -x ", STDOUT_FILENO);
 			ft_putstr_fd(env->key, STDOUT_FILENO);

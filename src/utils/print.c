@@ -39,17 +39,17 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 	}
 	while (node)
 	{
-		if (print_redirection == TRUE && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE && node->type != A_REDIRECTION)
+		if (print_redirection == true && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE && node->type != A_REDIRECTION)
 			printf("Final Output Redirection: {%s}\n", node->cmd);
-		else if (print_redirection == TRUE && node->next == NULL && node->type == A_REDIRECTION)
+		else if (print_redirection == true && node->next == NULL && node->type == A_REDIRECTION)
 			printf("Final Append Redirection: {%s}\n", node->cmd);
-		else if (print_redirection == TRUE && node->type == A_REDIRECTION)
+		else if (print_redirection == true && node->type == A_REDIRECTION)
 			printf("Append Redirection: {%s}\n", node->cmd);
-		else if (print_redirection == TRUE && node->type == HEREDOC)
+		else if (print_redirection == true && node->type == HEREDOC)
 			printf("Heredoc Delimiter: {%s}\n", node->cmd);
-		else if (print_redirection == TRUE && node->type == IN_FILE)
+		else if (print_redirection == true && node->type == IN_FILE)
 			printf("In File: {%s}\n", node->cmd);
-		else if (print_redirection == TRUE)
+		else if (print_redirection == true)
 			printf("Redirection: {%s}\n", node->cmd);
 		else
 			printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd, node->type, node->index);
@@ -77,7 +77,7 @@ void	print_cmds_list(t_commands **lst_head)
 		if (node->cmds[0] == NULL)
 			printf("Cmds: No Commands.\n");
 		if (node->redirections)
-			print_token_list(&node->redirections, TRUE);
+			print_token_list(&node->redirections, true);
 		else
 			printf("Redirection: {%p}.\n", node->redirections);
 		printf("Builtin: {%s}\n", node->builtin);

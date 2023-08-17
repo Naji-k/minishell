@@ -71,7 +71,7 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 char	*copy_expanded_string(char *line, int *i,
 	char *str_to_be_expanded, int *j)
 {
-	while ((is_whitespace(line[*i]) == FALSE && line[*i] != '\0')
+	while ((is_whitespace(line[*i]) == false && line[*i] != '\0')
 		&& (line[*i] != '"' && line[*i] != '\''))
 	{
 		str_to_be_expanded[*j] = line[*i];
@@ -122,7 +122,6 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	free(str_to_be_expanded);
 	return (expanded_string);
 }
-
 
 /*
 	Compares the string after the '$' with the environment variables.

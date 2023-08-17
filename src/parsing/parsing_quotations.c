@@ -39,7 +39,6 @@ void	handle_spaces_expansion(t_token **token_head, t_token *node)
 	free_2d_arr(split_string);
 }
 
-
 int	handle_dbl_quotes(char *string, int *i)
 {
 	if (string[*i] == '"')
@@ -113,4 +112,3 @@ char	*handle_quotations(char *string)
 	free(string);
 	return (new_string);
 }
-

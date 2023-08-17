@@ -18,6 +18,7 @@ void	check_leaks(void)
 	// system("lsof -c minishell");
 }
 
+
 /*
 	Duplicates and returns a char ** array.
 */

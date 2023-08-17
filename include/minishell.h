@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
 # include "libft.h"
 # include <fcntl.h>
 # include <limits.h>
@@ -20,14 +21,11 @@
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <sys/ioctl.h>
 # include <termios.h>
 # include <unistd.h>
 
-# define FALSE 0
-# define TRUE 1
 # define ADD_QUOTATION 1
 # define ADD_QUOTATION_BEGIN 2
 # define ADD_QUOTATION_END 3
@@ -122,13 +120,6 @@ int						skip_whitespaces(char *string);
 int						skip_space_and_return(char *string, int start);
 char					*add_spaces_non_literal(char *str);
 
-/* Parsing Dollar Expander */
-void					handle_arg_then_dollar(char *new_string, char *string,
-							int i, int j);
-int						handle_dbl_dollars(char *new_string, char *string,
-							int i, int j);
-char					*sep_dollars(char *string);
-
 /* Parsing Quotations */
 char					*handle_quotations(char *string);
 void					handle_spaces_expansion(t_token **token_head,
@@ -144,6 +135,14 @@ void					parse_cmds(t_token **tokens_head,
 void					create_cmd(t_token *start_node, t_token *target_node,
 							t_commands **cmd_head, int num_nodes);
 int						is_builtin(char *string);
+
+/* Parsing Redirection */
+void					create_redirection_list(t_commands *node_cmds,
+							t_token *start_node);
+void					add_node_redirection_list(t_commands *node_cmds,
+							t_token *start_node);
+void					handle_redirection(t_commands *node_cmds,
+							t_token *start_node);
 
 /* Init Tools */
 char					**ft_arrdup(char **arr);
@@ -183,5 +182,6 @@ void					free_cmd_list(t_commands **lst_head);
 void					free_2d_arr(char **arr);
 int						handle_syntax_error(t_token **tokens_head,
 							t_tools *tools);
+int						get_lstsize(t_token *lst);
 
 #endif
