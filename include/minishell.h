@@ -13,18 +13,18 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft.h"
-# include <fcntl.h>
-# include <limits.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <sys/ioctl.h>
-# include <termios.h>
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <fcntl.h>
 # include <unistd.h>
+# include <stdbool.h>
+# include "libft.h"
+# include <limits.h>
+# include <signal.h>
+# include <termios.h>
+# include <sys/ioctl.h>
 
 # define FALSE 0
 # define TRUE 1
@@ -42,7 +42,7 @@
 /*
 	Global variable
  */
-extern int				g_exit_status;
+extern int	g_exit_status;
 
 /*
 	An enum to easily identify the type of the token.
@@ -55,7 +55,7 @@ typedef enum s_type
 	HEREDOC = 4,
 	REDIRECTION = 5,
 	A_REDIRECTION = 6,
-}						t_type;
+}	t_type;
 
 /*
 	An enum to easily identify the type of linked list.
@@ -64,18 +64,18 @@ typedef enum s_lst_type
 {
 	TOKEN_LIST = 1,
 	CMDS_LIST = 2,
-}						t_lst_type;
+}	t_lst_type;
 
 /*
 	stuct for envp_list key,value
  */
 typedef struct s_env
 {
-	char				*key;
-	char				*value;
-	bool				has_value;
-	struct s_env		*next;
-}						t_env;
+	char			*key;
+	char			*value;
+	bool			has_value;
+	struct s_env	*next;
+}					t_env;
 
 /*
 	A token is part of a linked list which refers to every single
@@ -83,12 +83,12 @@ typedef struct s_env
 */
 typedef struct s_token
 {
-	char				*cmd;
-	int					index;
-	bool				valid;
-	t_type				type;
-	struct s_token		*next;
-}						t_token;
+	char			*cmd;
+	int				index;
+	bool			valid;
+	t_type			type;
+	struct s_token	*next;
+}				t_token;
 typedef struct s_commands
 {
 	char				**cmds;
@@ -96,92 +96,83 @@ typedef struct s_commands
 	t_token				*redirections;
 	char				*hd_file_name;
 	struct s_commands	*next;
-}						t_commands;
+}				t_commands;
 
 typedef struct s_tools
 {
-	char				**paths;
-	char				**envp;
-	t_env				**env_list;
-	char				*pwd;
-	char				*old_pwd;
-	char				*og_string;
-	t_token				**token_head;
-	t_commands			**cmds_head;
-	int					heredoc;
-	int					hd_pid;
-	bool				loop;
-	bool				has_pipe;
-}						t_tools;
+	char					**paths;
+	char					**envp;
+	t_env					**env_list;
+	char					*pwd;
+	char					*old_pwd;
+	char					*og_string;
+	t_token					**token_head;
+	t_commands				**cmds_head;
+	int						heredoc;
+	int						hd_pid;
+	bool					loop;
+	bool					has_pipe;
+}	t_tools;
 
-/* Parsing Tokens */
-int						is_whitespace(char c);
-int						find_token_type(char c, char c_next);
-void					start_parsing(char *string, t_tools *tools);
-int						skip_whitespaces(char *string);
-int						skip_space_and_return(char *string, int start);
-char					*add_spaces_non_literal(char *str);
+				/* Parsing Tokens */
+int		is_whitespace(char c);
+int		find_token_type(char c, char c_next);
+void	start_parsing(char *string, t_tools *tools);
+int		skip_whitespaces(char *string);
+int		skip_space_and_return(char *string, int start);
+char	*add_spaces_non_literal(char *str);
 
-/* Parsing Dollar Expander */
-void					handle_arg_then_dollar(char *new_string, char *string,
-							int i, int j);
-int						handle_dbl_dollars(char *new_string, char *string,
-							int i, int j);
-char					*sep_dollars(char *string);
+				/* Parsing Dollar Expander */
+void	handle_arg_then_dollar(char *new_string, char *string, int i, int j);
+int		handle_dbl_dollars(char *new_string, char *string, int i, int j);
+char	*sep_dollars(char *string);
 
-/* Parsing Quotations */
-char					*handle_quotations(char *string);
-void					handle_spaces_expansion(t_token **token_head,
-							t_token *node);
-int						check_quotations(t_token *node);
-void					increment_if_not_skipped(char *new_string, int *i,
-							int *j);
-int						is_inside_quote(char *string, int pos_char);
+				/* Parsing Quotations */
+char	*handle_quotations(char *string);
+void	handle_spaces_expansion(t_token **token_head, t_token *node);
+int		check_quotations(t_token *node);
+void	increment_if_not_skipped(char *new_string, int *i, int *j);
+int		is_inside_quote(char *string, int pos_char);
 
-/* Parsing Commands */
-void					parse_cmds(t_token **tokens_head,
-							t_commands **cmd_head);
-void					create_cmd(t_token *start_node, t_token *target_node,
-							t_commands **cmd_head, int num_nodes);
-int						is_builtin(char *string);
+				/* Parsing Commands */
+void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
+void	create_cmd(t_token *start_node, t_token *target_node,
+			t_commands **cmd_head, int num_nodes);
+int		is_builtin(char *string);
 
-/* Init Tools */
-char					**ft_arrdup(char **arr);
-char					**find_path(char **envp);
-void					add_bslash_path(char **paths);
-void					init_tools(t_tools *tools, t_token **tokens_head,
-							t_commands **cmds_head);
-void					handler_sigint(int s);
-void					handler_sigquit(int s);
-void					handler_hd_sigint(int s);
+				/* Init Tools */
+char	**ft_arrdup(char **arr);
+char	**find_path(char **envp);
+void	add_bslash_path(char **paths);
+void	init_tools(t_tools *tools, t_token **tokens_head,
+			t_commands **cmds_head);
+void	handler_sigint(int s);
+void	handler_sigquit(int s);
+void	handler_hd_sigint(int s);
 
-/* Linked_List Functions */
-void					*last_node(void *lst, t_lst_type type);
-void					add_node_back(void **lst_head, void *node,
-							t_lst_type type);
-t_token					*create_node(t_token **tokens_head, char *string,
-							int start, int j);
-t_token					*get_prev_node(t_token **tokens_head, t_token *node);
-void					free_redirection(t_commands **cmds_head);
+				/* Linked_List Functions */
+void	*last_node(void *lst, t_lst_type type);
+void	add_node_back(void **lst_head, void *node, t_lst_type type);
+t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
+t_token	*get_prev_node(t_token **tokens_head, t_token *node);
+void	free_redirection(t_commands **cmds_head);
 
-/* Execution of Commands */
+				/* Execution of Commands */
 // void	execute(t_tools *tools, t_commands **cmd_head);
 
-/* Expander ($ARG) */
-char					*expand_arg(char *string, t_tools *tools);
+				/* Expander ($ARG) */
+char	*expand_arg(char *string, t_tools *tools);
 
-/* Printing (DEBUGGING) */
-void					print_token_list(t_token **lst_head,
-							int print_redirection);
-void					print_cmds_list(t_commands **lst_head);
-void					print_2d_array(char **arr);
+				/* Printing (DEBUGGING) */
+void	print_token_list(t_token **lst_head, int print_redirection);
+void	print_cmds_list(t_commands **lst_head);
+void	print_2d_array(char **arr);
 
-/* Utils */
-void					check_leaks(void);
-void					free_token_list(t_token **lst_head);
-void					free_cmd_list(t_commands **lst_head);
-void					free_2d_arr(char **arr);
-int						handle_syntax_error(t_token **tokens_head,
-							t_tools *tools);
+				/* Utils */
+void	check_leaks(void);
+void	free_token_list(t_token **lst_head);
+void	free_cmd_list(t_commands **lst_head);
+void	free_2d_arr(char **arr);
+int		handle_syntax_error(t_token **tokens_head, t_tools *tools);
 
 #endif
