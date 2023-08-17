@@ -21,6 +21,12 @@ char	*ftp_strjoin(char *s1, char *s2)
 	str_join = NULL;
 	s1_len = 0;
 	s2_len = 0;
+	if (s2 == NULL)
+	{
+		str_join = ft_strdup(s1);
+		free(s1);
+		return (str_join);
+	}
 	if (s1 != NULL)
 		s1_len = ft_strlen(s1);
 	if (s2 != NULL)

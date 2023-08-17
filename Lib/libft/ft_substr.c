@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/10 08:33:32 by ysrondy           #+#    #+#             */
+/*                                                        ::::::::            */
+/*   ft_substr.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/10/10 08:33:32 by ysrondy       #+#    #+#                 */
 /*   Updated: 2022/10/23 16:55:29 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)

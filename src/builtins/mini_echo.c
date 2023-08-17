@@ -66,13 +66,6 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 			i++;
 		while (simple_cmd[i] != NULL)
 		{
-			// if (simple_cmd[i][0] == '~' && (simple_cmd[i][1] == '\0'
-					// || simple_cmd[i][1] == '/'))
-			// {
-				// simple_cmd[i] = echo_home(simple_cmd[i]);
-				// ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
-			// }
-			// else
 			ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
 			if (simple_cmd[i + 1] != NULL)
 				ft_putstr_fd(" ", STDOUT_FILENO);

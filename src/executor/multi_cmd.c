@@ -40,10 +40,7 @@ void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
 		if (pipe(fd) == ERROR)
 			error_file_handling("pipe");
 		if (multi_pipex_process(tools, &node, old_fd, fd) == ERROR)
-		{
-			// CLOSE PIPES
-			return ;
-		}
+			return ; //close_PIPES
 		close(fd[1]);
 		if (node != *cmd_head)
 			close(old_fd);
@@ -104,7 +101,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 			exit(run_builtin((*last_cmd)->cmds[0], tools, (*last_cmd)->cmds));
 		execve_cmd(tools, last_cmd);
 	}
-	// close(old_fd);
+	close(old_fd);
 	return (pid);
 }
 

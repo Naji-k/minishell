@@ -14,13 +14,6 @@
 #include "executor.h"
 
 /*  This fn just for testing purposes */
-void	debug_cd(t_tools *tools, char **simple_cmd, char *path)
-{
-	printf("simple_cmd[1]=%s\n", simple_cmd[1]);
-	printf("check_path=%s\n", path);
-	printf("OLDPWD =%s\n", tools->old_pwd);
-	printf("PWD =%s\n", tools->pwd);
-}
 
 int	mini_cd(t_tools *tools, char **simple_cmd)
 {
@@ -32,7 +25,7 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 		path = cd_home_dir(tools);
 	else if (simple_cmd[1][0] == '-')
 		path = mini_cd_oldpwd(tools);
-	else 
+	else
 		path = ft_strdup(simple_cmd[1]);
 	if (!path)
 		return (EXIT_FAILURE);
@@ -71,17 +64,12 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	tmp = find_env_by_key(tools->env_list, "PWD");
 	if (tmp && tools->pwd)
 	{
-		free(tmp->value);
-		tmp->value = ft_strdup(tools->pwd);
+		env_update_key_value(tmp, NULL, tools->pwd);
 	}
 	tmp = find_env_by_key(tools->env_list, "OLDPWD");
 	if (tmp)
 	{
-		free(tmp->key);
-		free(tmp->value);
-		tmp->key = ft_strdup("OLDPWD=");
-		tmp->has_value = TRUE;
-		tmp->value = ft_strdup(tools->old_pwd);
+		env_update_key_value(tmp, "OLDPWD=", tools->old_pwd);
 	}
 }
 

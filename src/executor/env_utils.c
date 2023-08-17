@@ -40,18 +40,14 @@ void	init_tools_env(t_env **env_list, char **envp)
 	init_oldpwd(env_list);
 }
 
-void init_oldpwd(t_env **env_list)
+void	init_oldpwd(t_env **env_list)
 {
-	t_env *tmp;
-	
+	t_env	*tmp;
+
 	tmp = find_env_by_key(env_list, "OLDPWD");
 	if (tmp)
 	{
-		free(tmp->key);
-		free(tmp->value);
-		tmp->key = ft_strdup("OLDPWD");
-		tmp->value = NULL;
-		tmp->has_value = false;
+		env_update_key_value(tmp, "OLDPWD", NULL);
 	}
 }
 
@@ -82,27 +78,6 @@ char	**env_list_to_array(t_env **env_list)
 	return (env);
 }
 
-char	**get_paths(t_env **env_list)
-{
-	t_env	*env;
-	char	**path_arr;
-
-	env = (*env_list);
-	while (env->next && ft_strncmp(env->key, "PATH", 5) != 0)
-		env = env->next;
-	if (ft_strncmp(env->key, "PATH", 5) == 0)
-	{
-		path_arr = ft_split(env->value, ':');
-		if (!path_arr)
-			return (NULL);
-		ft_strlcpy(path_arr[0], ft_strchr(path_arr[0], '/'),
-			ft_strlen(path_arr[0]) - 4);
-		add_bslash_path(path_arr);
-		return (path_arr);
-	}
-	return (NULL);
-}
-
 void	free_env_list(t_env **env_list)
 {
 	t_env	*temp;
@@ -126,9 +101,16 @@ t_env	*find_env_by_key(t_env **env_list, char *key)
 	env = (*env_list);
 	while (env)
 	{
-		if ((ft_strncmp(env->key, key, ft_strlen(key)) == 0))
-			// && env->key[ft_strlen(key)] == '=')
-			return (env);
+		if (key[ft_strlen(key)] == '=')
+		{
+			if ((ft_strncmp(env->key, key, ft_strlen(key) - 1) == 0))
+				return (env);
+		}
+		else
+		{
+			if ((ft_strncmp(env->key, key, ft_strlen(key) - 1) == 0))
+				return (env);
+		}
 		env = env->next;
 	}
 	return (NULL);
