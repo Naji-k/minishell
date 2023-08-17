@@ -13,16 +13,16 @@
 #include "builtin.h"
 #include "executor.h"
 
-static int	check_input(char *export_str) //error!
+static int	check_input(char *export_str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (export_str[i])
 	{
-		// printf("cmd | %s\n", export_str);
 		if (ft_isalpha(export_str[0]))
 		{
 			while (ft_isalnum(export_str[i]))
-				// export_str++;
 				i++;
 			if (export_str[i] == '+' && export_str[i + 1] == '=')
 				return (2);
@@ -48,21 +48,17 @@ static int	print_export_env(t_tools *tools)
 	env = *tools->env_list;
 	while (env)
 	{
-		// if (env->has_value == TRUE)
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd(env->key, STDOUT_FILENO);
+		if (env->value)
 		{
-			ft_putstr_fd("declare -x ", STDOUT_FILENO);
-			ft_putstr_fd(env->key, STDOUT_FILENO);
-			if (env->value)
-			{
-				ft_putstr_fd("\"", STDOUT_FILENO);
-				ft_putstr_fd(env->value, STDOUT_FILENO);
-				ft_putstr_fd("\"", STDOUT_FILENO);
-			}
-			ft_putstr_fd("\n", STDOUT_FILENO);
+			ft_putstr_fd("\"", STDOUT_FILENO);
+			ft_putstr_fd(env->value, STDOUT_FILENO);
+			ft_putstr_fd("\"", STDOUT_FILENO);
 		}
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		env = env->next;
 	}
-	// exit(1);
 	g_exit_status = 0;
 	return (EXIT_SUCCESS);
 }
@@ -74,7 +70,8 @@ static void	error_export(char *simple_cmd)
 	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 	g_exit_status = 1;
 }
-char	*plus_equal(char *simple_cmd)
+
+/* char	*plus_equal(char *simple_cmd)
 {
 	char	**key_value;
 	char	*str;
@@ -84,14 +81,11 @@ char	*plus_equal(char *simple_cmd)
 	str = ft_strjoin(key_value[0], key_value[1]);
 	free_2d_arr(key_value);
 	return (str);
-}
+} */
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
-	int		i;
-	char	*tmp;
+	int	i;
 
-
-	tmp = NULL;
 	if (simple_cmd[1] == NULL)
 		return (print_export_env(tools));
 	i = 1;
@@ -101,16 +95,9 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 		if (check_input(simple_cmd[i]) != 1)
 		{
 			if (check_input(simple_cmd[i]) == 2)
-			{
-				tmp = plus_equal(simple_cmd[i]);
-				printf("returned tmp=%s\n", tmp);
-				modify_env_value(tools->env_list, tmp, true);
-				free(tmp);
-			}
+				export_plus_equal(tools, simple_cmd[i]);
 			else
-			{
-				modify_env_value(tools->env_list, simple_cmd[i], false);
-			}
+				export_create(tools->env_list, simple_cmd[i]);
 			g_exit_status = 0;
 		}
 		else
@@ -120,7 +107,7 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	return (g_exit_status);
 }
 
-t_env	*modify_env_value(t_env **env_list, char *simple_command,
+/* t_env	*modify_env_value(t_env **env_list, char *simple_command,
 		bool plus_equal)
 {
 	t_env	*env_node;
@@ -158,7 +145,7 @@ t_env	*modify_env_value(t_env **env_list, char *simple_command,
 	}
 	free_2d_arr(key_value);
 	return (env_node);
-}
+} */
 
 void	env_update_key_value(t_env *env_node, char *key, char *value)
 {
