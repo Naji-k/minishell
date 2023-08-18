@@ -140,7 +140,6 @@ bool		handle_redirection(t_commands *node_cmds,
 void		free_redirection(t_commands **cmds_head);
 
 /* Init Tools */
-char		**ft_arrdup(char **arr);
 char		**find_path(char **envp);
 void		add_bslash_path(char **paths);
 void		init_tools(t_tools *tools, t_token **tokens_head,
@@ -161,6 +160,10 @@ int			get_lstsize(t_token *lst);
 
 				/* Expander ($ARG) */
 char		*expand_arg(char *string, t_tools *tools);
+char		*search_value_expansion(char *string, int *len,
+				t_tools *tools, int found_equal_sign);
+
+
 
 				/* Printing (DEBUGGING) */
 void		print_token_list(t_token **lst_head, int print_redirection);
@@ -175,6 +178,7 @@ void		free_2d_arr(char **arr);
 int			handle_syntax_error(t_token **tokens_head,
 				t_tools *tools);
 void		malloc_error(void *arg);
-void		set_malloc_fail(char *failed_malloc, char *string_to_free, t_tools *tools);
+void		set_malloc_fail(char *failed_malloc, char *string_to_free,
+				t_tools *tools);
 
 #endif

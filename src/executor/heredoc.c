@@ -94,7 +94,7 @@ int	execute_hd_process(t_tools *tools, t_token *redirection)
 
 	path_hd = ft_itoa(tools->heredoc);
 	if (!path_hd)
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE); // need to change this one too
 	path = ft_strjoin("/tmp/", path_hd);
 	if (!path)
 		exit(EXIT_FAILURE); // need to change

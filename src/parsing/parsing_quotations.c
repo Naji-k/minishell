@@ -17,7 +17,7 @@ char	*handle_spaces_expansion(t_token **token_head, t_token *node)
 	char	**split_string;
 	int		i;
 
-	i = 1;
+	i = 0;
 	if (check_quotations(node) == true)
 		return (node->cmd);
 	split_string = ft_split(node->cmd, ' ');
@@ -29,14 +29,13 @@ char	*handle_spaces_expansion(t_token **token_head, t_token *node)
 	node->cmd = ft_strdup(split_string[0]);
 	if (!node->cmd)
 		return (malloc_error(NULL), free_2d_arr(split_string), NULL);
-	while (*split_string && split_string[i] != NULL)
+	while (*split_string && split_string[++i] != NULL)
 	{
 		if (split_string[i][0] == '\0')
 			;
 		else
 			create_node(token_head, split_string[i],
 				0, ft_strlen(split_string[i]));
-		i++;
 	}
 	free_2d_arr(split_string);
 	return (node->cmd);

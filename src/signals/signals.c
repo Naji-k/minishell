@@ -32,7 +32,6 @@ void	handler_sigquit(int s)
 {
 	(void)s;
 	ft_putendl_fd("exit", STDERR_FILENO);
-	// rl_on_new_line();
 	exit(0);
 }
 

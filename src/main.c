@@ -17,10 +17,9 @@
 /* Variable defined here */
 int		g_exit_status = 0;
 
-
-// Last (really last) fixes for Youssef:
-// found leak for cmd: |>x
-// last checks for norminette.
+// Last 2 fixes for youssef.
+// 1 - fix expand_arg function norminette.
+// 2 - heredoc path exit(exit_sucess);
 
 int	main(int argc, char **argv, char **envp)
 {

@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+void	handle_literal(t_token *start_node, t_commands *node_cmds,
+	int *i, int *redirection)
+{
+	if (start_node->type == LITERAL)
+	{
+		if (*redirection == true)
+			*redirection = false;
+		else
+		{
+			node_cmds->cmds[*i] = start_node->cmd;
+			(*i) += 1;
+		}
+	}
+}
+
 bool	handle_cmd_creation(t_token *start_node, t_token *target_node,
 	t_commands *node_cmds, int *i)
 {
@@ -21,16 +36,7 @@ bool	handle_cmd_creation(t_token *start_node, t_token *target_node,
 	redirection = false;
 	while (start_node != target_node)
 	{
-		if (start_node->type == LITERAL)
-		{
-			if (redirection == true)
-				redirection = false;
-			else
-			{
-				node_cmds->cmds[*i] = start_node->cmd;
-				(*i) += 1;
-			}
-		}
+		handle_literal(start_node, node_cmds, i, &redirection);
 		if (start_node->type != LITERAL && start_node->type != PIPE)
 		{
 			success = handle_redirection(node_cmds, start_node);
@@ -71,6 +77,19 @@ t_commands	*create_cmd(t_token *start_node, t_token *target_node,
 	return (node_cmds);
 }
 
+void	create_last_command(t_token *start_node, t_token *node_token,
+	t_commands **cmd_head, int s_cmds)
+{
+	t_commands	*cmd;
+
+	if (node_token->type == LITERAL)
+	{
+		cmd = create_cmd(start_node, node_token->next, cmd_head, s_cmds);
+		if (!cmd)
+			return (free_cmd_list(cmd_head));
+	}
+}
+
 void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 {
 	t_token		*node_token;
@@ -94,10 +113,5 @@ void	parse_cmds(t_token **tokens_head, t_commands **cmd_head)
 		}
 		node_token = node_token->next;
 	}
-	if (node_token->type == LITERAL)
-	{
-		cmd = create_cmd(start_node, node_token->next, cmd_head, s_cmds);
-		if (!cmd)
-			return (free_cmd_list(cmd_head));
-	}
+	create_last_command(start_node, node_token, cmd_head, s_cmds);
 }

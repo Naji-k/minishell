@@ -19,11 +19,10 @@ void	free_redirection(t_commands **cmds_head)
 	t_token		*redirection_node_next;
 
 	cmd_node = *cmds_head;
-	redirection_node = cmd_node->redirections;
-	redirection_node_next = cmd_node->redirections;
-
 	while (cmd_node)
 	{
+		redirection_node = cmd_node->redirections;
+		redirection_node_next = cmd_node->redirections;
 		while (redirection_node_next)
 		{
 			redirection_node_next = redirection_node_next->next;

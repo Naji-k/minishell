@@ -14,8 +14,10 @@
 
 /*
 	This function is mainly here to handle edge cases with HEREDOC.
-	It is used in conjuncture with expand_heredoc to make sure we $VAR is not expanded if it comes after << as that messes up EOF.
-	It also handles edge case where << $USER is written after opening the heredoc to write in another file, to make sure it does expand that.
+	It is used in conjuncture with expand_heredoc to make sure we
+	$VAR is not expanded if it comes after << as that messes up EOF.
+	It also handles edge case where << $USER is written after opening
+	the heredoc to write in another file, to make sure it does expand that.
 	So the only time it will block expansion is in the original command.
 */
 t_token	*get_prev_node(t_token **token_head, t_token *node)

@@ -29,7 +29,7 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 	success_check = handle_spaces_expansion(tools->token_head, node);
 	if (!success_check)
 		return (free_token_list(tools->token_head), NULL);
-	printf("String after handling quotations expansion: |%s|\n", node->cmd);
+	printf("String after handling spaces expansion: |%s|\n", node->cmd);
 	node->cmd = handle_quotations(node->cmd);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
