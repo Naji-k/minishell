@@ -17,7 +17,12 @@ void	check_leaks(void)
 	system("leaks -q --list minishell");
 	// system("lsof -c minishell");
 }
-
+void	malloc_error(void *arg)
+{
+	free(arg);
+	g_exit_status = 1; // check with Naji.
+	printf("Memory allocation failed.\nCommand execution has been halted.\n");
+}
 
 /*
 	Duplicates and returns a char ** array.
@@ -64,7 +69,8 @@ void	free_token_list(t_token **lst_head)
 	while (tmp != NULL)
 	{
 		tmp = tmp->next;
-		free(first->cmd);
+		if (first->cmd)
+			free(first->cmd);
 		free(first);
 		first = tmp;
 	}
@@ -79,14 +85,16 @@ void	free_cmd_list(t_commands **lst_head)
 	if (!lst_head)
 		return ;
 	first = *lst_head;
+	tmp = *lst_head;
 	if (!first)
 		return ;
-	tmp = first;
-	while (tmp != NULL)
+	while (first != NULL)
 	{
 		tmp = tmp->next;
-		free(first->redirections);
-		free(first->cmds);
+		if (first->redirections)
+			free(first->redirections);
+		if (first->cmds)
+			free(first->cmds);
 		free(first);
 		first = tmp;
 	}

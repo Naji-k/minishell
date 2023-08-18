@@ -18,6 +18,8 @@ char	*ft_str_add_char(char *str, char c)
 	int		i;
 
 	new_string = malloc(sizeof(char) * (ft_strlen(str) + 2));
+	if (!new_string)
+		return (malloc_error(str), NULL);
 	i = 0;
 	while (str[i])
 	{
@@ -46,9 +48,9 @@ char	*add_spaces_if_needed(char *str, int in_quotes, int i, int j)
 {
 	char	*result;
 
-	result = malloc(strlen(str) * 3);
+	result = malloc(sizeof(char) * ((strlen(str) + 1) * 2));
 	if (!result)
-		exit(EXIT_FAILURE); // need to change this
+		return (NULL);
 	while (str[i] != '\0')
 	{
 		if (str[i] == '\"' || str[i] == '\'')

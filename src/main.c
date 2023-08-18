@@ -17,6 +17,11 @@
 /* Variable defined here */
 int		g_exit_status = 0;
 
+
+// Last (really last) fixes for Youssef:
+// found leak for cmd: |>x
+// last checks for norminette.
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*string;
@@ -30,11 +35,8 @@ int	main(int argc, char **argv, char **envp)
 	tokens_head = NULL;
 	cmds_head = NULL;
 	tools = (t_tools *)malloc(sizeof(*tools));
-	 if (!tools)
-	{
-		perror("malloc");
-		return (EXIT_FAILURE);
-	}
+	if (!tools)
+		return (malloc_error(NULL), g_exit_status);
 	init_tools(tools, &tokens_head, &cmds_head);
 	init_tools_env(tools->env_list, envp);
 	g_exit_status = 0;
@@ -42,10 +44,15 @@ int	main(int argc, char **argv, char **envp)
 	{
 		printf("--------NEW COMMAND---------------\n");
 		string = readline("Minishell: ");
+		if (!string)
+			return (malloc_error(NULL), free_all_exit(tools), g_exit_status);
+		add_history(string);
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
-			free_all_exit(tools);
-		add_history(string);
+		{
+			malloc_error(string);
+			string = NULL;
+		}
 		start_parsing(string, tools);
 		printf("\n--------LEXER---------------\n");
 		print_token_list(&tokens_head, false);
@@ -59,7 +66,8 @@ int	main(int argc, char **argv, char **envp)
 		if (cmds_head)
 			free_redirection(&cmds_head);
 		free_cmd_list(&cmds_head);
-		free(tools->og_string);
+		if (tools->og_string)
+			free(tools->og_string);
 	}
 	(void)(argv);
 	return (0);

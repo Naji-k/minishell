@@ -14,49 +14,68 @@
 
 void	free_redirection(t_commands **cmds_head)
 {
-	t_commands	*first;
+	t_commands	*cmd_node;
+	t_token		*redirection_node;
+	t_token		*redirection_node_next;
 
-	first = *cmds_head;
-	while (first)
+	cmd_node = *cmds_head;
+	redirection_node = cmd_node->redirections;
+	redirection_node_next = cmd_node->redirections;
+
+	while (cmd_node)
 	{
-		free_token_list(&first->redirections);
-		first = first->next;
+		while (redirection_node_next)
+		{
+			redirection_node_next = redirection_node_next->next;
+			free(redirection_node->cmd);
+			free(redirection_node);
+			redirection_node = redirection_node_next;
+		}
+		if (cmd_node->redirections)
+			cmd_node->redirections = NULL;
+		cmd_node = cmd_node->next;
 	}
 }
 
-void	create_redirection_list(t_commands *node_cmds, t_token *start_node)
+bool	create_redirection_list(t_commands *node_cmds, t_token *start_node)
 {
 	node_cmds->redirections = malloc(sizeof(t_token));
 	if (!node_cmds->redirections)
-		exit(EXIT_FAILURE);
+		return (malloc_error(NULL), false);
+	node_cmds->redirections->cmd = NULL;
+	node_cmds->redirections->next = NULL;
 	node_cmds->redirections->cmd = ft_strdup(start_node->next->cmd);
 	if (node_cmds->redirections->cmd == NULL)
-		exit(EXIT_FAILURE);
+		return (malloc_error(NULL), false);
 	node_cmds->redirections->type = start_node->type;
 	node_cmds->redirections->valid = start_node->next->valid;
-	node_cmds->redirections->next = NULL;
+	return (true);
 }
 
-void	add_node_redirection_list(t_commands *node_cmds, t_token *start_node)
+bool	add_node_redirection_list(t_commands *node_cmds, t_token *start_node)
 {
 	t_token		*l_node;
 
 	l_node = malloc(sizeof(t_token));
 	if (!l_node)
-		exit(EXIT_FAILURE);
-	l_node->cmd = ft_strdup(start_node->next->cmd);
-	if (l_node->cmd == NULL)
-		exit(EXIT_FAILURE);
-	l_node->type = start_node->type;
-	l_node->valid = start_node->next->valid;
+		return (malloc_error(NULL), false);
 	l_node->next = NULL;
 	add_node_back((void **)&node_cmds->redirections, l_node, TOKEN_LIST);
+	l_node->cmd = ft_strdup(start_node->next->cmd);
+	if (l_node->cmd == NULL)
+		return (malloc_error(NULL), false);
+	l_node->type = start_node->type;
+	l_node->valid = start_node->next->valid;
+	return (true);
 }
 
-void	handle_redirection(t_commands *node_cmds, t_token *start_node)
+bool	handle_redirection(t_commands *node_cmds, t_token *start_node)
 {
+	bool	success;
+
 	if (node_cmds->redirections == NULL)
-		create_redirection_list(node_cmds, start_node);
+		success = create_redirection_list(node_cmds, start_node);
 	else
-		add_node_redirection_list(node_cmds, start_node);
+		success = add_node_redirection_list(node_cmds, start_node);
+	return (success);
 }

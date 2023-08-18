@@ -101,9 +101,9 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	t_token		*node;
 	static int	i = 0;
 
-	node = malloc(sizeof(t_token) * 1);
+	node = malloc(sizeof(t_token));
 	if (!node)
-		exit(EXIT_FAILURE);
+		return (malloc_error(NULL), NULL);
 	node->cmd = ft_substr(string, start, (len - start));
 	node->type = find_token_type(string[start], string[start + 1]);
 	node->valid = true;

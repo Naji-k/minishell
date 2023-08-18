@@ -19,7 +19,7 @@ void	print_2d_array(char **arr)
 	i = 0;
 	while (arr[i] != NULL)
 	{
-		printf("%s\n", arr[i]);
+		printf("2D Array: %s\n", arr[i]);
 		i++;
 	}
 }

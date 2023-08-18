@@ -26,9 +26,10 @@ char	**handle_export_args(char *simple_cmd, bool plus_equal)
 		free_2d_arr(key_value);
 	}
 	else
-		str = ft_strdup(simple_cmd);
+		str = ft_strdup(simple_cmd); // this is leaking @naji.
 	key_value = ft_split(str, '=');
 	key_value[0] = ftp_strjoin(key_value[0], "=");
+	free(str); // added this to stop leak, please remove comments if you agree.
 	return (key_value);
 }
 

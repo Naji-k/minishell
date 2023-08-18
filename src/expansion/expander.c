@@ -27,11 +27,14 @@ char	*search_value_expansion(char *string, int *len,
 			&& ft_strlen(env_list->key) >= *len && env_list->key[*len] == '=')
 		{
 			if (found_equal_sign == true)
-				expanded_arg = ft_strjoin(env_list->value, &string[(*len) + 1]);
+			{
+				printf("Found equal sign\n");
+				expanded_arg = ftp_strjoin(env_list->value,
+						&string[(*len) + 1]);
+			}
 			else
 				expanded_arg = ft_strdup(env_list->value);
-			if (!expanded_arg)
-				exit(EXIT_FAILURE); // need to change this.
+			set_malloc_fail(expanded_arg, string, tools);
 			return (expanded_arg);
 		}
 		env_list = env_list->next;
@@ -47,13 +50,19 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 
 	i = 0;
 	final_string = calloc((ft_strlen(line) + 1), sizeof(char));
+	if (!final_string)
+		return (malloc_error(line), NULL);
 	expanded_string = NULL;
 	while (line[i] != '\0')
 	{
 		if (should_expand(line, tools, node, i) == true)
 		{
 			expanded_string = get_expanded_arg(line, tools, &i, node);
+			if (!expanded_string || tools->success_malloc == false)
+				return (free(line), free(final_string), NULL);
 			final_string = ftp_strjoin(final_string, expanded_string);
+			if (!final_string)
+				return (malloc_error(line), free(expanded_string), NULL);
 			free(expanded_string);
 			if (line[i] == '~' && i == 0)
 				i++;
@@ -61,6 +70,8 @@ char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
 		else
 		{
 			final_string = ft_str_add_char(final_string, line[i]);
+			if (!final_string)
+				return (free(line), NULL);
 			i++;
 		}
 	}
@@ -105,12 +116,16 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	int		j;
 
 	j = 0;
-	str_to_be_expanded = malloc(sizeof(char) * 20); // need to protect malloc and fix amount;
+	tools->success_malloc = true;
+	str_to_be_expanded = malloc(sizeof(char) * (ft_strlen(line) + 1));
+	if (!str_to_be_expanded)
+		return (malloc_error(NULL), NULL);
 	str_to_be_expanded = copy_expanded_string(line, i, str_to_be_expanded, &j);
-	printf("String to be expanded: %s\n", str_to_be_expanded);
 	expanded_string = expand_arg(str_to_be_expanded, tools);
 	if (!expanded_string)
 	{
+		if (tools->success_malloc == false)
+			return (NULL);
 		node->valid = false;
 		if (get_prev_node(tools->token_head, node)->type != LITERAL
 			&& get_prev_node(tools->token_head, node)->type != PIPE)
@@ -121,6 +136,17 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 	printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
 	free(str_to_be_expanded);
 	return (expanded_string);
+}
+
+
+void	set_malloc_fail(char *failed_malloc, char *string_to_free, t_tools *tools)
+{
+	if (!failed_malloc)
+	{
+		printf("SPECIAL\n");
+		malloc_error(string_to_free);
+		tools->success_malloc = false;
+	}
 }
 
 /*
@@ -137,24 +163,37 @@ char	*expand_arg(char *string, t_tools *tools)
 	int		len;
 	int		found_equal_sign;
 
+
+	printf("String to be expanded: %s\n", string);
 	found_equal_sign = false;
 	expanded_arg = ft_strchr(string, '=');
 	if (expanded_arg == NULL)
 		len = ft_strlen(string) - 1;
 	else
 	{
-		printf("this is an export\n");
 		len = expanded_arg - string - 1;
 		found_equal_sign = true;
 	}
 	if (string && string[0] == '$' && string[1] == '\0')
-		return (ft_strdup(string));
+	{
+		expanded_arg = ft_strdup(string);
+		set_malloc_fail(expanded_arg, string, tools);
+	}
 	if (ft_strncmp(string, "~", 1) == 0)
-		return (ft_strdup(getenv("HOME")));
+	{
+		expanded_arg = ft_strdup(getenv("HOME"));
+		set_malloc_fail(expanded_arg, string, tools);
+	}
 	if (ft_strncmp(string, "$?", 2) == 0)
-		return (ft_itoa(g_exit_status));
+	{
+		expanded_arg = ft_itoa(g_exit_status);
+		set_malloc_fail(expanded_arg, string, tools);
+	}
 	if (ft_strncmp(string, "$$", 2) == 0)
-		return (ft_strdup("1234"));
+	{
+		expanded_arg = ft_strdup("1234");
+		set_malloc_fail(expanded_arg, string, tools);
+	}
 	expanded_arg = search_value_expansion(string, &len,
 			tools, found_equal_sign);
 	return (expanded_arg);
