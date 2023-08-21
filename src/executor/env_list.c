@@ -123,4 +123,5 @@ void	create_env_back(t_env **env_list, char **key_value, char *env)
 		new_node = env_new_node(env);
 		env_add_back(env_list, new_node, 1);
 	}
+	free(str);
 }

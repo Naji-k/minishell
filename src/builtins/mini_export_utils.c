@@ -18,6 +18,7 @@ char	**handle_export_args(char *simple_cmd, bool plus_equal)
 	char	**key_value;
 	char	*str;
 
+	str = NULL;
 	if (plus_equal == true)
 	{
 		key_value = ft_split(simple_cmd, '+');
@@ -26,10 +27,10 @@ char	**handle_export_args(char *simple_cmd, bool plus_equal)
 		free_2d_arr(key_value);
 	}
 	else
-		str = ft_strdup(simple_cmd); // this is leaking @naji.
+		str = ft_strdup(simple_cmd);
 	key_value = ft_split(str, '=');
 	key_value[0] = ftp_strjoin(key_value[0], "=");
-	free(str); // added this to stop leak, please remove comments if you agree.
+	free(str);
 	return (key_value);
 }
 
@@ -56,6 +57,7 @@ void	export_plus_equal(t_tools *tools, char *simple_command)
 	}
 	else
 		create_env_back(tools->env_list, key_value, NULL);
+	printf("tmp:%s\n", tmp);
 	free(tmp);
 	free_2d_arr(key_value);
 }

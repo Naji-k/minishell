@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   expander_utils.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/18 22:54:30 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/08/18 22:54:30 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   expander_utils.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/08/18 22:54:30 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/08/18 22:54:30 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,3 @@ char	*expand_arg(char *string, t_tools *tools)
 			tools);
 	return (expanded_arg);
 }
-
-
