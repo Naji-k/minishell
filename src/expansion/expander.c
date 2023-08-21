@@ -14,68 +14,64 @@
 #include "builtin.h"
 #include "executor.h"
 
-char	*search_value_expansion(char *string, int *len,
-			t_tools *tools, int found_equal_sign)
+void	free_set_null_inc(char **string, char *line, int *i)
 {
-	t_env	*env_list;
-	char	*expanded_arg;
-
-	env_list = *tools->env_list;
-	while (env_list)
-	{
-		if (ft_strncmp((string + 1), env_list->key, *len) == 0
-			&& ft_strlen(env_list->key) >= *len && env_list->key[*len] == '=')
-		{
-			if (found_equal_sign == true)
-			{
-				expanded_arg = ftp_strjoin(env_list->value,
-						&string[(*len) + 1]);
-			}
-			else
-				expanded_arg = ft_strdup(env_list->value);
-			set_malloc_fail(expanded_arg, string, tools);
-			return (expanded_arg);
-		}
-		env_list = env_list->next;
-	}
-	return (NULL);
+	if (*string)
+		free(*string);
+	*string = NULL;
+	if (line[*i] == '~' && *i == 0)
+		(*i) += 1;
 }
 
-char	*expand_heredoc(t_token *node, char *line, t_tools *tools)
+char	*copy_final(char *final_string, char **expanded_string,
+			char *line, int *i)
+{
+	if (!final_string)
+		final_string = ft_calloc((ft_strlen(line) + 1), sizeof(char));
+	if (*expanded_string)
+	{
+		final_string = ftp_strjoin(final_string, *expanded_string);
+		if (!final_string)
+			return (NULL);
+		free_set_null_inc(expanded_string, line, i);
+		return (final_string);
+	}
+	else
+	{
+		final_string = ft_str_add_char(final_string, line[*i]);
+		if (!final_string)
+			return (NULL);
+		(*i) += 1;
+		return (final_string);
+	}
+}
+
+char	*expand_heredoc(t_token *node, char *line, t_tools *tools, int *i)
 {
 	char	*expanded_string;
 	char	*final_string;
-	int		i;
 
-	i = 0;
-	final_string = calloc((ft_strlen(line) + 1), sizeof(char));
-	if (!final_string)
-		return (malloc_error(line), NULL);
 	expanded_string = NULL;
-	while (line[i] != '\0')
+	final_string = NULL;
+	while (line[*i] != '\0')
 	{
-		if (should_expand(line, tools, node, i) == true)
+		if (should_expand(line, tools, node, *i) == true)
 		{
-			expanded_string = get_expanded_arg(line, tools, &i, node);
+			expanded_string = get_expanded_arg(line, tools, i, node);
 			if (!expanded_string || tools->success_malloc == false)
 				return (free(line), free(final_string), NULL);
-			final_string = ftp_strjoin(final_string, expanded_string);
+			final_string = copy_final(final_string, &expanded_string, line, i);
 			if (!final_string)
 				return (malloc_error(line), free(expanded_string), NULL);
-			free(expanded_string);
-			if (line[i] == '~' && i == 0)
-				i++;
 		}
 		else
 		{
-			final_string = ft_str_add_char(final_string, line[i]);
+			final_string = copy_final(final_string, &expanded_string, line, i);
 			if (!final_string)
 				return (free(line), NULL);
-			i++;
 		}
 	}
-	free(line);
-	return (final_string);
+	return (free(line), final_string);
 }
 
 char	*copy_expanded_string(char *line, int *i,
@@ -92,8 +88,7 @@ char	*copy_expanded_string(char *line, int *i,
 		}
 		(*i) += 1;
 		(*j) += 1;
-		if (line[*i] == '$' || line[*i] == '-'
-			|| line[*i] == '~' || line[*i] == '+') // maybe check all special chars, also ^
+		if (ft_isalnum(line[*i]) == false && line[*i] != '_')
 		{
 			if (line[*i] == '$' && line[*i - 1] == '$')
 			{

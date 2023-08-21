@@ -17,9 +17,9 @@
 /* Variable defined here */
 int		g_exit_status = 0;
 
-// Last 2 fixes for youssef.
-// 1 - fix expand_arg function norminette.
-// 2 - heredoc path exit(exit_sucess);
+// Last fix for youssef && naji.
+// 1 - heredoc path exit(exit_sucess) fix;
+// 2 - check all malloc protections (segfault || leaks) when fail for executor and init_tools.
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -35,10 +35,10 @@ int	main(int argc, char **argv, char **envp)
 	cmds_head = NULL;
 	tools = (t_tools *)malloc(sizeof(*tools));
 	if (!tools)
-		return (malloc_error(NULL), g_exit_status);
+		return (malloc_error(NULL), EXIT_FAILURE);
 	init_tools(tools, &tokens_head, &cmds_head);
 	init_tools_env(tools->env_list, envp);
-	g_exit_status = 0;
+	g_exit_status = 0; // is this needed?
 	while (tools->loop)
 	{
 		printf("--------NEW COMMAND---------------\n");

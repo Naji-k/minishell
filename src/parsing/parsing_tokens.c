@@ -17,12 +17,14 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 {
 	t_token	*node;
 	char	*success_check;
+	int		i;
 
+	i = 0;
 	node = create_node(tools->token_head, string, start, len);
 	if (!node)
 		return (free_token_list(tools->token_head), NULL);
 	printf("String after creating node: |%s|\n", node->cmd);
-	node->cmd = expand_heredoc(node, node->cmd, tools);
+	node->cmd = expand_heredoc(node, node->cmd, tools, &i);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
 	printf("String after expansion: |%s|\n", node->cmd);

@@ -80,9 +80,8 @@ void	init_tools(t_tools *tools, t_token **tokens_head,
 	tools->env_list = (t_env **)malloc(sizeof(t_env *));
 	if (!tools->env_list)
 	{
-		perror("malloc env_list");
-		free(tools); // Free the previously allocated memory for tools
-		exit (EXIT_FAILURE);
+		malloc_error(tools);
+		exit(EXIT_FAILURE); // check this one. i think should be fine
 	}
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));

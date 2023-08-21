@@ -49,6 +49,33 @@ void	special_expansion(char *expanded_arg, char *string,
 	}
 }
 
+char	*search_value_expansion(char *string, int *len,
+			t_tools *tools, int found_equal_sign)
+{
+	t_env	*env_list;
+	char	*expanded_arg;
+
+	env_list = *tools->env_list;
+	while (env_list)
+	{
+		if (ft_strncmp((string + 1), env_list->key, *len) == 0
+			&& ft_strlen(env_list->key) >= *len && env_list->key[*len] == '=')
+		{
+			if (found_equal_sign == true)
+			{
+				expanded_arg = ftp_strjoin(env_list->value,
+						&string[(*len) + 1]);
+			}
+			else
+				expanded_arg = ft_strdup(env_list->value);
+			set_malloc_fail(expanded_arg, string, tools);
+			return (expanded_arg);
+		}
+		env_list = env_list->next;
+	}
+	return (NULL);
+}
+
 /*
 	Compares the string after the '$' with the environment variables.
 	If it exists, it substrings and returns everything after the '='
@@ -78,3 +105,5 @@ char	*expand_arg(char *string, t_tools *tools)
 			tools, found_equal_sign);
 	return (expanded_arg);
 }
+
+

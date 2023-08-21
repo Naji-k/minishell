@@ -28,7 +28,8 @@ char	*ft_str_add_char(char *str, char c)
 	}
 	new_string[i] = c;
 	new_string[i + 1] = '\0';
-	free(str);
+	if (str)
+		free(str);
 	return (new_string);
 }
 

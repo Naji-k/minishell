@@ -51,7 +51,7 @@ void	ft_dup2_check(int old, int new);
 int		create_heredoc(t_token *redirection, t_tools *tools);
 int		is_heredoc(t_commands **cmd, t_tools *tools);
 char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node);
-char	*expand_heredoc(t_token *node, char *line, t_tools *tools);
+char	*expand_heredoc(t_token *node, char *line, t_tools *tools, int *i);
 char	*ft_str_add_char(char *str, char c);
 int		should_expand(char *line, t_tools *tools, t_token *node, int i);
 
