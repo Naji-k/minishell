@@ -83,7 +83,6 @@ char	*copy_expanded_string(char *line, int *i,
 		str_to_be_expanded[*j] = line[*i];
 		if (line[*i] == '~')
 		{
-			printf("found her\n");
 			(*j) += 1;
 			break ;
 		}
@@ -91,7 +90,8 @@ char	*copy_expanded_string(char *line, int *i,
 		(*j) += 1;
 		if (ft_isalnum(line[*i]) == false && line[*i] != '_')
 		{
-			if (line[*i] == '$' && line[*i - 1] == '$')
+			if ((line[*i] == '$' && line[*i - 1] == '$')
+				|| (line[*i] == '?' && line[*i - 1] == '$'))
 			{
 				str_to_be_expanded[*j] = line[*i];
 				(*i) += 1;
