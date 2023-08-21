@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                     +:+                    */
 /*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/10 10:38:04 by ysrondy       #+#    #+#                 */
-/*   Updated: 2023/04/24 19:44:48 by ysrondy       ########   odam.nl         */
+/*   Updated: 2023/08/21 18:17:52 by ysrondy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ int	main(int argc, char **argv, char **envp)
 	while (tools->loop)
 	{
 		printf("--------NEW COMMAND---------------\n");
+		tools->og_string = NULL;
 		string = readline("Minishell: ");
 		if (!string)
-			return (malloc_error(NULL), free_all_exit(tools), g_exit_status);
+			free_all_exit(tools);
 		add_history(string);
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)

@@ -20,37 +20,43 @@ void	set_malloc_fail(char *failed_malloc, char *string_to_free,
 	if (!failed_malloc)
 	{
 		malloc_error(string_to_free);
+		failed_malloc = NULL;
 		tools->success_malloc = false;
 	}
 }
 
-void	special_expansion(char *expanded_arg, char *string,
+char	*special_expansion(char **expanded_arg, char *string,
 	t_tools *tools)
 {
 	if (string && string[0] == '$' && string[1] == '\0')
 	{
-		expanded_arg = ft_strdup(string);
-		set_malloc_fail(expanded_arg, string, tools);
+		*expanded_arg = ft_strdup(string);
+		set_malloc_fail(*expanded_arg, string, tools);
+		return (*expanded_arg);
 	}
 	if (ft_strncmp(string, "~", 1) == 0)
 	{
-		expanded_arg = ft_strdup(getenv("HOME"));
-		set_malloc_fail(expanded_arg, string, tools);
+		*expanded_arg = ft_strdup(getenv("HOME"));
+		set_malloc_fail(*expanded_arg, string, tools);
+		return (*expanded_arg);
 	}
 	if (ft_strncmp(string, "$?", 2) == 0)
 	{
-		expanded_arg = ft_itoa(g_exit_status);
-		set_malloc_fail(expanded_arg, string, tools);
+		*expanded_arg = ft_itoa(g_exit_status);
+		set_malloc_fail(*expanded_arg, string, tools);
+		return (*expanded_arg);
 	}
 	if (ft_strncmp(string, "$$", 2) == 0)
 	{
-		expanded_arg = ft_strdup("1234");
-		set_malloc_fail(expanded_arg, string, tools);
+		*expanded_arg = ft_strdup("1234");
+		set_malloc_fail(*expanded_arg, string, tools);
+		return (*expanded_arg);
 	}
+	return (NULL);
 }
 
 char	*search_value_expansion(char *string, int *len,
-			t_tools *tools, int found_equal_sign)
+			t_tools *tools)
 {
 	t_env	*env_list;
 	char	*expanded_arg;
@@ -61,13 +67,7 @@ char	*search_value_expansion(char *string, int *len,
 		if (ft_strncmp((string + 1), env_list->key, *len) == 0
 			&& ft_strlen(env_list->key) >= *len && env_list->key[*len] == '=')
 		{
-			if (found_equal_sign == true)
-			{
-				expanded_arg = ftp_strjoin(env_list->value,
-						&string[(*len) + 1]);
-			}
-			else
-				expanded_arg = ft_strdup(env_list->value);
+			expanded_arg = ft_strdup(env_list->value);
 			set_malloc_fail(expanded_arg, string, tools);
 			return (expanded_arg);
 		}
@@ -87,22 +87,17 @@ char	*search_value_expansion(char *string, int *len,
 char	*expand_arg(char *string, t_tools *tools)
 {
 	char	*expanded_arg;
+	char	*final;
 	int		len;
-	int		found_equal_sign;
 
 	printf("String to be expanded: %s\n", string);
-	found_equal_sign = false;
 	expanded_arg = ft_strchr(string, '=');
-	if (expanded_arg == NULL)
-		len = ft_strlen(string) - 1;
-	else
-	{
-		len = expanded_arg - string - 1;
-		found_equal_sign = true;
-	}
-	special_expansion(expanded_arg, string, tools);
+	len = ft_strlen(string) - 1;
+	final = special_expansion(&expanded_arg, string, tools);
+	if (expanded_arg != NULL)
+		return (final);
 	expanded_arg = search_value_expansion(string, &len,
-			tools, found_equal_sign);
+			tools);
 	return (expanded_arg);
 }
 

@@ -83,6 +83,7 @@ char	*copy_expanded_string(char *line, int *i,
 		str_to_be_expanded[*j] = line[*i];
 		if (line[*i] == '~')
 		{
+			printf("found her\n");
 			(*j) += 1;
 			break ;
 		}

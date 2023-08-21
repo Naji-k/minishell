@@ -161,7 +161,7 @@ int			get_lstsize(t_token *lst);
 				/* Expander ($ARG) */
 char		*expand_arg(char *string, t_tools *tools);
 char		*search_value_expansion(char *string, int *len,
-				t_tools *tools, int found_equal_sign);
+				t_tools *tools);
 
 
 

@@ -64,12 +64,13 @@ int	hd_has_quotations(char *string)
 void	start_heredoc_loop(t_tools *tools, t_token *redirection, int file)
 {
 	char	*line;
+	int		i;
 
+	i = 0;
 	while (1)
 	{
 		line = readline("> ");
-		if (ft_strncmp(line, redirection->cmd,
-				ft_strlen(line)) == 0)
+		if (ft_strncmp(line, redirection->cmd, ft_strlen(line)) == 0)
 			break ;
 		if (hd_has_quotations(tools->og_string) == true)
 		{
@@ -78,11 +79,12 @@ void	start_heredoc_loop(t_tools *tools, t_token *redirection, int file)
 		}
 		else
 		{
-			line = expand_heredoc(*(tools->token_head), line, tools);
+			line = expand_heredoc(*(tools->token_head), line, tools, &i);
 			printf("Line after expansion: %s\n", line);
 			write(file, line, ft_strlen(line));
 			write(file, "\n", 1);
 		}
+		i = 0;
 	}
 }
 
@@ -93,7 +95,6 @@ int	execute_hd_process(t_tools *tools, t_token *redirection)
 	char	*path_hd;
 
 	path_hd = ft_itoa(tools->heredoc);
-	
 	if (!path_hd)
 		exit(EXIT_FAILURE); // need to change this one too
 	path = ft_strjoin("/tmp/", path_hd);
