@@ -24,7 +24,7 @@ int	mini_env(t_tools *tools, char **simple_cmd)
 		{
 			while (env)
 			{
-				if (env->has_value == TRUE)
+				if (env->has_value == true)
 				{
 					ft_putstr_fd(env->key, STDOUT_FILENO);
 					if (env->value)

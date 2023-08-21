@@ -15,38 +15,12 @@
 void	check_leaks(void)
 {
 	system("leaks -q --list minishell");
-	// system("lsof -c minishell");
 }
-
-/*
-	Duplicates and returns a char ** array.
-*/
-char	**ft_arrdup(char **arr)
+void	malloc_error(void *arg)
 {
-	int		i;
-	char	**new_arr;
-
-	if (!arr)
-		return (NULL);
-	i = 0;
-	while (arr[i] != NULL)
-		i++;
-	new_arr = malloc(sizeof(char *) * (i + 1));
-	if (!new_arr)
-		return (NULL);
-	i = 0;
-	while (arr[i] != NULL)
-	{
-		new_arr[i] = ft_strdup(arr[i]);
-		if (new_arr[i] == NULL)
-		{
-			free_2d_arr(new_arr);
-			return (NULL);
-		}
-		i++;
-	}
-	new_arr[i] = NULL;
-	return (new_arr);
+	free(arg);
+	g_exit_status = 1;
+	printf("Memory allocation failed.\nCommand execution has been halted.\n");
 }
 
 void	free_token_list(t_token **lst_head)
@@ -63,7 +37,8 @@ void	free_token_list(t_token **lst_head)
 	while (tmp != NULL)
 	{
 		tmp = tmp->next;
-		free(first->cmd);
+		if (first->cmd)
+			free(first->cmd);
 		free(first);
 		first = tmp;
 	}
@@ -78,14 +53,16 @@ void	free_cmd_list(t_commands **lst_head)
 	if (!lst_head)
 		return ;
 	first = *lst_head;
+	tmp = *lst_head;
 	if (!first)
 		return ;
-	tmp = first;
-	while (tmp != NULL)
+	while (first != NULL)
 	{
 		tmp = tmp->next;
-		free(first->redirections);
-		free(first->cmds);
+		if (first->redirections)
+			free(first->redirections);
+		if (first->cmds)
+			free(first->cmds);
 		free(first);
 		first = tmp;
 	}

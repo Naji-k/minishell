@@ -14,8 +14,10 @@
 
 /*
 	This function is mainly here to handle edge cases with HEREDOC.
-	It is used in conjuncture with expand_heredoc to make sure we $VAR is not expanded if it comes after << as that messes up EOF.
-	It also handles edge case where << $USER is written after opening the heredoc to write in another file, to make sure it does expand that.
+	It is used in conjuncture with expand_heredoc to make sure we
+	$VAR is not expanded if it comes after << as that messes up EOF.
+	It also handles edge case where << $USER is written after opening
+	the heredoc to write in another file, to make sure it does expand that.
 	So the only time it will block expansion is in the original command.
 */
 t_token	*get_prev_node(t_token **token_head, t_token *node)
@@ -23,7 +25,6 @@ t_token	*get_prev_node(t_token **token_head, t_token *node)
 	t_token	*first_node;
 
 	first_node = *token_head;
-
 	if (!first_node || !node)
 		return (NULL);
 	if (first_node == node)
@@ -102,14 +103,12 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	t_token		*node;
 	static int	i = 0;
 
-	node = malloc(sizeof(t_token) * 1);
+	node = malloc(sizeof(t_token));
 	if (!node)
-		exit(EXIT_FAILURE);
-	// printf("Start Pos: %d, Len %d\n", start, (len - start));
+		return (malloc_error(NULL), NULL);
 	node->cmd = ft_substr(string, start, (len - start));
-	// printf("Created: %s value= %d\n", node->cmd, node->valid);
 	node->type = find_token_type(string[start], string[start + 1]);
-	node->valid = true;	//by default all tokens valid
+	node->valid = true;
 	node->index = i;
 	i++;
 	node->next = NULL;
@@ -117,14 +116,17 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	return (node);
 }
 
-void	free_redirection(t_commands **cmds_head)
+int	get_lstsize(t_token *lst)
 {
-	t_commands *first;
+	int	i;
 
-	first = *cmds_head;
-	while (first)
+	i = 1;
+	if (!lst)
+		return (0);
+	while (lst->next != NULL)
 	{
-		free_token_list(&first->redirections);
-		first = first->next;
+		lst = lst->next;
+		i++;
 	}
+	return (i);
 }

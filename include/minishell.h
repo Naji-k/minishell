@@ -26,15 +26,9 @@
 # include <termios.h>
 # include <sys/ioctl.h>
 
-# define FALSE 0
-# define TRUE 1
-# define ADD_QUOTATION 1
-# define ADD_QUOTATION_BEGIN 2
-# define ADD_QUOTATION_END 3
 # define DOUBLE_QUOTE 2
 # define SINGLE_QUOTE 1
 # define NO_QUOTATION 0
-# define SKIP 666
 # define SYN_ERROR "Minishell: syntax error near unexpected token"
 # define DOT_ERROR "Minishell: .: filename argument required\n\
 .: usage: . filename [arguments]\n"
@@ -112,67 +106,79 @@ typedef struct s_tools
 	int						hd_pid;
 	bool					loop;
 	bool					has_pipe;
+	int						success_malloc;
 }	t_tools;
 
-				/* Parsing Tokens */
-int		is_whitespace(char c);
-int		find_token_type(char c, char c_next);
-void	start_parsing(char *string, t_tools *tools);
-int		skip_whitespaces(char *string);
-int		skip_space_and_return(char *string, int start);
-char	*add_spaces_non_literal(char *str);
-
-				/* Parsing Dollar Expander */
-void	handle_arg_then_dollar(char *new_string, char *string, int i, int j);
-int		handle_dbl_dollars(char *new_string, char *string, int i, int j);
-char	*sep_dollars(char *string);
+/* Parsing Tokens */
+int			is_whitespace(char c);
+int			find_token_type(char c, char c_next);
+void		start_parsing(char *string, t_tools *tools);
+int			skip_whitespaces(char *string);
+int			skip_space_and_return(char *string, int start);
+char		*add_spaces_non_literal(char *str);
 
 				/* Parsing Quotations */
-char	*handle_quotations(char *string);
-void	handle_spaces_expansion(t_token **token_head, t_token *node);
-int		check_quotations(t_token *node);
-void	increment_if_not_skipped(char *new_string, int *i, int *j);
-int		is_inside_quote(char *string, int pos_char);
+char		*handle_quotations(char *string);
+char		*handle_spaces_expansion(t_token **token_head, t_token *node);
+int			check_quotations(t_token *node);
+void		increment_if_not_skipped(char *new_string, int *i, int *j);
+int			is_inside_quote(char *string, int pos_char);
 
 				/* Parsing Commands */
-void	parse_cmds(t_token **tokens_head, t_commands **cmd_head);
-void	create_cmd(t_token *start_node, t_token *target_node,
-			t_commands **cmd_head, int num_nodes);
-int		is_builtin(char *string);
+void		parse_cmds(t_token **tokens_head, t_commands **cmd_head);
+t_commands	*create_cmd(t_token *start_node, t_token *target_node,
+				t_commands **cmd_head, int num_nodes);
+int			is_builtin(char *string);
 
-				/* Init Tools */
-char	**ft_arrdup(char **arr);
-char	**find_path(char **envp);
-void	add_bslash_path(char **paths);
-void	init_tools(t_tools *tools, t_token **tokens_head,
-			t_commands **cmds_head);
-void	handler_sigint(int s);
-void	handler_sigquit(int s);
-void	handler_hd_sigint(int s);
+/* Parsing Redirection */
+bool		create_redirection_list(t_commands *node_cmds,
+				t_token *start_node);
+bool		add_node_redirection_list(t_commands *node_cmds,
+				t_token *start_node);
+bool		handle_redirection(t_commands *node_cmds,
+				t_token *start_node);
+void		free_redirection(t_commands **cmds_head);
+
+/* Init Tools */
+char		**find_path(char **envp);
+void		add_bslash_path(char **paths);
+void		init_tools(t_tools *tools, t_token **tokens_head,
+				t_commands **cmds_head);
+void		handler_sigint(int s);
+void		handler_sigquit(int s);
+void		handler_hd_sigint(int s);
 
 				/* Linked_List Functions */
-void	*last_node(void *lst, t_lst_type type);
-void	add_node_back(void **lst_head, void *node, t_lst_type type);
-t_token	*create_node(t_token **tokens_head, char *string, int start, int j);
-t_token	*get_prev_node(t_token **tokens_head, t_token *node);
-void	free_redirection(t_commands **cmds_head);
+void		*last_node(void *lst, t_lst_type type);
+void		add_node_back(void **lst_head, void *node, t_lst_type type);
+t_token		*create_node(t_token **tokens_head, char *string, int start, int j);
+t_token		*get_prev_node(t_token **tokens_head, t_token *node);
+int			get_lstsize(t_token *lst);
 
 				/* Execution of Commands */
 // void	execute(t_tools *tools, t_commands **cmd_head);
 
 				/* Expander ($ARG) */
-char	*expand_arg(char *string, t_tools *tools);
+char		*expand_arg(char *string, t_tools *tools);
+char		*search_value_expansion(char *string, int *len,
+				t_tools *tools);
+
+
 
 				/* Printing (DEBUGGING) */
-void	print_token_list(t_token **lst_head, int print_redirection);
-void	print_cmds_list(t_commands **lst_head);
-void	print_2d_array(char **arr);
+void		print_token_list(t_token **lst_head, int print_redirection);
+void		print_cmds_list(t_commands **lst_head);
+void		print_2d_array(char **arr);
 
-				/* Utils */
-void	check_leaks(void);
-void	free_token_list(t_token **lst_head);
-void	free_cmd_list(t_commands **lst_head);
-void	free_2d_arr(char **arr);
-int		handle_syntax_error(t_token **tokens_head, t_tools *tools);
+/* Utils */
+void		check_leaks(void);
+void		free_token_list(t_token **lst_head);
+void		free_cmd_list(t_commands **lst_head);
+void		free_2d_arr(char **arr);
+int			handle_syntax_error(t_token **tokens_head,
+				t_tools *tools);
+void		malloc_error(void *arg);
+void		set_malloc_fail(char *failed_malloc, char *string_to_free,
+				t_tools *tools);
 
 #endif

@@ -59,8 +59,6 @@ int	syntax_dot(t_token *token)
 	}
 	return (0);
 }
-// Need to change the error message. Should print the $VAR.
-// problem where echo "hello" > $LOGNAME > $ABC should still give error but also create the first file.
 
 int	ambiguous_redirect(t_token *token, t_tools *tools)
 {
@@ -69,7 +67,6 @@ int	ambiguous_redirect(t_token *token, t_tools *tools)
 		|| token->type == IN_FILE)
 	{
 		printf("token.next.valid=%d\n", token->next->valid);
-		// if (tools->indexes[token->next->index] == 1)
 		if (token->next->valid == false)
 		{
 			g_exit_status = 1;
@@ -80,7 +77,6 @@ int	ambiguous_redirect(t_token *token, t_tools *tools)
 	return (0);
 }
 
-
 int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 {
 	t_token		*token;
@@ -88,7 +84,6 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 	token = *tokens_head;
 	if (syntax_dot(token) == 1)
 		return (1);
-
 	while (token != NULL)
 	{
 		if (syntax_redirection(token) == 1)
