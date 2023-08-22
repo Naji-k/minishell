@@ -12,16 +12,18 @@
 
 #include "executor.h"
 #include "minishell.h"
-#include <fcntl.h>
-#include <string.h>
-#include <sys/errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
-/*
-	this func will split the commands to two parts:
-	LOOP: on all commands -1 ex:lst command
-	and run the last command separately
+/**
+ * @brief to handle multi commands by splitting them into two parts:
+ * has_pipe=true;
+	- loop: on all (commands -1), and last command
+	- run the last command separately
+
+ * old_fd: Is a reference, between two pipes
+ * (save the value of STD_OUT fd from the old_pipe,
+ *  and dup it as STD_IN for new_pipe) 
+ * @param tools 
+ * @param cmd_head includes: **cmd, *redirection,  *builtin
  */
 
 void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
@@ -33,14 +35,13 @@ void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
 
 	old_fd = STDIN_FILENO;
 	node = *cmd_head;
-	dprintf(2, "MULTI\n");
 	tools->has_pipe = true;
 	while (node->next != NULL)
 	{
 		if (pipe(fd) == ERROR)
 			error_file_handling("pipe");
-		if (multi_pipex_process(tools, &node, old_fd, fd) == ERROR)
-			return ; //close_PIPES
+		if (multi_pipes_process(tools, &node, old_fd, fd) == ERROR)
+			return ;
 		close(fd[1]);
 		if (node != *cmd_head)
 			close(old_fd);
@@ -51,7 +52,17 @@ void	multi_commands_handler(t_tools *tools, t_commands **cmd_head)
 	wait_last_pid(last_pid);
 }
 
-int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
+/**
+ * This function is the main executor for multi- commands,
+ * STD_IN is from old_fd, and 
+ * 
+ * @param tools 
+ * @param cmd_head Includes: **cmd, *redirection, *builtin
+ * @param old_fd reference for STD_IN, and it will
+ * @param fd executor fd
+ * @return if forks fails=> ERROR, SUCCESS,
+ */
+int	multi_pipes_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		int *fd)
 {
 	pid_t	pid;
@@ -60,13 +71,14 @@ int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 	if (pid == ERROR)
 	{
 		close_pipes(fd, old_fd);
-		return (error_file_handling("fork"));
+		return (e_pipe_fork("fork"), ERROR);
 	}
 	if (pid == 0)
 	{
 		close(fd[0]);
-		ft_dup2_check(old_fd, STDIN_FILENO);
-		ft_dup2_check(fd[1], STDOUT_FILENO);
+		if (ft_dup2_check(old_fd, STDIN_FILENO) == ERROR || ft_dup2_check(fd[1],
+				STDOUT_FILENO) == ERROR)
+			exit(EXIT_FAILURE);
 		if ((*cmd_head)->redirections)
 			if (redirection((*cmd_head)))
 				exit(EXIT_FAILURE);
@@ -79,9 +91,16 @@ int	multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 	}
 	return (SUCCESS);
 }
-/*
-	After finish the loop on all (commands-1) so now just execute the last command
-	and returns the last PID to wait for it
+
+/**
+ * @brief here is the 2nd phase of multi_command_process
+ * after finish the loop on all (command -1), 
+ * so now just execute the last command,
+ * @param tools 
+ * @param last_cmd 
+ * @param old_fd reference to STD_OUT for (last_command -1),
+ * 		 it will dup2 as STD_IN
+ * @return pid_t returns the last PID to wait for it
  */
 
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
@@ -105,6 +124,11 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 	return (pid);
 }
 
+/**
+ * @brief wait_last_pid and update g_exit_status,
+ * 
+ * @param last_pid of the last_command
+ */
 void	wait_last_pid(pid_t last_pid)
 {
 	int	status;

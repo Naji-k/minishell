@@ -19,8 +19,10 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
-# include <string.h>
+// # include <string.h>
+# include <sys/errno.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <sys/wait.h>
 
 # define ERROR -1
@@ -39,7 +41,7 @@ int		close_pipes(int *fd, int old_fd);
 void	execve_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_commands_handler(t_tools *tools, t_commands **cmd_head);
-int		multi_pipex_process(t_tools *tools, t_commands **cmd_head, int old_fd,
+int		multi_pipes_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 			int *fd);
 pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
@@ -47,17 +49,20 @@ void	wait_last_pid(pid_t last_pid);
 
 //redirection
 int		redirection(t_commands *cmd);
-void	ft_dup2_check(int old, int new);
+int		ft_dup2_check(int old, int new);
 int		create_heredoc(t_token *redirection, t_tools *tools);
 int		is_heredoc(t_commands **cmd, t_tools *tools);
 char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node);
 char	*expand_heredoc(t_token *node, char *line, t_tools *tools, int *i);
 char	*ft_str_add_char(char *str, char c);
 int		should_expand(char *line, t_tools *tools, t_token *node, int i);
+int		redirect_open_hd(t_token *redirection);
 
 //error_handling
 int		error_file_handling(char *str);
 int		e_cmd_not_found(char *s_cmd);
+int		e_pipe_fork(char *str);
+int		e_heredoc(char *str);
 
 //builtins
 int		bn_echo(t_commands **cmd_head);

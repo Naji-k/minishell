@@ -12,6 +12,13 @@
 
 #include "builtin.h"
 
+/**
+ * @brief create_new_node, by char *env(one line), split the line
+ * to key_value, if there is a value =? has_value = true,
+ * 
+ * @param env 
+ * @return t_env* created new_node
+ */
 t_env	*env_new_node(char *env)
 {
 	int		i;
@@ -102,6 +109,14 @@ int	env_del_one(t_env **list, char *key)
 	return (1);
 }
 
+/**
+ * @brief Create a new_node and set it at the end of env, by two ways:
+ * 		if the inputs as char **key_value, will create new_node;
+ * 		if key_value == char *env (one line) also will create new_node
+ * @param env_list 
+ * @param key_value char **key_value
+ * @param env 
+ */
 void	create_env_back(t_env **env_list, char **key_value, char *env)
 {
 	char	*str;

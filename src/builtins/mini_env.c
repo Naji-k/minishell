@@ -36,6 +36,6 @@ int	mini_env(t_tools *tools, char **simple_cmd)
 			return (0);
 		}
 	}
-	printf("env: %s: No such file or directory", simple_cmd[1]);
+	ft_putstr_fd("Minishell: env: No such file or directory\n", STDERR_FILENO);
 	return (127);
 }

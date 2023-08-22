@@ -23,16 +23,14 @@ int		mini_pwd(t_tools *tools, char **simple_cmd);
 int		mini_echo(t_tools *tools, char **simple_cmd);
 int		mini_echo_option(char *str);
 int		mini_echo_checker(char *str, t_tools *tools);
-char	*echo_home(char *str);
 
 /* export */
 int		mini_export(t_tools *tools, char **simple_cmd);
-t_env	*modify_env_value(t_env **env_list, char *simple_command,
-			bool plus_equal);
-void	export_create(t_env **env_list, char *simple_cmd);
+int		export_create(t_env **env_list, char *simple_cmd);
+void	env_update_key_value(t_env *env_node, char *key, char *value);
 
 /*export_utils*/
-void	export_plus_equal(t_tools *tools, char *simple_command);
+int		export_plus_equal(t_tools *tools, char *simple_command);
 char	**handle_export_args(char *simple_cmd, bool plus_equal);
 
 /* cd */
@@ -61,7 +59,6 @@ char	**env_list_to_array(t_env **env_list);
 void	free_env_list(t_env **env_list);
 t_env	*find_env_by_key(t_env **env_list, char *key);
 void	init_oldpwd(t_env **env_list);
-void	env_update_key_value(t_env *env_node, char *key, char *value);
 void	create_env_back(t_env **env_list, char **key_value, char *env);
 
 #endif

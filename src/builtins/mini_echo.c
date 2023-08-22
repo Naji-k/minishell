@@ -33,6 +33,13 @@ int	mini_echo_option(char *str)
 	return (0);
 }
 
+/**
+ * @brief just check if echo has any simple command
+ * echo 
+ * @param str 
+ * @param tools 
+ * @return int 
+ */
 int	mini_echo_checker(char *str, t_tools *tools)
 {
 	(void)tools;
@@ -44,17 +51,14 @@ int	mini_echo_checker(char *str, t_tools *tools)
 	return (1);
 }
 
-char	*echo_home(char *str)
-{
-	char	*tmp;
-
-	tmp = "";
-	tmp = getenv("HOME");
-	ft_putstr_fd(tmp, STDOUT_FILENO);
-	str = ft_substr(str, 1, ft_strlen(str));
-	return (str);
-}
-
+/**
+ * @brief the main func for echo,
+ * check if there any args for echo,,
+ * call mini_echo_option(searching for -n)
+ * @param tools 
+ * @param simple_cmd ex: echo hey, echo -n hello
+ * @return int 
+ */
 int	mini_echo(t_tools *tools, char **simple_cmd)
 {
 	int	i;
@@ -75,5 +79,5 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		return (0);
 	}
-	return (EXIT_FAILURE);
+	return (SUCCESS);
 }

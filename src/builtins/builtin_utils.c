@@ -17,6 +17,16 @@
 	this is the Main func for buildins using strcmp
 		we can call the builtin functions
  */
+
+/**
+ * @brief this is the Main func for buildins using strcmp
+		we can call the builtin functions
+ * 
+ * @param arg type of the builtin ex: cd,export,env...
+ * @param tools 
+ * @param simple_cmd the builtin and it's command, cd src/
+ * @return returned value from the functions (0, 1)
+ */
 int	run_builtin(char *arg, t_tools *tools, char **simple_cmd)
 {
 	if (ft_strncmp(arg, "cd", 3) == 0)

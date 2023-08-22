@@ -13,6 +13,12 @@
 #include "builtin.h"
 #include "minishell.h"
 
+/**
+ * @brief to init_env
+ * 
+ * @param env_list env_list minishell env ,which is in tools, 
+ * @param envp 
+ */
 void	init_tools_env(t_env **env_list, char **envp)
 {
 	int		i;
@@ -40,6 +46,11 @@ void	init_tools_env(t_env **env_list, char **envp)
 	init_oldpwd(env_list);
 }
 
+/**
+ * @brief it init_oldpwd at the beginning
+ * by updating OLDPWD => OLDPWD (with no value)
+ * @param env_list 
+ */
 void	init_oldpwd(t_env **env_list)
 {
 	t_env	*tmp;
@@ -51,6 +62,12 @@ void	init_oldpwd(t_env **env_list)
 	}
 }
 
+/**
+ * @brief convert env_list to char **env
+ * used in execve
+ * @param env_list 
+ * @return char** env || NULL if fails
+ */
 char	**env_list_to_array(t_env **env_list)
 {
 	int		i;
@@ -60,6 +77,8 @@ char	**env_list_to_array(t_env **env_list)
 	tmp = (*env_list);
 	i = env_size(*env_list);
 	env = ft_calloc(i + 1, sizeof(char **));
+	if (!env)
+		return (malloc_error("env"), NULL);
 	i = 0;
 	while (tmp->next)
 	{
@@ -94,6 +113,12 @@ void	free_env_list(t_env **env_list)
 	*env_list = NULL;
 }
 
+/**
+ * @brief loop on all env searching for t_env* by key
+ * @param env_list 
+ * @param key 
+ * @return t_env* exist_env
+ */
 t_env	*find_env_by_key(t_env **env_list, char *key)
 {
 	t_env	*env;
