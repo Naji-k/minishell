@@ -163,8 +163,6 @@ char		*expand_arg(char *string, t_tools *tools);
 char		*search_value_expansion(char *string, int *len,
 				t_tools *tools);
 
-
-
 				/* Printing (DEBUGGING) */
 void		print_token_list(t_token **lst_head, int print_redirection);
 void		print_cmds_list(t_commands **lst_head);

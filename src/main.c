@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/10 10:38:04 by ysrondy       #+#    #+#                 */
-/*   Updated: 2023/08/21 18:17:52 by ysrondy          ###   ########.fr       */
+/*   Updated: 2023/08/21 18:17:52 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(int argc, char **argv, char **envp)
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	atexit(check_leaks);
+	// atexit(check_leaks);
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;

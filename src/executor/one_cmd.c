@@ -12,12 +12,14 @@
 
 #include "executor.h"
 #include "minishell.h"
-#include <fcntl.h>
-#include <string.h>
-#include <sys/errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
+/**
+ * @brief This function handles one command: has pipe=false,
+ * if there is redirection, or it is built-ins, or empty.
+ * 
+ * @param tools 
+ * @param cmd_head includes: **cmd, *redirection,  *builtin
+ */
 void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 {
 	tools->has_pipe = false;
@@ -36,29 +38,32 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 		execute_onc_cmd(tools, cmd_head);
 }
 
-/*
-	If it is only one cmnd, you don't have to fork...
-	so just execute on the main process
+/**
+ * @brief Executor for one command, find a path, convert env to char **env,
+	and execve
+ * 
+ * @param tools 
+ * @param cmd_head includes: **cmd, *redirection,  *builtin
  */
 void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head)
 {
 	char		*cmd_path;
-	t_commands	*node;
+	t_commands	*one_cmd;
 	pid_t		pid;
 	int			status;
 
-	node = *cmd_head;
+	one_cmd = *cmd_head;
 	pid = fork();
 	if (pid == ERROR)
-		error_file_handling("fork");
+		e_pipe_fork("fork");
 	if (pid == 0)
 	{
-		cmd_path = find_cmd_path(tools, node->cmds[0]);
+		cmd_path = find_cmd_path(tools, one_cmd->cmds[0]);
 		if (!cmd_path)
-			_exit(e_cmd_not_found(node->cmds[0]));
+			_exit(e_cmd_not_found(one_cmd->cmds[0]));
 		tools->envp = env_list_to_array(tools->env_list);
-		if (execve(cmd_path, node->cmds, tools->envp) == -1)
-			_exit(e_cmd_not_found(node->cmds[0]));
+		if (execve(cmd_path, one_cmd->cmds, tools->envp) == -1)
+			_exit(e_cmd_not_found(one_cmd->cmds[0]));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

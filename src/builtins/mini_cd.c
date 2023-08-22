@@ -13,8 +13,14 @@
 #include "builtin.h"
 #include "executor.h"
 
-/*  This fn just for testing purposes */
-
+/**
+ * @brief the main fn for cd,
+ * check if calling the home, or cd -, and changeDir, then update 
+ * PWD, OLDPWD
+ * @param tools 
+ * @param simple_cmd just the command and the args, cd home..
+ * @return 0 for success, 1 for failure
+ */
 int	mini_cd(t_tools *tools, char **simple_cmd)
 {
 	char	*path;
@@ -40,10 +46,17 @@ int	mini_cd(t_tools *tools, char **simple_cmd)
 	}
 	update_pwd_env(tools, tmp_opwd);
 	free(path);
-	return (0);
+	return (SUCCESS);
 }
-/* This function will check if PWD
-	&& OLDPWD exists in env will update the Value of them */
+
+/**
+ * This function will check if PWD
+	&& OLDPWD exists in env will update the Value of them,
+	and update the value of them in tools (as backup)
+ * 
+ * @param tools 
+ * @param tmp_opwd oldpwd, comes from getcwd before change dir
+ */
 
 void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 {
@@ -63,23 +76,28 @@ void	update_pwd_env(t_tools *tools, char *tmp_opwd)
 	}
 	tmp = find_env_by_key(tools->env_list, "PWD");
 	if (tmp && tools->pwd)
-	{
 		env_update_key_value(tmp, NULL, tools->pwd);
-	}
 	tmp = find_env_by_key(tools->env_list, "OLDPWD");
 	if (tmp)
-	{
 		env_update_key_value(tmp, "OLDPWD=", tools->old_pwd);
-	}
 }
 
+/**
+ * @brief this function is for cd - (go back to oldpwd)
+ * 
+ * @param tools 
+ * @return char* path of OLDPWD || NULL (OLDPWD not set)
+ */
 char	*mini_cd_oldpwd(t_tools *tools)
 {
 	char	*path;
 
 	path = NULL;
 	if (tools->old_pwd != NULL)
+	{
 		path = ft_strdup(tools->old_pwd);
+		printf("%s\n", path);
+	}
 	else
 	{
 		ft_putstr_fd("Minishell: ", STDERR_FILENO);
@@ -89,6 +107,12 @@ char	*mini_cd_oldpwd(t_tools *tools)
 	return (path);
 }
 
+/**
+ * @brief to go to home by expand_arg
+ * 
+ * @param tools 
+ * @return char* the path of HOME or NULL;
+ */
 char	*cd_home_dir(t_tools *tools)
 {
 	char	*path;

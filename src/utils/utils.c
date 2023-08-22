@@ -16,6 +16,7 @@ void	check_leaks(void)
 {
 	system("leaks -q --list minishell");
 }
+
 void	malloc_error(void *arg)
 {
 	free(arg);

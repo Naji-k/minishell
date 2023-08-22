@@ -13,7 +13,14 @@
 #include "builtin.h"
 #include "executor.h"
 
-static bool	is_all_numric(char *str)
+/**
+ * @brief check all arguments for mini_exit
+ * 
+ * @param str mini_exit args
+ * @return true if all args is numeric 
+ * @return false if catch any non-digits 
+ */
+static bool	is_all_numeric(char *str)
 {
 	int	i;
 
@@ -30,6 +37,11 @@ static bool	is_all_numric(char *str)
 	return (true);
 }
 
+/**
+ * @brief free everything in tools and clear_history 
+ * and exit from minishell with g_exit_status
+ * @param tools 
+ */
 void	free_all_exit(t_tools *tools)
 {
 	free_env_list(tools->env_list);
@@ -52,6 +64,12 @@ void	error_exit(char *cmd)
 	ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 }
 
+/**
+ * @brief If there is an args for exit and its numeric
+ * exit with that number
+ * @param tools 
+ * @param simple_cmd exit with args
+ */
 void	exit_with_number(t_tools *tools, char **simple_cmd)
 {
 	if (!tools->has_pipe)
@@ -68,6 +86,15 @@ void	exit_with_number(t_tools *tools, char **simple_cmd)
 	}
 }
 
+/**
+ * @brief the main fn for mini_exit:
+ * it print only if there no pipes (one_cmd),
+ * check all args should be numerics, otherwise print_error and exit
+ * if all args numeric: exit_with_ that number as g_exit_status
+ * @param tools 
+ * @param simple_cmd exit with args: exit 50, exit hey
+ * @return int g_exit_status
+ */
 int	mini_exit(t_tools *tools, char **simple_cmd)
 {
 	if (simple_cmd[1] == NULL)
@@ -78,9 +105,9 @@ int	mini_exit(t_tools *tools, char **simple_cmd)
 	}
 	else
 	{
-		if (is_all_numric(simple_cmd[1]) == true)
+		if (is_all_numeric(simple_cmd[1]) == true)
 			exit_with_number(tools, simple_cmd);
-		else if (is_all_numric(simple_cmd[1]) == false)
+		else if (is_all_numeric(simple_cmd[1]) == false)
 		{
 			g_exit_status = 255;
 			if (tools->has_pipe == false)

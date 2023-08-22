@@ -39,14 +39,18 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
+	if (fd_i == ERROR || fd_o == ERROR)
+	{
+		g_exit_status = 1;
+		ft_putstr_fd("Minishell: error dup STD_IN, STD_OUT\n", STDERR_FILENO);
+		return ;
+	}
 	if ((*cmd_head)->next == NULL)
 		one_cmd_handler(tools, cmd_head);
 	if ((*cmd_head)->next != NULL)
 		multi_commands_handler(tools, cmd_head);
-	dup2(fd_i, STDIN_FILENO);
-	dup2(fd_o, STDOUT_FILENO);
-	close(fd_i);
-	close(fd_o);
+	ft_dup2_check(fd_i, STDIN_FILENO);
+	ft_dup2_check(fd_o, STDOUT_FILENO);
 }
 
 void	execve_cmd(t_tools *tools, t_commands **cmd_head)
@@ -112,12 +116,21 @@ int	close_pipes(int *fd, int old_fd)
 {
 	if (fd)
 	{
-		if (close(fd[0] == ERROR))
-			ft_putstr_fd("close fails\n", STDERR_FILENO);
-		if (close(fd[1] == ERROR))
-			ft_putstr_fd("close fails\n", STDERR_FILENO);
+		if (close(fd[0]) == ERROR)
+		{
+			ft_putstr_fd("close failed fd[0]\n", STDERR_FILENO);
+			return (ERROR);
+		}
+		if (close(fd[1]) == ERROR)
+		{
+			ft_putstr_fd("close failed fd[1]\n", STDERR_FILENO);
+			return (ERROR);
+		}
 	}
 	if (close(old_fd) == ERROR)
-		ft_putstr_fd("close fails\n", STDERR_FILENO);
-	return (0);
+	{
+		ft_putstr_fd("close failed old_fd\n", STDERR_FILENO);
+		return (ERROR);
+	}
+	return (SUCCESS);
 }

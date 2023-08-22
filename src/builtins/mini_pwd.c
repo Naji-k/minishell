@@ -20,7 +20,7 @@ int	mini_pwd(t_tools *tools, char **simple_cmd)
 	(void)(tools);
 	(void)(simple_cmd);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("Current working dir: %s\n", cwd);
+		printf("%s\n", cwd);
 	else
 	{
 		perror("getcwd() error");

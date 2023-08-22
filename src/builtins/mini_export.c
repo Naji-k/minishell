@@ -13,6 +13,12 @@
 #include "builtin.h"
 #include "executor.h"
 
+/**
+ * @brief check if the input is valid
+ * 
+ * @param export_str export args
+ * @return int 1 if success, 2 if +=, 0 if invalid
+ */
 static int	check_input(char *export_str)
 {
 	int	i;
@@ -28,7 +34,6 @@ static int	check_input(char *export_str)
 				return (2);
 			if (export_str[i] != 0 && export_str[i] != '=')
 			{
-				printf("CATCHED=%c\n", *export_str);
 				return (1);
 			}
 			else if (export_str[i] == '\0')
@@ -63,6 +68,11 @@ static int	print_export_env(t_tools *tools)
 	return (EXIT_SUCCESS);
 }
 
+/**
+ * @brief error happens if the input is not valid
+ * 
+ * @param simple_cmd 
+ */
 static void	error_export(char *simple_cmd)
 {
 	ft_putstr_fd("Minishell: export: `", STDERR_FILENO);
@@ -71,17 +81,6 @@ static void	error_export(char *simple_cmd)
 	g_exit_status = 1;
 }
 
-/* char	*plus_equal(char *simple_cmd)
-{
-	char	**key_value;
-	char	*str;
-
-	key_value = ft_split(simple_cmd, '+');
-	key_value[1] = ftp_substr(key_value[1], 0, ft_strlen(key_value[1]));
-	str = ft_strjoin(key_value[0], key_value[1]);
-	free_2d_arr(key_value);
-	return (str);
-} */
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int	i;
@@ -91,13 +90,15 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	i = 1;
 	while (simple_cmd[i] != NULL)
 	{
-		printf("cmd[1]=%s\tcmd[2]=%s\n", simple_cmd[1], simple_cmd[2]);
 		if (check_input(simple_cmd[i]) != 1)
 		{
 			if (check_input(simple_cmd[i]) == 2)
-				export_plus_equal(tools, simple_cmd[i]);
-			else
-				export_create(tools->env_list, simple_cmd[i]);
+			{
+				if (export_plus_equal(tools, simple_cmd[i]) == ERROR)
+					return (g_exit_status);
+			}
+			else if (export_create(tools->env_list, simple_cmd[i]) == ERROR)
+				return (g_exit_status);
 			g_exit_status = 0;
 		}
 		else
@@ -107,46 +108,6 @@ int	mini_export(t_tools *tools, char **simple_cmd)
 	return (g_exit_status);
 }
 
-/* t_env	*modify_env_value(t_env **env_list, char *simple_command,
-		bool plus_equal)
-{
-	t_env	*env_node;
-	t_env	*exist_node;
-	char	**key_value;
-	char	*tmp;
-
-	env_node = NULL;
-	tmp = NULL;
-	key_value = ft_split(simple_command, '=');
-	key_value[0] = ftp_strjoin(key_value[0], "=");
-	exist_node = find_env_by_key(env_list, key_value[0]);
-	printf("searching for key=%s\t value=%s\n", key_value[0], key_value[1]);
-	if (exist_node)
-	{
-		if (!plus_equal) //replace the node
-			env_update_key_value(exist_node, key_value[0], key_value[1]);
-		else
-		{ //modify the value
-			if (exist_node->value != NULL)
-			{
-				tmp = ft_strdup(exist_node->value);
-				tmp = ftp_strjoin(tmp, key_value[1]);
-				env_update_key_value(exist_node, key_value[0], tmp);
-				free(tmp);
-			}
-			else
-				env_update_key_value(exist_node, key_value[0], key_value[1]);
-		}
-	}
-	else
-	{
-		env_node = env_new_node(simple_command);
-		env_add_back(env_list, env_node, 1);
-	}
-	free_2d_arr(key_value);
-	return (env_node);
-} */
-
 void	env_update_key_value(t_env *env_node, char *key, char *value)
 {
 	if (key)
@@ -154,12 +115,16 @@ void	env_update_key_value(t_env *env_node, char *key, char *value)
 		if (env_node->key)
 			free(env_node->key);
 		env_node->key = ft_strdup(key);
+		if (!env_node->key)
+			malloc_error(key);
 	}
 	if (value != NULL)
 	{
 		if (env_node->value)
 			free(env_node->value);
 		env_node->value = ft_strdup(value);
+		if (!env_node->value)
+			malloc_error(value);
 		env_node->has_value = true;
 	}
 	else
