@@ -72,11 +72,8 @@ int	main(int argc, char **argv, char **envp)
 		if (!string)
 			free_all_exit(tools);
 		add_history(string);
-		if (check_syntax_quotations(string) == false)
-		{
+		if (check_syntax_quotations(&string) == false)
 			printf(SYN_QUOTE_ERROR);
-			string[0] = '\0';
-		}
 		tools->og_string = ft_strdup(string);
 		if (!tools->og_string)
 		{
