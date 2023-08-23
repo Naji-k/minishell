@@ -47,6 +47,7 @@ int	is_directory(char *s_cmd)
 		{
 			ft_putstr_fd(s_cmd, STDERR_FILENO);
 			ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+			return (1);
 		}
 		else if (S_ISREG(statbuf.st_mode))
 			perror(s_cmd);
@@ -55,30 +56,44 @@ int	is_directory(char *s_cmd)
 	return (S_ISDIR(statbuf.st_mode));
 }
 
+// int is_directory(const char *path) {
+//    struct stat statbuf;
+//    if (stat(path, &statbuf) != 0)
+//    {
+// 			// ft_putstr_fd(path, STDERR_FILENO);
+//        return (0);
+//    }
+// 	ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+//    return (S_ISDIR(statbuf.st_mode));
+// }
+
 int	e_cmd_not_found(char *s_cmd)
 {
 	ft_putstr_fd("Minishell: ", STDERR_FILENO);
 	g_exit_status = 127;
-	if (errno == 2)
+	if (is_directory(s_cmd) != 1)
 	{
-		ft_putstr_fd(s_cmd, STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	}
-	else if (errno == 22)
-	{
-		ft_putstr_fd(s_cmd, STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-	}
-	else if (errno == EACCES)
-	{
-		if (is_directory(s_cmd) != 0)
-			perror(s_cmd);
-		g_exit_status = 126;
-	}
-	else
-	{
-		ft_putstr_fd(s_cmd, STDERR_FILENO);
-		g_exit_status = errno;
+		if (errno == 2)
+		{
+			ft_putstr_fd(s_cmd, STDERR_FILENO);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		}
+		else if (errno == 22)
+		{
+			ft_putstr_fd(s_cmd, STDERR_FILENO);
+			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		}
+		else if (errno == EACCES)
+		{
+			if (is_directory(s_cmd) != 0)
+				perror(s_cmd);
+			g_exit_status = 126;
+		}
+		else
+		{
+			ft_putstr_fd(s_cmd, STDERR_FILENO);
+			g_exit_status = errno;
+		}
 	}
 	return (g_exit_status);
 }
