@@ -32,6 +32,7 @@
 # define SYN_ERROR "Minishell: syntax error near unexpected token"
 # define DOT_ERROR "Minishell: .: filename argument required\n\
 .: usage: . filename [arguments]\n"
+# define SYN_QUOTE_ERROR "Minishell: Syntax error. Invalid use of quotations.\n"
 
 /*
 	Global variable
@@ -123,6 +124,7 @@ char		*handle_spaces_expansion(t_token **token_head, t_token *node);
 int			check_quotations(t_token *node);
 void		increment_if_not_skipped(char *new_string, int *i, int *j);
 int			is_inside_quote(char *string, int pos_char);
+bool		check_syntax_quotations(char *string);
 
 				/* Parsing Commands */
 void		parse_cmds(t_token **tokens_head, t_commands **cmd_head);

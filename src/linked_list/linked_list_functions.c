@@ -107,6 +107,7 @@ t_token	*create_node(t_token **tokens_head, char *string, int start, int len)
 	if (!node)
 		return (malloc_error(NULL), NULL);
 	node->cmd = ft_substr(string, start, (len - start));
+	//protect malloc
 	node->type = find_token_type(string[start], string[start + 1]);
 	node->valid = true;
 	node->index = i;
