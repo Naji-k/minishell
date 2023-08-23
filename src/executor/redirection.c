@@ -110,7 +110,7 @@ int	redirection(t_commands *cmd)
 
 	return_val = SUCCESS;
 	redirection = cmd->redirections;
-	while (redirection)
+	while (redirection && return_val ==  SUCCESS)
 	{
 		if (redirection->valid == false)
 			return (ERROR);

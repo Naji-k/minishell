@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   parsing_tokens.c                                   :+:      :+:    :+:   */
+/*   parsing_tokens.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/11 07:51:57 by ysrondy       #+#    #+#                 */
-/*   Updated: 2023/06/01 19:08:22 by ysrondy          ###   ########.fr       */
+/*   Updated: 2023/06/01 19:08:22 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,19 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 	node = create_node(tools->token_head, string, start, len);
 	if (!node)
 		return (free_token_list(tools->token_head), NULL);
-	printf("String after creating node: |%s|\n", node->cmd);
+	// printf("String after creating node: |%s|\n", node->cmd);
 	node->cmd = expand_heredoc(node, node->cmd, tools, &i);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
-	printf("String after expansion: |%s|\n", node->cmd);
+	// printf("String after expansion: |%s|\n", node->cmd);
 	success_check = handle_spaces_expansion(tools->token_head, node);
 	if (!success_check)
 		return (free_token_list(tools->token_head), NULL);
-	printf("String after handling spaces expansion: |%s|\n", node->cmd);
+	// printf("String after handling spaces expansion: |%s|\n", node->cmd);
 	node->cmd = handle_quotations(node->cmd);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
-	printf("String after handling quotations: |%s|\n", node->cmd);
+	// printf("String after handling quotations: |%s|\n", node->cmd);
 	return (node);
 }
 
