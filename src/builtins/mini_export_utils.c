@@ -54,6 +54,7 @@ int	export_strjoin_to_value(t_env *exist_node, char **key_value)
 	if (!tmp)
 		return (malloc_error(NULL), ERROR);
 	env_update_key_value(exist_node, key_value[0], tmp);
+	free(tmp);
 	return (SUCCESS);
 }
 

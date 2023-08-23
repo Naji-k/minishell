@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   print.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/21 10:00:10 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/04/21 10:00:17 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   print.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/04/21 10:00:10 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/04/21 10:00:17 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,12 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 	}
 	while (node)
 	{
-		if (print_redirection == true && node->next == NULL && node->type != HEREDOC && node->type != IN_FILE && node->type != A_REDIRECTION)
+		if (print_redirection == true && node->next == NULL
+			&& node->type != HEREDOC && node->type != IN_FILE
+			&& node->type != A_REDIRECTION)
 			printf("Final Output Redirection: {%s}\n", node->cmd);
-		else if (print_redirection == true && node->next == NULL && node->type == A_REDIRECTION)
+		else if (print_redirection == true && node->next == NULL
+			&& node->type == A_REDIRECTION)
 			printf("Final Append Redirection: {%s}\n", node->cmd);
 		else if (print_redirection == true && node->type == A_REDIRECTION)
 			printf("Append Redirection: {%s}\n", node->cmd);
@@ -52,7 +55,8 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 		else if (print_redirection == true)
 			printf("Redirection: {%s}\n", node->cmd);
 		else
-			printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd, node->type, node->index);
+			printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd,
+			node->type, node->index);
 		node = node->next;
 	}
 }

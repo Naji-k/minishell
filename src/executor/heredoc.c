@@ -96,10 +96,10 @@ int	execute_hd_process(t_tools *tools, t_token *redirection)
 
 	path_hd = ft_itoa(tools->heredoc);
 	if (!path_hd)
-		return (malloc_error(NULL), ERROR); // need to change this one too
+		return (malloc_error(NULL), ERROR);
 	path = ft_strjoin("/tmp/", path_hd);
 	if (!path)
-		return (malloc_error(NULL), ERROR); // need to change
+		return (malloc_error(NULL), ERROR);
 	file = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (file < 0)
 	{
@@ -132,7 +132,7 @@ int	create_heredoc(t_token *redirection, t_tools *tools)
 			_exit(ERROR);
 	}
 	redirection->index = tools->heredoc;
-	tools->heredoc += 1; //check if status id ok
+	tools->heredoc += 1;
 	waitpid(pid, &status, 0);
 	signal(SIGINT, &handler_sigint);
 	if (WIFSIGNALED(status))
