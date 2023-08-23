@@ -66,7 +66,6 @@ int	ambiguous_redirect(t_token *token, t_tools *tools)
 	if (token->type == REDIRECTION || token->type == A_REDIRECTION
 		|| token->type == IN_FILE)
 	{
-		printf("token.next.valid=%d\n", token->next->valid);
 		if (token->next->valid == false)
 		{
 			g_exit_status = 1;

@@ -128,7 +128,7 @@ char	*get_expanded_arg(char *line, t_tools *tools, int *i, t_token *node)
 		str_to_be_expanded[0] = '\0';
 		return (str_to_be_expanded);
 	}
-	printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
+	// printf("Expanded: %s to %s\n", str_to_be_expanded, expanded_string);
 	free(str_to_be_expanded);
 	return (expanded_string);
 }

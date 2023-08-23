@@ -18,18 +18,15 @@
 int		g_exit_status = 0;
 
 void	minishell_loop(t_tools **tools, t_token **tokens_head,
-		t_commands **cmds_head)
+		t_commands **cmds_head, char *string)
 {
-	char	*string;
-
-	string = NULL;
 	(*tools)->og_string = NULL;
 	string = readline("Minishell: ");
 	if (!string)
 		free_all_exit(*tools);
 	add_history(string);
-  if (check_syntax_quotations(&string) == false)
-			printf(SYN_QUOTE_ERROR);
+	if (check_syntax_quotations(&string) == false)
+		printf(SYN_QUOTE_ERROR);
 	(*tools)->og_string = ft_strdup(string);
 	if (!(*tools)->og_string)
 	{
@@ -53,7 +50,9 @@ int	main(int argc, char **argv, char **envp)
 	t_token		*tokens_head;
 	t_commands	*cmds_head;
 	t_tools		*tools;
+	char		*string;
 
+	string = NULL;
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -65,9 +64,7 @@ int	main(int argc, char **argv, char **envp)
 	init_tools_env(tools->env_list, envp);
 	g_exit_status = 0;
 	while (tools->loop)
-	{
-		minishell_loop(&tools, &tokens_head, &cmds_head);
-	}
+		minishell_loop(&tools, &tokens_head, &cmds_head, string);
 	(void)(argv);
 	return (0);
 }

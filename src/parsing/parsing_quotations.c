@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_quotations.c                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ysrondy <ysrondy@student.codam.nl>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/21 11:43:49 by ysrondy           #+#    #+#             */
-/*   Updated: 2023/05/21 11:43:55 by ysrondy          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   parsing_quotations.c                               :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: ysrondy <ysrondy@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/05/21 11:43:49 by ysrondy       #+#    #+#                 */
+/*   Updated: 2023/05/21 11:43:55 by ysrondy       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,5 @@ char	*handle_quotations(char *string)
 			increment_if_not_skipped(new_string, &i, &j);
 	}
 	new_string[j] = '\0';
-	printf("New String: %s\n", new_string);
 	return (free(string), new_string);
 }

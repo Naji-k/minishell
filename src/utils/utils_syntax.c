@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl, int *i)
+void	check_syntax_dbl(char *string, int *success_dbl,
+	char **closed_dbl, int *i)
 {
 	int	j;
 
@@ -35,12 +36,13 @@ void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl, int *i)
 	}
 }
 
-void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl, int *i)
+void	check_syntax_sgl(char *string, int *success_sgl,
+	char **closed_sgl, int *i)
 {
 	int	j;
 
 	if (is_inside_quote(string, (*i)) == DOUBLE_QUOTE)
-			;
+		;
 	else
 	{
 		*success_sgl = false;
@@ -61,24 +63,22 @@ void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl, int *i)
 bool	check_syntax_quotations(char **string)
 {
 	int		i;
-	int 	success_dbl;
+	int		success_dbl;
 	int		success_sgl;
 	char	*closed_dbl;
 	char	*closed_sgl;
 
-	i = 0;
+	i = -1;
 	success_dbl = true;
 	success_sgl = true;
 	closed_dbl = NULL;
 	closed_sgl = NULL;
-
-	while ((*string)[i])
+	while ((*string)[++i])
 	{
 		if ((*string)[i] == '"' && &(*string)[i] != closed_dbl)
 			check_syntax_dbl(*string, &success_dbl, &closed_dbl, &i);
 		else if ((*string)[i] == '\'' && &(*string)[i] != closed_sgl)
 			check_syntax_sgl(*string, &success_sgl, &closed_sgl, &i);
-		i++;
 	}
 	if (success_dbl && success_sgl)
 		return (true);

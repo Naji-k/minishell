@@ -3,3 +3,4 @@ minishell
 obj
 libft.a
 .vscode
+minishell_tester
