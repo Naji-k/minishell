@@ -13,6 +13,8 @@
 #include "minishell.h"
 #include "executor.h"
 
+// fix open quote + fix "hello'" [space]
+
 t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 {
 	t_token	*node;
@@ -35,7 +37,7 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 	return (node);
 }
 
-void	create_token(char *string, int i, t_tools *tools, bool quotes)
+void	create_token(char *string, int i, t_tools *tools)
 {
 	int		len;
 	int		start;
@@ -45,10 +47,8 @@ void	create_token(char *string, int i, t_tools *tools, bool quotes)
 	start = i;
 	while (string[i] != '\0')
 	{
-		if (string[i] == '"' || string[i] == '\'')
-			quotes = !quotes;
 		if ((is_whitespace(string[i]) == true \
-			&& is_whitespace(string[i - 1]) == false && quotes == false) \
+			&& is_whitespace(string[i - 1]) == false) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == false))
 		{
 			if (string[i + 1] == '\0' && is_whitespace(string[i]) == false)
@@ -68,7 +68,6 @@ void	start_parsing(char *_string, t_tools *tools)
 {
 	int		i;
 	char	*string;
-	bool	quotes;
 
 	if (!_string)
 		return ;
@@ -76,7 +75,6 @@ void	start_parsing(char *_string, t_tools *tools)
 	if (!string)
 		return (malloc_error(_string));
 	i = skip_whitespaces(string);
-	quotes = false;
-	create_token(string, i, tools, quotes);
+	create_token(string, i, tools);
 	free(string);
 }

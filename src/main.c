@@ -28,6 +28,8 @@ void	minishell_loop(t_tools **tools, t_token **tokens_head,
 	if (!string)
 		free_all_exit(*tools);
 	add_history(string);
+  if (check_syntax_quotations(&string) == false)
+			printf(SYN_QUOTE_ERROR);
 	(*tools)->og_string = ft_strdup(string);
 	if (!(*tools)->og_string)
 	{
