@@ -17,17 +17,19 @@
 /* Variable defined here */
 int		g_exit_status = 0;
 
-
 void	minishell_loop(t_tools **tools, t_token **tokens_head,
 		t_commands **cmds_head)
 {
 	char	*string;
 
 	string = NULL;
+	(*tools)->og_string = NULL;
 	string = readline("Minishell: ");
 	if (!string)
 		free_all_exit(*tools);
 	add_history(string);
+  if (check_syntax_quotations(&string) == false)
+			printf(SYN_QUOTE_ERROR);
 	(*tools)->og_string = ft_strdup(string);
 	if (!(*tools)->og_string)
 	{
@@ -48,12 +50,10 @@ void	minishell_loop(t_tools **tools, t_token **tokens_head,
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*string;
 	t_token		*tokens_head;
 	t_commands	*cmds_head;
 	t_tools		*tools;
 
-	string = NULL;
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	tokens_head = NULL;
@@ -66,35 +66,7 @@ int	main(int argc, char **argv, char **envp)
 	g_exit_status = 0;
 	while (tools->loop)
 	{
-		printf("--------NEW COMMAND---------------\n");
-		tools->og_string = NULL;
-		string = readline("Minishell: ");
-		if (!string)
-			free_all_exit(tools);
-		add_history(string);
-		if (check_syntax_quotations(&string) == false)
-			printf(SYN_QUOTE_ERROR);
-		tools->og_string = ft_strdup(string);
-		if (!tools->og_string)
-		{
-			malloc_error(string);
-			string = NULL;
-		}
-		start_parsing(string, tools);
-		printf("\n--------LEXER---------------\n");
-		print_token_list(&tokens_head, false);
-		parse_cmds(&tokens_head, &cmds_head);
-		printf("\n--------COMMANDS---------------\n");
-		print_cmds_list(&cmds_head);
-		printf("\n--------EXECUTION-------------\n");
-		if (handle_syntax_error(&tokens_head, tools) != 1)
-			executor(tools, &cmds_head);
-		free_token_list(&tokens_head);
-		if (cmds_head)
-			free_redirection(&cmds_head);
-		free_cmd_list(&cmds_head);
-		if (tools->og_string)
-			free(tools->og_string);
+		minishell_loop(&tools, &tokens_head, &cmds_head);
 	}
 	(void)(argv);
 	return (0);
