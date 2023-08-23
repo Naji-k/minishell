@@ -81,7 +81,7 @@ void	init_tools(t_tools *tools, t_token **tokens_head,
 	if (!tools->env_list)
 	{
 		malloc_error(tools);
-		exit(EXIT_FAILURE); // check this one. i think should be fine
+		exit(EXIT_FAILURE);
 	}
 	tools->old_pwd = NULL;
 	tools->pwd = getcwd(NULL, sizeof(PATH_MAX));

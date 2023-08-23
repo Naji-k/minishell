@@ -71,7 +71,7 @@ int	mini_echo(t_tools *tools, char **simple_cmd)
 		while (simple_cmd[i] != NULL)
 		{
 			ft_putstr_fd(simple_cmd[i], STDOUT_FILENO);
-			if (simple_cmd[i + 1] != NULL)
+			if (simple_cmd[i + 1] != NULL && simple_cmd[i][0] != '\0')
 				ft_putstr_fd(" ", STDOUT_FILENO);
 			i++;
 		}
