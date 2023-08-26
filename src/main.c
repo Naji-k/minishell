@@ -28,8 +28,8 @@ void	minishell_loop(t_tools **tools, t_token **tokens_head,
 	if (!string)
 		free_all_exit(*tools);
 	add_history(string);
-  if (check_syntax_quotations(&string) == false)
-			printf(SYN_QUOTE_ERROR);
+	if (check_syntax_quotations(&string) == false)
+		printf(SYN_QUOTE_ERROR);
 	(*tools)->og_string = ft_strdup(string);
 	if (!(*tools)->og_string)
 	{
@@ -37,7 +37,12 @@ void	minishell_loop(t_tools **tools, t_token **tokens_head,
 		string = NULL;
 	}
 	start_parsing(string, *tools);
+	// printf("\n--------LEXER---------------\n");
+	// print_token_list(tokens_head, false);
 	parse_cmds(tokens_head, cmds_head);
+	// printf("\n--------COMMANDS---------------\n");
+	// print_cmds_list(cmds_head);
+	// printf("\n--------EXECUTION-------------\n");
 	if (handle_syntax_error(tokens_head, *tools) != 1)
 		executor(*tools, cmds_head);
 	free_token_list(tokens_head);

@@ -39,7 +39,11 @@ int	syntax_pipe(t_token *token)
 {
 	if (token->type == PIPE)
 	{
-		if (!token->next || token->next->type != LITERAL)
+		if (!token->next
+			|| (token->next->type == REDIRECTION && !token->next->next)
+			|| (token->next->type == A_REDIRECTION && !token->next->next)
+			|| (token->next->type == IN_FILE && !token->next->next)
+			|| (token->next->type == PIPE))
 		{
 			g_exit_status = 258;
 			printf("%s `%s'\n", SYN_ERROR, token->cmd);
@@ -84,6 +88,12 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 	token = *tokens_head;
 	if (syntax_dot(token) == 1)
 		return (1);
+	if ((*tokens_head)->type == PIPE)
+	{
+		g_exit_status = 258;
+		printf("%s `%s'\n", SYN_ERROR, token->cmd);
+		return (1);
+	}
 	while (token != NULL)
 	{
 		if (syntax_redirection(token) == 1)

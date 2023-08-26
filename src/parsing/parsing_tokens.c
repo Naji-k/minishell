@@ -38,15 +38,6 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
 	// printf("String after handling quotations: |%s|\n", node->cmd);
-	node->cmd = expand_heredoc(node, node->cmd, tools, &i);
-	if (!node->cmd)
-		return (free_token_list(tools->token_head), NULL);
-	success_check = handle_spaces_expansion(tools->token_head, node);
-	if (!success_check)
-		return (free_token_list(tools->token_head), NULL);
-	node->cmd = handle_quotations(node->cmd);
-	if (!node->cmd)
-		return (free_token_list(tools->token_head), NULL);
 	return (node);
 }
 
@@ -60,10 +51,13 @@ void	create_token(char *string, int i, t_tools *tools)
 	start = i;
 	while (string[i] != '\0')
 	{
+		// printf("Char I: %c\n", string[i]);
+		// printf("Is inside quote: %d\n", is_inside_quote(string, i));
 		if ((is_whitespace(string[i]) == true \
-			&& is_whitespace(string[i - 1]) == false) \
+			&& is_whitespace(string[i - 1]) == false && is_inside_quote(string, i) == NO_QUOTATION) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == false))
 		{
+			// printf("Creating Node.\n");
 			if (string[i + 1] == '\0' && is_whitespace(string[i]) == false)
 				len++;
 			node = create_token_helper(tools, string, start, len);

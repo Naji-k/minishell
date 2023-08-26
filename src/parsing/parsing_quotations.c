@@ -113,6 +113,5 @@ char	*handle_quotations(char *string)
 			increment_if_not_skipped(new_string, &i, &j);
 	}
 	new_string[j] = '\0';
-	printf("New String: %s\n", new_string);
 	return (free(string), new_string);
 }
