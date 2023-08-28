@@ -62,6 +62,7 @@ void	error_exit(char *cmd)
 	ft_putstr_fd("Minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
+	g_exit_status = 255;
 }
 
 /**
@@ -76,7 +77,7 @@ void	exit_with_number(t_tools *tools, char **simple_cmd)
 		ft_putendl_fd("exit", STDERR_FILENO);
 	if (simple_cmd[2] == NULL)
 	{
-		g_exit_status = ft_atoi(simple_cmd[1]);
+		g_exit_status = ft_atoll(simple_cmd[1]);
 		free_all_exit(tools);
 	}
 	else if (simple_cmd[2] != NULL)
