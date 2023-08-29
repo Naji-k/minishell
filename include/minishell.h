@@ -32,7 +32,8 @@
 # define SYN_ERROR "Minishell: syntax error near unexpected token"
 # define DOT_ERROR "Minishell: .: filename argument required\n\
 .: usage: . filename [arguments]\n"
-# define SYN_QUOTE_ERROR "Minishell: Syntax error. Invalid use of quotations.\n"
+# define SYN_QUOTE_ERROR "Minishell: unexpected EOF while looking for matching quotation.\
+\nMinishell: syntax error: unexpected end of file\n"
 
 /*
 	Global variable

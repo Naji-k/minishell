@@ -88,7 +88,7 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 	token = *tokens_head;
 	if (syntax_dot(token) == 1)
 		return (1);
-	if ((*tokens_head)->type == PIPE)
+	if (token && token->type == PIPE)
 	{
 		g_exit_status = 258;
 		printf("%s `%s'\n", SYN_ERROR, token->cmd);

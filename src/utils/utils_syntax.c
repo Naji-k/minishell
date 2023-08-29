@@ -61,7 +61,7 @@ void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl, int *i)
 bool	check_syntax_quotations(char **string)
 {
 	int		i;
-	int 	success_dbl;
+	int		success_dbl;
 	int		success_sgl;
 	char	*closed_dbl;
 	char	*closed_sgl;
@@ -71,7 +71,6 @@ bool	check_syntax_quotations(char **string)
 	success_sgl = true;
 	closed_dbl = NULL;
 	closed_sgl = NULL;
-
 	while ((*string)[i])
 	{
 		if ((*string)[i] == '"' && &(*string)[i] != closed_dbl)
@@ -80,11 +79,10 @@ bool	check_syntax_quotations(char **string)
 			check_syntax_sgl(*string, &success_sgl, &closed_sgl, &i);
 		i++;
 	}
-	if (success_dbl && success_sgl)
-		return (true);
-	else
+	if (success_dbl == false || success_sgl == false)
 	{
 		(*string)[0] = '\0';
 		return (false);
 	}
+	return (true);
 }
