@@ -32,8 +32,8 @@ int64_t	ft_atoll(char *str)
 	{
 		res *= 10;
 		res += str[i] - '0';
-		if (res > __LONG_LONG_MAX__ && !(res - __LONG_LONG_MAX__ == 1 && 
-				sign == -1))
+		if (res > __LONG_LONG_MAX__ && !(res - __LONG_LONG_MAX__ == 1
+				&& sign == -1))
 			return (error_exit(str), 255);
 		i++;
 	}

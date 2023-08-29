@@ -64,6 +64,7 @@ int		e_cmd_not_found(char *s_cmd);
 int		e_pipe_fork(char *str);
 int		e_heredoc(char *str);
 
+
 //builtins
 int		bn_echo(t_commands **cmd_head);
 void	bn_pwd(void);
