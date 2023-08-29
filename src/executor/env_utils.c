@@ -54,11 +54,27 @@ void	init_tools_env(t_env **env_list, char **envp)
 void	init_oldpwd(t_env **env_list)
 {
 	t_env	*tmp;
+	int		shlvl;
+	char	*shl;
 
+	shl = NULL;
 	tmp = find_env_by_key(env_list, "OLDPWD");
 	if (tmp)
 	{
+		tmp->has_value = false;
 		env_update_key_value(tmp, "OLDPWD", NULL);
+	}
+	env_del_one(env_list, "_=");
+	tmp = find_env_by_key(env_list, "SHLVL");
+	if (tmp)
+	{
+		shlvl = ft_atoi(tmp->value);
+		shlvl++;
+		shl = ft_itoa(shlvl);
+		if (!shl)
+			malloc_error(NULL);
+		env_update_key_value(tmp, NULL, shl);
+		free(shl);
 	}
 }
 
