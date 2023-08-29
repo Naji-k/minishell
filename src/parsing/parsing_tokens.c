@@ -13,8 +13,6 @@
 #include "minishell.h"
 #include "executor.h"
 
-// fix open quote + fix "hello'" [space]
-
 t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 {
 	t_token	*node;
@@ -51,13 +49,11 @@ void	create_token(char *string, int i, t_tools *tools)
 	start = i;
 	while (string[i] != '\0')
 	{
-		// printf("Char I: %c\n", string[i]);
-		// printf("Is inside quote: %d\n", is_inside_quote(string, i));
 		if ((is_whitespace(string[i]) == true \
-			&& is_whitespace(string[i - 1]) == false && is_inside_quote(string, i) == NO_QUOTATION) \
+			&& is_whitespace(string[i - 1]) == false \
+			&& is_inside_quote(string, i) == NO_QUOTATION) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == false))
 		{
-			// printf("Creating Node.\n");
 			if (string[i + 1] == '\0' && is_whitespace(string[i]) == false)
 				len++;
 			node = create_token_helper(tools, string, start, len);

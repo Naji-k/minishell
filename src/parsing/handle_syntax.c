@@ -86,7 +86,7 @@ int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 	t_token	*token;
 
 	token = *tokens_head;
-	if (token != NULL)// if token is empty make segfaults when just press ENTER (should check by youssef)
+	if (token != NULL)
 	{
 		if (syntax_dot(token) == 1)
 			return (1);
