@@ -1,31 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   mini_unset.c                                       :+:    :+:            */
+/*   ft_atoll.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nakanoun <nakanoun@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/17 22:38:46 by nakanoun      #+#    #+#                 */
-/*   Updated: 2023/05/17 22:38:46 by nakanoun      ########   odam.nl         */
+/*   Created: 2023/08/28 19:59:35 by nakanoun      #+#    #+#                 */
+/*   Updated: 2023/08/28 19:59:35 by nakanoun      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 #include "executor.h"
 
-/* SIMPLE-VERSION of mini_unset
-	here just delete node form the env_list
-	should be checked for edge cases */
-int	mini_unset(t_tools *tools, char **simple_cmd)
+int64_t	ft_atoll(char *str)
 {
-	if (simple_cmd[1])
+	uint64_t	res;
+	int32_t		sign;
+	int32_t		i;
+
+	i = 0;
+	res = 0;
+	sign = 1;
+	if (str[0] == '-' || str[0] == '+')
 	{
-		if (env_del_one(tools->env_list, simple_cmd[1]) > 0)
-		{
-			return (0);
-		}
-		if (ft_strncmp(simple_cmd[1], "OLDPWD", 6) == 0)
-			tools->old_pwd = NULL;
+		i++;
+		if (str[0] == '-')
+			sign = -1;
 	}
-	return (0);
+	while (str[i])
+	{
+		res *= 10;
+		res += str[i] - '0';
+		if (res > __LONG_LONG_MAX__ && !(res - __LONG_LONG_MAX__ == 1 && 
+				sign == -1))
+			return (error_exit(str), 255);
+		i++;
+	}
+	return ((int64_t)res * sign);
 }

@@ -36,7 +36,7 @@ char	*check_current_dir(char *cmd);
 
 //execute
 void	one_cmd_handler(t_tools *tools, t_commands **cmd_head);
-void	execute_onc_cmd(t_tools *tools, t_commands **cmd_head);
+void	execute_onc_cmd(t_tools *tools, char **simple_command);
 int		close_pipes(int *fd, int old_fd);
 void	execve_cmd(t_tools *tools, t_commands **cmd_head);
 //multi cmnds

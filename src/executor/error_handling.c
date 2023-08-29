@@ -37,63 +37,68 @@ int	error_file_handling(char *str)
 	return (ERROR);
 }
 
-int	is_directory(char *s_cmd)
+// int	is_directory(char *s_cmd)
+// {
+// 	struct stat	statbuf;
+
+// 	if (stat(s_cmd, &statbuf) == 0)
+// 	{
+// 		if (S_ISDIR(statbuf.st_mode))
+// 		{
+// 			ft_putstr_fd(s_cmd, STDERR_FILENO);
+// 			ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+// 			g_exit_status = 126;
+// 			return (1);
+// 		}
+// 		else
+// 		return (0);
+// 	}
+// 	return (S_ISDIR(statbuf.st_mode));
+// }
+
+int	is_directory(char *path)
 {
 	struct stat	statbuf;
 
-	if (stat(s_cmd, &statbuf) == 0)
+	g_exit_status = 126;
+	if (stat(path, &statbuf) != 0)
 	{
-		if (S_ISDIR(statbuf.st_mode))
-		{
-			ft_putstr_fd(s_cmd, STDERR_FILENO);
-			ft_putstr_fd(": is a directory\n", STDERR_FILENO);
-			return (1);
-		}
-		else if (S_ISREG(statbuf.st_mode))
-			perror(s_cmd);
 		return (0);
 	}
-	return (S_ISDIR(statbuf.st_mode));
+	if (S_ISDIR(statbuf.st_mode))
+	{
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+		return (1);
+	}
+	return (0);
 }
-
-// int is_directory(const char *path) {
-//    struct stat statbuf;
-//    if (stat(path, &statbuf) != 0)
-//    {
-// 			// ft_putstr_fd(path, STDERR_FILENO);
-//        return (0);
-//    }
-// 	ft_putstr_fd(": is a directory\n", STDERR_FILENO);
-//    return (S_ISDIR(statbuf.st_mode));
-// }
 
 int	e_cmd_not_found(char *s_cmd)
 {
 	ft_putstr_fd("Minishell: ", STDERR_FILENO);
 	g_exit_status = 127;
-	if (is_directory(s_cmd) != 1)
+	if (errno == EACCES)
 	{
-		if (errno == 2)
-		{
-			ft_putstr_fd(s_cmd, STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		}
-		else if (errno == 22)
-		{
-			ft_putstr_fd(s_cmd, STDERR_FILENO);
-			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		}
-		else if (errno == EACCES)
-		{
-			if (is_directory(s_cmd) != 0)
-				perror(s_cmd);
-			g_exit_status = 126;
-		}
+		if (is_directory(s_cmd))
+			return (g_exit_status);
 		else
-		{
-			ft_putstr_fd(s_cmd, STDERR_FILENO);
-			g_exit_status = errno;
-		}
+			perror(s_cmd);
+	}
+	else if (errno == ENOENT)
+	{
+		ft_putstr_fd(s_cmd, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	}
+	else if (errno == 22)
+	{
+		ft_putstr_fd(s_cmd, STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	}
+	else
+	{
+		ft_putstr_fd(s_cmd, STDERR_FILENO);
+		g_exit_status = errno;
 	}
 	return (g_exit_status);
 }

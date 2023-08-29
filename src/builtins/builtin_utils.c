@@ -14,12 +14,12 @@
 #include "executor.h"
 
 /*
-	this is the Main func for buildins using strcmp
+	this is the Main func for builtins using strcmp
 		we can call the builtin functions
  */
 
 /**
- * @brief this is the Main func for buildins using strcmp
+ * @brief this is the Main func for builtins using strcmp
 		we can call the builtin functions
  * 
  * @param arg type of the builtin ex: cd,export,env...

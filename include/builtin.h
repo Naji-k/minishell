@@ -45,6 +45,7 @@ int		mini_unset(t_tools *tools, char **simple_cmd);
 /* exit */
 int		mini_exit(t_tools *tools, char **simple_cmd);
 void	free_all_exit(t_tools *tools);
+int64_t	ft_atoll(char *str);
 /* env */
 int		mini_env(t_tools *tools, char **simple_cmd);
 //env_list_func
