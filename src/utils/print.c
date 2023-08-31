@@ -55,8 +55,8 @@ void	print_token_list(t_token **lst_head, int print_redirection)
 		else if (print_redirection == true)
 			printf("Redirection: {%s}\n", node->cmd);
 		else
-			printf("Lexer: {%s} | Type: {%d} | Index: {%d}\n", node->cmd,
-			node->type, node->index);
+			printf("Lexer: {%s} | Type: {%d} | Index: {%d} | Valid: %d\n", node->cmd,
+			node->type, node->index, node->valid);
 		node = node->next;
 	}
 }
