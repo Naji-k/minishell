@@ -13,8 +13,6 @@
 #include "minishell.h"
 #include "executor.h"
 
-// fix open quote + fix "hello'" [space]
-
 t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 {
 	t_token	*node;
@@ -25,15 +23,19 @@ t_token	*create_token_helper(t_tools *tools, char *string, int start, int len)
 	node = create_node(tools->token_head, string, start, len);
 	if (!node)
 		return (free_token_list(tools->token_head), NULL);
+	// printf("String after creating node: |%s|\n", node->cmd);
 	node->cmd = expand_heredoc(node, node->cmd, tools, &i);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
+	// printf("String after expansion: |%s|\n", node->cmd);
 	success_check = handle_spaces_expansion(tools->token_head, node);
 	if (!success_check)
 		return (free_token_list(tools->token_head), NULL);
+	// printf("String after handling spaces expansion: |%s|\n", node->cmd);
 	node->cmd = handle_quotations(node->cmd);
 	if (!node->cmd)
 		return (free_token_list(tools->token_head), NULL);
+	// printf("String after handling quotations: |%s|\n", node->cmd);
 	return (node);
 }
 
@@ -48,7 +50,8 @@ void	create_token(char *string, int i, t_tools *tools)
 	while (string[i] != '\0')
 	{
 		if ((is_whitespace(string[i]) == true \
-			&& is_whitespace(string[i - 1]) == false) \
+			&& is_whitespace(string[i - 1]) == false \
+			&& is_inside_quote(string, i) == NO_QUOTATION) \
 			|| (string[i + 1] == '\0' && is_whitespace(string[i]) == false))
 		{
 			if (string[i + 1] == '\0' && is_whitespace(string[i]) == false)

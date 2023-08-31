@@ -90,6 +90,7 @@ char	*expand_arg(char *string, t_tools *tools)
 	char	*final;
 	int		len;
 
+	// printf("String to be expanded: %s\n", string);
 	expanded_arg = ft_strchr(string, '=');
 	len = ft_strlen(string) - 1;
 	final = special_expansion(&expanded_arg, string, tools);

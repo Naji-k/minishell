@@ -12,8 +12,7 @@
 
 #include "minishell.h"
 
-void	check_syntax_dbl(char *string, int *success_dbl,
-	char **closed_dbl, int *i)
+void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl, int *i)
 {
 	int	j;
 
@@ -36,8 +35,7 @@ void	check_syntax_dbl(char *string, int *success_dbl,
 	}
 }
 
-void	check_syntax_sgl(char *string, int *success_sgl,
-	char **closed_sgl, int *i)
+void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl, int *i)
 {
 	int	j;
 
@@ -68,23 +66,24 @@ bool	check_syntax_quotations(char **string)
 	char	*closed_dbl;
 	char	*closed_sgl;
 
-	i = -1;
+	i = 0;
 	success_dbl = true;
 	success_sgl = true;
 	closed_dbl = NULL;
 	closed_sgl = NULL;
-	while ((*string)[++i])
+	while ((*string)[i])
+
 	{
 		if ((*string)[i] == '"' && &(*string)[i] != closed_dbl)
 			check_syntax_dbl(*string, &success_dbl, &closed_dbl, &i);
 		else if ((*string)[i] == '\'' && &(*string)[i] != closed_sgl)
 			check_syntax_sgl(*string, &success_sgl, &closed_sgl, &i);
+		i++;
 	}
-	if (success_dbl && success_sgl)
-		return (true);
-	else
+	if (success_dbl == false || success_sgl == false)
 	{
 		(*string)[0] = '\0';
 		return (false);
 	}
+	return (true);
 }

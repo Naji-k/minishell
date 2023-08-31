@@ -32,7 +32,8 @@
 # define SYN_ERROR "Minishell: syntax error near unexpected token"
 # define DOT_ERROR "Minishell: .: filename argument required\n\
 .: usage: . filename [arguments]\n"
-# define SYN_QUOTE_ERROR "Minishell: Syntax error. Invalid use of quotations.\n"
+# define SYN_QUOTE_ERROR "Minishell: unexpected EOF while looking for matching quotation.\
+\nMinishell: syntax error: unexpected end of file\n"
 
 /*
 	Global variable
@@ -166,8 +167,8 @@ char		*search_value_expansion(char *string, int *len,
 				t_tools *tools);
 
 				/* Printing (DEBUGGING) */
-// void		print_token_list(t_token **lst_head, int print_redirection);
-// void		print_cmds_list(t_commands **lst_head);
+void		print_token_list(t_token **lst_head, int print_redirection);
+void		print_cmds_list(t_commands **lst_head);
 // void		print_2d_array(char **arr);
 
 /* Utils */

@@ -71,11 +71,22 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 char	*check_current_dir(char *cmd)
 {
+	int	i;
+
+	i = 0;
+	if (cmd[0] == '\0')
+		return ("\0");
 	if ((cmd[0] == '.' && cmd[1] == '/') || cmd[ft_strlen(cmd) - 1] == '/')
 	{
 		if (access(cmd, F_OK) == -1)
 			return (NULL);
 		return (cmd);
+	}
+	while (cmd[i])
+	{
+		if (cmd[i] == '/')
+			return (cmd);
+		i++;
 	}
 	return (NULL);
 }

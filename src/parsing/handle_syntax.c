@@ -39,7 +39,11 @@ int	syntax_pipe(t_token *token)
 {
 	if (token->type == PIPE)
 	{
-		if (!token->next || token->next->type != LITERAL)
+		if (!token->next
+			|| (token->next->type == REDIRECTION && !token->next->next)
+			|| (token->next->type == A_REDIRECTION && !token->next->next)
+			|| (token->next->type == IN_FILE && !token->next->next)
+			|| (token->next->type == PIPE))
 		{
 			g_exit_status = 258;
 			printf("%s `%s'\n", SYN_ERROR, token->cmd);
@@ -62,7 +66,7 @@ int	syntax_dot(t_token *token)
 
 int	ambiguous_redirect(t_token *token, t_tools *tools)
 {
-	(void) tools;
+	(void)tools;
 	if (token->type == REDIRECTION || token->type == A_REDIRECTION
 		|| token->type == IN_FILE)
 	{
@@ -78,20 +82,29 @@ int	ambiguous_redirect(t_token *token, t_tools *tools)
 
 int	handle_syntax_error(t_token **tokens_head, t_tools *tools)
 {
-	t_token		*token;
+	t_token	*token;
 
 	token = *tokens_head;
-	if (syntax_dot(token) == 1)
-		return (1);
-	while (token != NULL)
+	if (token != NULL)
 	{
-		if (syntax_redirection(token) == 1)
+		if (syntax_dot(token) == 1)
 			return (1);
-		if (syntax_pipe(token) == 1)
+		if ((*tokens_head)->type == PIPE)
+		{
+			g_exit_status = 258;
+			printf("%s `%s'\n", SYN_ERROR, token->cmd);
 			return (1);
-		if (ambiguous_redirect(token, tools) == 1)
-			return (0);
-		token = token->next;
+		}
+		while (token != NULL)
+		{
+			if (syntax_redirection(token) == 1)
+				return (1);
+			if (syntax_pipe(token) == 1)
+				return (1);
+			if (ambiguous_redirect(token, tools) == 1)
+				return (0);
+			token = token->next;
+		}
 	}
 	return (0);
 }
