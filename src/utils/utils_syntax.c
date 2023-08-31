@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl, int *i)
+void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl,
+		int *i)
 {
 	int	j;
 
@@ -35,12 +36,13 @@ void	check_syntax_dbl(char *string, int *success_dbl, char **closed_dbl, int *i)
 	}
 }
 
-void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl, int *i)
+void	check_syntax_sgl(char *string, int *success_sgl, char **closed_sgl,
+		int *i)
 {
 	int	j;
 
 	if (is_inside_quote(string, (*i)) == DOUBLE_QUOTE)
-			;
+		;
 	else
 	{
 		*success_sgl = false;
