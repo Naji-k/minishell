@@ -59,7 +59,7 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
 	if (!cmd_path)
-		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+		_exit(e_find_path((*cmd_head)->cmds[0]));
 	tools->envp = env_list_to_array(tools->env_list);
 	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
 		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
@@ -74,20 +74,8 @@ char	*check_current_dir(char *cmd)
 	int	i;
 
 	i = 0;
-	if (cmd[0] == '\0')
-		return ("\0");
-	if ((cmd[0] == '.' && cmd[1] == '/') || cmd[ft_strlen(cmd) - 1] == '/')
-	{
-		if (access(cmd, F_OK) == -1)
-			return (NULL);
+	if (ft_strchr(cmd, 47) || cmd[0] == '.')
 		return (cmd);
-	}
-	while (cmd[i])
-	{
-		if (cmd[i] == '/')
-			return (cmd);
-		i++;
-	}
 	return (NULL);
 }
 

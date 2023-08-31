@@ -59,9 +59,10 @@ int		redirect_open_hd(t_token *redirection);
 
 //error_handling
 int		error_file_handling(char *str);
-int		e_cmd_not_found(char *s_cmd);
+int		e_find_path(char *s_cmd);
 int		e_pipe_fork(char *str);
 int		e_heredoc(char *str);
+int		e_cmd_not_found(char *s_cmd);
 
 //builtins
 int		bn_echo(t_commands **cmd_head);
