@@ -74,6 +74,8 @@ char	*check_current_dir(char *cmd)
 	int	i;
 
 	i = 0;
+	if (cmd[0] == '\0')
+		return ("\0");
 	if ((cmd[0] == '.' && cmd[1] == '/') || cmd[ft_strlen(cmd) - 1] == '/')
 	{
 		if (access(cmd, F_OK) == -1)
