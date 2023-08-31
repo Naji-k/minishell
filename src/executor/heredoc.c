@@ -26,7 +26,6 @@ int	is_heredoc(t_commands **cmd, t_tools *tools)
 			heredoc = s_cmd->redirections;
 			while (heredoc && heredoc->type == HEREDOC)
 			{
-				// dprintf(2, "Create heredoc named as %s\n", heredoc->cmd);
 				if (create_heredoc(heredoc, tools) == -1)
 					return (ERROR);
 				heredoc = heredoc->next;
@@ -80,7 +79,6 @@ void	start_heredoc_loop(t_tools *tools, t_token *redirection, int file)
 		else
 		{
 			line = expand_heredoc(*(tools->token_head), line, tools, &i);
-			// printf("Line after expansion: %s\n", line);
 			write(file, line, ft_strlen(line));
 			write(file, "\n", 1);
 		}
