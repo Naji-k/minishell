@@ -21,7 +21,9 @@ void	handle_literal(t_token *start_node, t_commands *node_cmds,
 			*redirection = false;
 		else
 		{
-			if (start_node->valid == true)
+			if (start_node->valid == false && start_node->cmd[0] == '\0')
+				;
+			else
 			{
 				node_cmds->cmds[*i] = start_node->cmd;
 				(*i) += 1;
