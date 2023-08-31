@@ -138,4 +138,12 @@ void	wait_last_pid(pid_t last_pid)
 		;
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+	}
+	signal(SIGINT, handler_sigint);
+		
 }

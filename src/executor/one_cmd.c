@@ -67,6 +67,7 @@ void	execute_onc_cmd(t_tools *tools, char **simple_command)
 		e_pipe_fork("fork");
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		cmd_path = find_cmd_path(tools, simple_command[0]);
 		if (cmd_path == NULL)
 		{
@@ -79,4 +80,12 @@ void	execute_onc_cmd(t_tools *tools, char **simple_command)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		printf("\n");
+		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+	}
+	signal(SIGINT, handler_sigint);
 }

@@ -13,7 +13,7 @@
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
-# include "minishell.h"
+# include <minishell.h>
 # include <stdbool.h>
 
 int		run_builtin(char *arg, t_tools *tools, char **simple_cmd);
