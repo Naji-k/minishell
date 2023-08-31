@@ -40,7 +40,7 @@ void	one_cmd_handler(t_tools *tools, t_commands **cmd_head)
 			g_exit_status = run_builtin(command[i], tools, &command[i]);
 			return ;
 		}
-		if (command[i][0] != '\0')
+		if (command[i])
 		{
 			execute_onc_cmd(tools, &command[i]);
 			return ;

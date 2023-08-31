@@ -19,7 +19,6 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
-// # include <string.h>
 # include <sys/errno.h>
 # include <sys/stat.h>
 # include <sys/types.h>
@@ -63,7 +62,6 @@ int		error_file_handling(char *str);
 int		e_cmd_not_found(char *s_cmd);
 int		e_pipe_fork(char *str);
 int		e_heredoc(char *str);
-
 
 //builtins
 int		bn_echo(t_commands **cmd_head);
