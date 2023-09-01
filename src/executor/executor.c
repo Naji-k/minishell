@@ -39,6 +39,7 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 		return ;
 	fd_i = dup(STDIN_FILENO);
 	fd_o = dup(STDOUT_FILENO);
+	signal(SIGINT, SIG_IGN);
 	if (fd_i == ERROR || fd_o == ERROR)
 	{
 		g_exit_status = 1;
@@ -59,10 +60,10 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
 	if (!cmd_path)
-		_exit(e_find_path((*cmd_head)->cmds[0]));
+		exit(e_find_path((*cmd_head)->cmds[0]));
 	tools->envp = env_list_to_array(tools->env_list);
 	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
-		_exit(e_cmd_not_found((*cmd_head)->cmds[0]));
+		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
 }
 
 /*
@@ -74,7 +75,7 @@ char	*check_current_dir(char *cmd)
 	int	i;
 
 	i = 0;
-	if (ft_strchr(cmd, 47) || cmd[0] == '.')
+	if (ft_strchr(cmd, '/') || cmd[0] == '.')
 		return (cmd);
 	return (NULL);
 }

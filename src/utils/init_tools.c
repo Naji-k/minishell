@@ -70,6 +70,7 @@ char	**get_paths2(t_env **env_list)
 	if (!path)
 		return (NULL);
 	path_arr = ft_split(path->value, ':');
+	// path_arr = NULL;
 	add_bslash_path(path_arr);
 	return (path_arr);
 }

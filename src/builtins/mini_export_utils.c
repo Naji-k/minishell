@@ -16,7 +16,7 @@
 char	**handle_export_args(char *simple_cmd, bool plus_equal)
 {
 	char	**key_value;
-	char	*str;
+	char	*str;//protect
 
 	str = NULL;
 	if (plus_equal == true)

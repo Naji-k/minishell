@@ -96,6 +96,7 @@ char	*mini_cd_oldpwd(t_tools *tools)
 	if (tools->old_pwd != NULL)
 	{
 		path = ft_strdup(tools->old_pwd);
+		//protect
 		printf("%s\n", path);
 	}
 	else
