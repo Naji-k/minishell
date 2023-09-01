@@ -45,45 +45,45 @@ int	should_expand(char *line, t_tools *tools, t_token *node, int i)
 	return (false);
 }
 
-char	*add_spaces_if_needed(char *str, int in_quotes, int i, int j)
+char	*add_spaces_if_needed(char *str, int i, int j, char *new_string)
 {
-	char	*result;
-
-	result = malloc(sizeof(char) * ((strlen(str) + 1) * 2));
-	if (!result)
-		return (NULL);
 	while (str[i] != '\0')
 	{
-		if (str[i] == '\"' || str[i] == '\'')
-			in_quotes = !in_quotes;
-		if (!in_quotes && (str[i] == '>' || str[i] == '<' || str[i] == '|'))
+		if (is_inside_quote(str, i) == NO_QUOTATION)
 		{
-			if (i > 0 && str[i - 1] != ' ')
-				result[j++] = ' ';
-			result[j++] = str[i++];
-			if (str[i] == str[i - 1])
-				result[j++] = str[i++];
-			if (str[i] != ' ')
-				result[j++] = ' ';
+			if (str[i] == '>' || str[i] == '<' || str[i] == '|')
+			{
+				if (is_whitespace(str[i - 1]) == false)
+					new_string[j++] = ' ';
+				new_string[j++] = str[i++];
+				if (str[i] == str[i - 1] && str[i] != '|')
+					new_string[j++] = str[i++];
+				if (str[i] != '>' && str[i] != '<' && str[i] != '|'
+					&& is_whitespace(str[i]) == false)
+					new_string[j++] = ' ';
+			}
+			else
+				new_string[j++] = str[i++];
 		}
 		else
-			result[j++] = str[i++];
+			new_string[j++] = str[i++];
 	}
-	result[j] = '\0';
-	return (result);
+	new_string[j] = '\0';
+	return (new_string);
 }
 
 char	*add_spaces_non_literal(char *str)
 {
 	int		i;
 	int		j;
-	int		in_quotes;
 	char	*new_string;
 
 	i = 0;
 	j = 0;
-	in_quotes = 0;
-	new_string = add_spaces_if_needed(str, in_quotes, i, j);
+	new_string = malloc(sizeof(char) * ((ft_strlen(str) + 1) * 2));
+	if (!new_string)
+		return (NULL);
+	new_string = add_spaces_if_needed(str, i, j, new_string);
 	free(str);
 	return (new_string);
 }
