@@ -72,9 +72,6 @@ void	execve_cmd(t_tools *tools, t_commands **cmd_head)
 
 char	*check_current_dir(char *cmd)
 {
-	int	i;
-
-	i = 0;
 	if (ft_strchr(cmd, '/') || cmd[0] == '.')
 		return (cmd);
 	return (NULL);

@@ -36,7 +36,7 @@ LIBFT_DIR = ./lib/libft
 
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(CODAM_READLINE_INCLUDE)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(YOUSSEF_READLINE_INCLUDE)
 
 SRCS := src/main.c \
 		src/builtins/builtin_utils.c \
@@ -73,7 +73,7 @@ SRCS := src/main.c \
 		src/utils/utils.c \
 		src/utils/utils_extra.c \
 		src/utils/utils_parsing.c \
-		src/utils/utils_syntax.c 
+		src/utils/utils_syntax.c
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
@@ -84,7 +84,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(CODAM_READLINE_LIB)
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(YOUSSEF_READLINE_LIB)
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 
