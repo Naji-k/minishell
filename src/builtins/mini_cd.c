@@ -96,7 +96,8 @@ char	*mini_cd_oldpwd(t_tools *tools)
 	if (tools->old_pwd != NULL)
 	{
 		path = ft_strdup(tools->old_pwd);
-		//protect
+		if (!path)
+			return (malloc_error(tools->old_pwd), NULL);
 		printf("%s\n", path);
 	}
 	else
@@ -112,7 +113,7 @@ char	*mini_cd_oldpwd(t_tools *tools)
  * @brief to go to home by expand_arg
  * 
  * @param tools 
- * @return char* the path of HOME or NULL;
+ * @return (char* the path of HOME or NULL);
  */
 char	*cd_home_dir(t_tools *tools)
 {

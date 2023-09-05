@@ -17,7 +17,7 @@
  * @brief check if the input is valid
  * 
  * @param export_str export args
- * @return int 1 if success, 2 if +=, 0 if invalid
+ * @return int valid=0, +=2, invalid=1
  */
 static int	check_input(char *export_str)
 {
@@ -32,10 +32,8 @@ static int	check_input(char *export_str)
 				i++;
 			if (export_str[i] == '+' && export_str[i + 1] == '=')
 				return (2);
-			if (export_str[i] != 0 && export_str[i] != '=')
-			{
+			if (export_str[i] != '\0' && export_str[i] != '=')
 				return (1);
-			}
 			else if (export_str[i] == '\0')
 				return (0);
 			return (0);
@@ -81,28 +79,39 @@ static void	error_export(char *simple_cmd)
 	g_exit_status = 1;
 }
 
+/**
+ * @brief the main mini_export function
+ * if there is no args =>print_export_env
+ * then check_input(1=error, 2=plus_equal, 0=valid_input)
+ * 
+ * @param tools 
+ * @param simple_cmd 
+ * @return int g_exit_status
+ */
 int	mini_export(t_tools *tools, char **simple_cmd)
 {
 	int	i;
+	int	checker;
 
 	if (simple_cmd[1] == NULL)
 		return (print_export_env(tools));
 	i = 1;
 	while (simple_cmd[i] != NULL)
 	{
-		if (check_input(simple_cmd[i]) != 1)
+		checker = check_input(simple_cmd[i]);
+		if (checker == 1)
+			return (error_export(simple_cmd[i]), g_exit_status);
+		else if (checker == 2)
 		{
-			if (check_input(simple_cmd[i]) == 2)
-			{
-				if (export_plus_equal(tools, simple_cmd[i]) == ERROR)
-					return (g_exit_status);
-			}
-			else if (export_create(tools->env_list, simple_cmd[i]) == ERROR)
+			if (export_plus_equal(tools, simple_cmd[i]) == ERROR)
 				return (g_exit_status);
-			g_exit_status = 0;
 		}
 		else
-			error_export(simple_cmd[i]);
+		{
+			if (export_create(tools->env_list, simple_cmd[i]) == ERROR)
+				return (g_exit_status);
+		}
+		g_exit_status = 0;
 		i++;
 	}
 	return (g_exit_status);

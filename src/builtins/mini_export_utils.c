@@ -13,93 +13,95 @@
 #include "builtin.h"
 #include "executor.h"
 
-char	**handle_export_args(char *simple_cmd, bool plus_equal)
+/**
+ * @brief will handle the valid args if there += will remove +
+ * 
+ * @param simple_cmd 
+ * @param plus_equal if true remove + and return valid_arg
+ * @return char* simple_cmd (without +)
+ */
+char	*handle_export_args(char *simple_cmd, bool plus_equal)
 {
-	char	**key_value;
-	char	*str;//protect
+	char	*str;
 
 	str = NULL;
 	if (plus_equal == true)
 	{
-		key_value = ft_split(simple_cmd, '+');
-		if (!key_value)
-			return (malloc_error(NULL), NULL);
-		key_value[1] = ftp_substr(key_value[1], 0, ft_strlen(key_value[1]));
-		str = ft_strjoin(key_value[0], key_value[1]);
-		free_2d_arr(key_value);
+		str = remove_plus_equal(simple_cmd);
+		if (!str)
+			return (NULL);
 	}
 	else
 		str = ft_strdup(simple_cmd);
 	if (!str)
 		return (malloc_error(NULL), NULL);
-	key_value = ft_split(str, '=');
+	return (str);
+}
+
+/**
+ * @brief split the valid_arg to **key_value
+ * if there '=' would be added to key[0], if there is no value
+ * key_value[1] = NULL;
+ * @param str valid_arg(cleaned from '+');
+ * @return char** key_value
+ */
+char	**split_export_args(char *str)
+{
+	char	**key_value;
+	int		len_key;
+
+	len_key = 0;
+	key_value = NULL;
+	key_value = ft_calloc(sizeof(char *), 3);
 	if (!key_value)
-		return (malloc_error(NULL), NULL);
-	key_value[0] = ftp_strjoin(key_value[0], "=");
+		return (malloc_error(str), NULL);
+	while (str[len_key] != '=' && str[len_key] != '\0')
+		len_key++;
+	if (str[len_key] == '=')
+		len_key++;
+	key_value[0] = ft_substr(str, 0, len_key);
 	if (!key_value[0])
-		return (malloc_error(NULL), NULL);
-	free(str);
+		return (malloc_error(str), free_2d_arr(key_value), NULL);
+	if (ft_strlen(str) > len_key)
+	{
+		key_value[1] = ft_substr(str, len_key, ft_strlen(str) - len_key + 1);
+		if (!key_value[1])
+			return (malloc_error(str), free_2d_arr(key_value), NULL);
+	}
+	else
+		key_value[1] = NULL;
 	return (key_value);
 }
 
-int	export_strjoin_to_value(t_env *exist_node, char **key_value)
-{
-	char	*tmp;
-
-	tmp = NULL;
-	tmp = ft_strdup(exist_node->value);
-	if (!tmp)
-		return (malloc_error(NULL), ERROR);
-	tmp = ftp_strjoin(tmp, key_value[1]);
-	if (!tmp)
-		return (malloc_error(NULL), ERROR);
-	env_update_key_value(exist_node, key_value[0], tmp);
-	free(tmp);
-	return (SUCCESS);
-}
-
-int	export_plus_equal(t_tools *tools, char *simple_command)
-{
-	char	**key_value;
-	t_env	*exist_node;
-
-	key_value = handle_export_args(simple_command, true);
-	if (!key_value)
-		return (ERROR);
-	exist_node = find_env_by_key(tools->env_list, key_value[0]);
-	if (exist_node)
-	{
-		if (exist_node->value != NULL)
-		{
-			if (export_strjoin_to_value(exist_node, key_value) == ERROR)
-			{
-				free_2d_arr(key_value);
-				return (ERROR);
-			}
-		}
-		else
-			env_update_key_value(exist_node, key_value[0], key_value[1]);
-	}
-	else
-		create_env_back(tools->env_list, key_value, NULL);
-	free_2d_arr(key_value);
-	return (SUCCESS);
-}
-
+/**
+ * @brief this function will create a env_variable
+ *  if the input is valid
+ * 
+ * @param env_list 
+ * @param simple_cmd 
+ * @return int (SUCCESS || ERROR)
+ */
 int	export_create(t_env **env_list, char *simple_cmd)
 {
+	char	*handled_arg;
 	char	**key_value;
 	t_env	*exist_node;
 
 	exist_node = NULL;
-	key_value = handle_export_args(simple_cmd, false);
-	if (!key_value)
+	key_value = NULL;
+	handled_arg = NULL;
+	handled_arg = handle_export_args(simple_cmd, false);
+	if (!handled_arg)
 		return (ERROR);
+	key_value = split_export_args(handled_arg);
+	if (!key_value)
+		return (malloc_error(handled_arg), ERROR);
 	exist_node = find_env_by_key(env_list, key_value[0]);
 	if (exist_node)
 		env_update_key_value(exist_node, key_value[0], key_value[1]);
 	else
-		create_env_back(env_list, NULL, simple_cmd);
+		create_env_back(env_list, NULL, handled_arg);
+	free(handled_arg);
 	free_2d_arr(key_value);
 	return (SUCCESS);
 }

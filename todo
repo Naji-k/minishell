@@ -1,6 +1,0 @@
-export a b c=
-export a+="hello+=hey"
-protect everything in env and some stuff
-unset 1st env
-
-cat || ls

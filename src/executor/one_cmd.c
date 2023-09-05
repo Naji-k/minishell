@@ -70,9 +70,7 @@ void	execute_onc_cmd(t_tools *tools, char **simple_command)
 		signal(SIGINT, SIG_DFL);
 		cmd_path = find_cmd_path(tools, simple_command[0]);
 		if (cmd_path == NULL)
-		{
 			_exit(e_find_path(simple_command[0]));
-		}
 		tools->envp = env_list_to_array(tools->env_list);
 		if (execve(cmd_path, simple_command, tools->envp) == -1)
 			_exit(e_cmd_not_found(simple_command[0]));
@@ -80,10 +78,14 @@ void	execute_onc_cmd(t_tools *tools, char **simple_command)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
+	signal_checker(status);
+}
+
+void	signal_checker(int status)
+{
 	if (WIFSIGNALED(status))
 	{
 		printf("\n");
-		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 		rl_replace_line("", 0);
 		rl_on_new_line();
 	}

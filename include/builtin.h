@@ -31,8 +31,13 @@ void	env_update_key_value(t_env *env_node, char *key, char *value);
 
 /*export_utils*/
 int		export_plus_equal(t_tools *tools, char *simple_command);
-char	**handle_export_args(char *simple_cmd, bool plus_equal);
+char	*handle_export_args(char *simple_cmd, bool plus_equal);
+char	**split_export_args(char *str);
 
+/*export_plus_equal*/
+char	*remove_plus_equal(char *simple_cmd);
+int		export_addto_exist_node(t_env *exist_node, char **key_value);
+int		export_plus_equal(t_tools *tools, char *simple_command);
 /* cd */
 int		mini_cd(t_tools *tools, char **simple_cmd);
 void	update_pwd_env(t_tools *tools, char *tmp_opwd);
