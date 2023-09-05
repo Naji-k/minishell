@@ -36,7 +36,7 @@ LIBFT_DIR = ./lib/libft
 
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(NAJI_RL_INC)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(CODAM_READLINE_INCLUDE)
 
 SRCS := src/main.c \
 		src/builtins/builtin_utils.c \
@@ -86,7 +86,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(NAJI_RL_LIB)
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(CODAM_READLINE_LIB)
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 

@@ -97,12 +97,12 @@ int	export_plus_equal(t_tools *tools, char *simple_command)
 	key_value = split_export_args(valid_arg);
 	if (!key_value)
 		return (malloc_error(valid_arg), ERROR);
+	free(valid_arg);
 	exist_node = find_env_by_key(tools->env_list, key_value[0]);
 	if (exist_node)
 	{
 		if (export_addto_exist_node(exist_node, key_value) == ERROR)
 		{
-			free(valid_arg);
 			free_2d_arr(key_value);
 			return (ERROR);
 		}
