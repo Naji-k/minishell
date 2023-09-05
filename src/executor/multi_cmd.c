@@ -75,6 +75,7 @@ int	multi_pipes_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		close(fd[0]);
 		if (ft_dup2_check(old_fd, STDIN_FILENO) == ERROR || ft_dup2_check(fd[1],
 				STDOUT_FILENO) == ERROR)
@@ -124,6 +125,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 		error_file_handling("fork");
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		ft_dup2_check(old_fd, STDIN_FILENO);
 		if ((*last_cmd)->redirections)
 			if (redirection((*last_cmd)))
