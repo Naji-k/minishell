@@ -54,19 +54,19 @@ char	**split_export_args(char *str)
 	key_value = NULL;
 	key_value = ft_calloc(sizeof(char *), 3);
 	if (!key_value)
-		return (malloc_error(str), NULL);
+		return (malloc_error(NULL), NULL);
 	while (str[len_key] != '=' && str[len_key] != '\0')
 		len_key++;
 	if (str[len_key] == '=')
 		len_key++;
 	key_value[0] = ft_substr(str, 0, len_key);
 	if (!key_value[0])
-		return (malloc_error(str), free_2d_arr(key_value), NULL);
+		return (malloc_error(NULL), free_2d_arr(key_value), NULL);
 	if (ft_strlen(str) > len_key)
 	{
 		key_value[1] = ft_substr(str, len_key, ft_strlen(str) - len_key + 1);
 		if (!key_value[1])
-			return (malloc_error(str), free_2d_arr(key_value), NULL);
+			return (malloc_error(NULL), free_2d_arr(key_value), NULL);
 	}
 	else
 		key_value[1] = NULL;
