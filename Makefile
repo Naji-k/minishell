@@ -36,7 +36,7 @@ LIBFT_DIR = ./lib/libft
 
 OBJ_DIR	= obj
 
-HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(YOUSSEF_READLINE_INCLUDE)
+HEADERS	:= -I ./include -I $(LIBFT_DIR) -I $(NAJI_RL_INC)
 
 SRCS := src/main.c \
 		src/builtins/builtin_utils.c \
@@ -47,8 +47,10 @@ SRCS := src/main.c \
 		src/builtins/mini_exit.c \
 		src/builtins/mini_export.c \
 		src/builtins/mini_export_utils.c \
+		src/builtins/mini_export_plus_equal.c \
 		src/builtins/mini_pwd.c \
 		src/builtins/mini_unset.c \
+		src/executor/env_extra.c \
 		src/executor/env_list.c \
 		src/executor/env_utils.c \
 		src/executor/error_handling.c \
@@ -84,7 +86,7 @@ $(OBJ_DIR)/%.o: %.c
 		@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	 $(LIB_LIBFT) $(OBJS)
-		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(YOUSSEF_READLINE_LIB)
+		@$(CC) $(CFLAGS) $(HEADERS) -lreadline $(OBJS) $(LIB_LIBFT) -o $(NAME) -L $(NAJI_RL_LIB)
 		@printf "Compiled ./minishell executable succesfully.\n"
 
 

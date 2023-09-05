@@ -54,18 +54,6 @@ void	executor(t_tools *tools, t_commands **cmd_head)
 	ft_dup2_check(fd_o, STDOUT_FILENO);
 }
 
-void	execve_cmd(t_tools *tools, t_commands **cmd_head)
-{
-	char	*cmd_path;
-
-	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
-	if (!cmd_path)
-		exit(e_find_path((*cmd_head)->cmds[0]));
-	tools->envp = env_list_to_array(tools->env_list);
-	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
-		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
-}
-
 /*
 	Here i am checking if the executor is a local(in project dir) | from env->PATH
  */
@@ -77,14 +65,43 @@ char	*check_current_dir(char *cmd)
 	return (NULL);
 }
 
+/**
+ * @brief loop through env_paths, to find command_path
+ * 
+ * @param tools includes char** paths;
+ * @param cmd 
+ * @return char* (cmd_path || NULL)
+ */
+char	*check_in_paths(t_tools *tools, char *cmd)
+{
+	char	*cmd_path;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	while (tools->paths[i])
+	{
+		tmp = ft_strjoin(tools->paths[i], cmd);
+		if (!tmp)
+			return (malloc_error(NULL), NULL);
+		cmd_path = tmp;
+		if (access(cmd_path, F_OK) == 0)
+		{
+			free_2d_arr(tools->paths);
+			return (cmd_path);
+		}
+		free(tmp);
+		i++;
+	}
+	return (NULL);
+}
+
 /*
 	find the path of the command...(if it is not local executable)
  */
 char	*find_cmd_path(t_tools *tools, char *cmd)
 {
 	char	*cmd_path;
-	char	*tmp;
-	int		i;
 
 	cmd_path = check_current_dir(cmd);
 	if (cmd_path)
@@ -92,18 +109,9 @@ char	*find_cmd_path(t_tools *tools, char *cmd)
 	tools->paths = get_paths2(tools->env_list);
 	if (tools->paths)
 	{
-		i = -1;
-		while (tools->paths[++i])
-		{
-			tmp = ft_strjoin(tools->paths[i], cmd);
-			cmd_path = tmp;
-			if (access(cmd_path, F_OK) == 0)
-			{
-				free_2d_arr(tools->paths);
-				return (cmd_path);
-			}
-			free(tmp);
-		}
+		cmd_path = check_in_paths(tools, cmd);
+		if (cmd_path)
+			return (cmd_path);
 	}
 	free_2d_arr(tools->paths);
 	return (NULL);

@@ -85,11 +85,23 @@ int	multi_pipes_process(t_tools *tools, t_commands **cmd_head, int old_fd,
 		if ((*cmd_head)->builtin)
 			exit(run_builtin((*cmd_head)->cmds[0], tools, (*cmd_head)->cmds));
 		if ((*cmd_head)->cmds[0])
-			execve_cmd(tools, cmd_head);
+			execve_m_cmds(tools, cmd_head);
 		else
 			exit(EXIT_FAILURE);
 	}
 	return (SUCCESS);
+}
+
+void	execve_m_cmds(t_tools *tools, t_commands **cmd_head)
+{
+	char	*cmd_path;
+
+	cmd_path = find_cmd_path(tools, (*cmd_head)->cmds[0]);
+	if (!cmd_path)
+		exit(e_find_path((*cmd_head)->cmds[0]));
+	tools->envp = env_list_to_array(tools->env_list);
+	if (execve(cmd_path, (*cmd_head)->cmds, tools->envp) == -1)
+		exit(e_cmd_not_found((*cmd_head)->cmds[0]));
 }
 
 /**
@@ -118,7 +130,7 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd)
 				exit(EXIT_FAILURE);
 		if ((*last_cmd)->builtin)
 			exit(run_builtin((*last_cmd)->cmds[0], tools, (*last_cmd)->cmds));
-		execve_cmd(tools, last_cmd);
+		execve_m_cmds(tools, last_cmd);
 	}
 	close(old_fd);
 	return (pid);
@@ -138,12 +150,6 @@ void	wait_last_pid(pid_t last_pid)
 		;
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
-	if (WIFSIGNALED(status))
-	{
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-	}
+	signal_checker(status);
 	signal(SIGINT, handler_sigint);
-		
 }

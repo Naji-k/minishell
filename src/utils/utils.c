@@ -19,8 +19,8 @@ void	check_leaks(void)
 
 void	malloc_error(void *arg)
 {
-
-	free(arg);	g_exit_status = 1;
+	free(arg);
+	g_exit_status = 1;
 	printf("Memory allocation failed.\nCommand execution has been halted.\n");
 }
 

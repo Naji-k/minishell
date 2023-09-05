@@ -21,9 +21,7 @@ int	mini_unset(t_tools *tools, char **simple_cmd)
 	if (simple_cmd[1])
 	{
 		if (env_del_one(tools->env_list, simple_cmd[1]) > 0)
-		{
 			return (0);
-		}
 		if (ft_strncmp(simple_cmd[1], "OLDPWD", 6) == 0)
 			tools->old_pwd = NULL;
 	}

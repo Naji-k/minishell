@@ -37,7 +37,7 @@ char	*check_current_dir(char *cmd);
 void	one_cmd_handler(t_tools *tools, t_commands **cmd_head);
 void	execute_onc_cmd(t_tools *tools, char **simple_command);
 int		close_pipes(int *fd, int old_fd);
-void	execve_cmd(t_tools *tools, t_commands **cmd_head);
+void	execve_m_cmds(t_tools *tools, t_commands **cmd_head);
 //multi cmnds
 void	multi_commands_handler(t_tools *tools, t_commands **cmd_head);
 int		multi_pipes_process(t_tools *tools, t_commands **cmd_head, int old_fd,
@@ -46,6 +46,8 @@ pid_t	last_cmd(t_tools *tools, t_commands **last_cmd, int old_fd);
 void	multi_v2(t_tools *tools, t_commands **cmd_head, int *fd);
 void	wait_last_pid(pid_t last_pid);
 
+//one_cmd
+void	signal_checker(int status);
 //redirection
 int		redirection(t_commands *cmd);
 int		ft_dup2_check(int old, int new);

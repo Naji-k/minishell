@@ -138,20 +138,23 @@ void	free_env_list(t_env **env_list)
 t_env	*find_env_by_key(t_env **env_list, char *key)
 {
 	t_env	*env;
+	int		i;
 
 	env = (*env_list);
 	while (env)
 	{
-		if (key[ft_strlen(key)] == '=')
-		{
-			if ((ft_strncmp(env->key, key, ft_strlen(key) - 1) == 0))
-				return (env);
-		}
-		else
-		{
-			if ((ft_strncmp(env->key, key, ft_strlen(key) - 1) == 0))
-				return (env);
-		}
+		i = 0;
+		while ((env->key[i] == key[i]) && key[i] && env->key[i]
+			&& key[i] != '=')
+			i++;
+		if (env->key[i] == '=' && key[i] == '=')
+			return (env);
+		if (env->key[i] == '=' && key[i] == '\0')
+			return (env);
+		if (env->key[i] == '\0' && key[i] == '\0')
+			return (env);
+		if (env->key[i] == '\0' && key[i] == '=')
+			return (env);
 		env = env->next;
 	}
 	return (NULL);
